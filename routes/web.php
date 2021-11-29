@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MembersController;
+// use App\Http\Controllers\MembersController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +17,12 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
-Route::get('/membership', [MembersController::class, 'index']);
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/gpoa/admin', [HomeController::class, 'admin'])->name('admin.home');
+Route::get('/gpoa/officer', [HomeController::class, 'officer'])->name('officer.home');
+Route::get('/gpoa/adviser', [HomeController::class, 'adviser'])->name('adviser.home');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -26,8 +27,28 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    //protected $redirectTo = RouteServiceProvider::HOME;
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        // Redirect Super Admin Role
+        if ( ($user->roles->pluck('role'))->containsStrict('Super Admin') ) 
+            return redirect()->route('admin.home');
+        elseif ( ($user->roles->pluck('role'))->containsStrict('GPOA Admin') ) 
+            return redirect()->route('officer.home');
+        elseif ( ($user->roles->pluck('role'))->containsStrict('Super Admin') ) 
+            return redirect()->route('admin.home');
 
+        // User | Officer | President | Other Admins
+        else
+            abort(404);
+       
+        
+    }
     /**
      * Create a new controller instance.
      *

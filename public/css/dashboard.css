@@ -1,0 +1,112 @@
+:root {
+    --main-bg-color: #009d63;
+    --main-text-color: #ffffff;
+    --second-text-color: #f7f8f9;
+    --second-bg-color: #a00000;
+}
+
+.primary-text {
+    color: var(--main-text-color);
+}
+
+.second-text {
+    color: var(--second-text-color);
+}
+
+.primary-bg {
+    background-color: var(--main-bg-color);
+}
+
+.secondary-bg {
+    background-color: var(--second-bg-color);
+}
+
+.rounded-full {
+    border-radius: 100%;
+}
+
+#wrapper {
+    overflow-x: hidden;
+    background-color: #ffffff;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    background-color: #c62128;
+    /* background-image: linear-gradient(147deg, #a00000 0%, #c62128 74%); */
+    -webkit-transition: margin 0.25s ease-out;
+    -moz-transition: margin 0.25s ease-out;
+    -o-transition: margin 0.25s ease-out;
+    transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+#menu-toggle {
+    cursor: pointer;
+    color: #a00000;
+}
+
+.brand {
+    text-decoration: none;
+}
+.brand:hover {
+    color: #ffffff;
+}
+
+.cardcon {
+    /* //  0 5px 10px 5px */
+    -webkit-box-shadow: 0px 10px 20px -10px rgba(51, 47, 47, 0.9);
+    box-shadow: 0px 10px 20px -10px rgba(51, 47, 47, 0.9);
+}
+
+.list-group-item {
+    border: none;
+    background-color: #c62128;
+    padding: 20px 30px;
+}
+
+.list-group-item.active {
+    color: #a00000;
+    background-color: #ffffff;
+    border-bottom-left-radius: 15%;
+    border-top-left-radius: 15%;
+}
+
+.list-group-item:hover {
+    color: #a00000;
+    background-color: #ffffff;
+    border-bottom-left-radius: 15%;
+    border-top-left-radius: 15%;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}

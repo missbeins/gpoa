@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePositionTitlesTable extends Migration
+class CreateAssetTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreatePositionTitlesTable extends Migration
      */
     public function up()
     {
-        Schema::create('position_titles', function (Blueprint $table) {
-            $table->id('position_title_id');
-            $table->string('position_title');
+        Schema::create('asset_types', function (Blueprint $table) {
+            $table->id('asset_type_id');            
+            $table->string('type');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreatePositionTitlesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('position_titles');
+        Schema::dropIfExists('asset_types');
     }
 }

@@ -35,19 +35,17 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // Redirect Super Admin Role
+        // Redirect Super Admin Role, GPOA Admin and Adviser
         if ( ($user->roles->pluck('role'))->containsStrict('Super Admin') ) 
-            return redirect()->route('admin.home');
+            return redirect()->route('admin.admin.home');
         elseif ( ($user->roles->pluck('role'))->containsStrict('GPOA Admin') ) 
-            return redirect()->route('officer.home');
-        elseif ( ($user->roles->pluck('role'))->containsStrict('Super Admin') ) 
-            return redirect()->route('admin.home');
+            return redirect()->route('officer.officer.home');
+        elseif ( ($user->roles->pluck('role'))->containsStrict('Adviser') ) 
+            return redirect()->route('adviser.adviser.home');
 
-        // User | Officer | President | Other Admins
+        // User | President | Other Admins
         else
-            abort(404);
-       
-        
+            abort(404);   
     }
     /**
      * Create a new controller instance.

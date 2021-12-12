@@ -69,6 +69,12 @@ class RoleUserSeeder extends Seeder
                 'role_id' => 8,
                 'organization_id' => $organization_id,
             ],
+            [  
+                // adviser
+                'user_id' => 9,
+                'role_id' => 9,
+                'organization_id' => $organization_id,
+            ],
 
             
         ];

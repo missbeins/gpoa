@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Officer\OfficerController;
+use App\Http\Controllers\Admin\SuperAdminController;
+use App\Http\Controllers\Adviser\AdviserController;
 use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\MembersController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 
@@ -22,7 +24,22 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/gpoa/admin', [HomeController::class, 'admin'])->name('admin.home');
-Route::get('/gpoa/officer', [HomeController::class, 'officer'])->name('officer.home');
-Route::get('/gpoa/adviser', [HomeController::class, 'adviser'])->name('adviser.home');
+
+//Route::get('/home', [HomeController::class, 'index'])->name('home');
+/////////////////////////////////////LOGIN REDIRECT BY ROLES//////////////////////////////////////////
+
+//Super Admin Routes
+Route::prefix('admin')->middleware(['auth','auth.is-superadmin'])->name('admin.')->group(function(){
+    Route::get('/gpoa/admin', [SuperAdminController::class, 'index'])->name('admin.home');
+});
+
+//Officer Routes
+Route::prefix('officer')->middleware(['auth','auth.is-officer'])->name('officer.')->group(function(){
+    Route::get('/gpoa/officer', [OfficerController::class, 'index'])->name('officer.home');
+});
+
+//Adviser Routes
+Route::prefix('adviser')->middleware(['auth','auth.is-adviser'])->name('adviser.')->group(function(){
+    Route::get('/gpoa/adviser', [AdviserController::class, 'index'])->name('adviser.home');
+});
+

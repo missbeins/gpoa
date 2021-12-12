@@ -47,4 +47,25 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')->withPivot('organization_id');
     }
+
+    /**
+     * check if the user has the role
+     * @param string role
+     * @return bool
+     */
+    public function hasAnyRole(String $role){
+
+        return null !== $this->roles()->where('role', $role)->first();
+    }
+
+    /**
+     * check if the user has any given role
+     * @param array role
+     * @return bool
+     */
+    public function hasAnyRoles(Array $role){
+
+        return null !== $this->roles()->whereIn('role', $role)->first();
+    }
+
 }

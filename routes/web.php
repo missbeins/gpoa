@@ -6,6 +6,7 @@ use App\Http\Controllers\Adviser\AdviserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Officer\EventsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,17 +30,18 @@ Auth::routes();
 /////////////////////////////////////LOGIN REDIRECT BY ROLES//////////////////////////////////////////
 
 //Super Admin Routes
-Route::prefix('admin')->middleware(['auth','auth.is-superadmin'])->name('admin.')->group(function(){
-    Route::get('/gpoa/admin', [SuperAdminController::class, 'index'])->name('admin.home');
+Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function(){
+    Route::get('/gpoa/admin/upcoming-events', [SuperAdminController::class, 'index'])->name('admin.home');
 });
 
 //Officer Routes
-Route::prefix('officer')->middleware(['auth','auth.is-officer'])->name('officer.')->group(function(){
-    Route::get('/gpoa/officer', [OfficerController::class, 'index'])->name('officer.home');
+Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(){
+    Route::get('/gpoa/officer/upcoming-events', [OfficerController::class, 'index'])->name('officer.home');
+    Route::resource('/gpoa/officer/events', EventsController::class);
 });
 
 //Adviser Routes
-Route::prefix('adviser')->middleware(['auth','auth.is-adviser'])->name('adviser.')->group(function(){
-    Route::get('/gpoa/adviser', [AdviserController::class, 'index'])->name('adviser.home');
+Route::prefix('/adviser')->middleware('auth')->name('adviser.')->group(function(){
+    Route::get('/gpoa/adviser/upcoming-events', [AdviserController::class, 'index'])->name('adviser.home');
 });
 

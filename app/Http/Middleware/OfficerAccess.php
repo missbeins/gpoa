@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class OfficerAccess
 {
@@ -21,6 +21,7 @@ class OfficerAccess
             
             return $next($request);
         }
-       return redirect('/');
+        
+        abort(403);
     }
 }

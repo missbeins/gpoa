@@ -22,6 +22,6 @@ class AdviserAccess
             return $next($request);
         }
         
-       return redirect('/');
+        abort(403);
     }
 }

@@ -70,13 +70,23 @@ class RoleUserSeeder extends Seeder
                 'organization_id' => $organization_id,
             ],
             [  
-                // adviser
+                // AVP Ar Officer
                 'user_id' => 9,
+                'role_id' => 3,
+                'organization_id' => $organization_id,
+            ],
+            [  
+                // AVP Ar Officer as member
+                'user_id' => 9,
+                'role_id' => 8,
+                'organization_id' => $organization_id,
+            ], 
+            [  
+                // Adviser
+                'user_id' => 10,
                 'role_id' => 9,
                 'organization_id' => $organization_id,
             ],
-
-            
         ];
         DB::table('role_user')->insert($data);
     }

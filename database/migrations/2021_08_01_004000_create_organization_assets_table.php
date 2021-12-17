@@ -34,6 +34,6 @@ class CreateOrganizationAssetsTable extends Migration
     {
         Schema::dropIfExists('organization_assets');
         $table->dropForeign('organization_id');
-        $table->dropForeign('organization_asset_type_id');
+        $table->dropForeign('asset_type_id');
     }
 }

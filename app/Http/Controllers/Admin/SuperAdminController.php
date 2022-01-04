@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\upcoming_events;
 
 class SuperAdminController extends Controller
 {
@@ -14,7 +15,10 @@ class SuperAdminController extends Controller
      */
     public function index()
     {
+        $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+            ->where('status','=','upcoming')
+            ->paginate(5, ['*'], 'upcoming-events');        
+        return view('admin.admin',compact('upcoming_events'));
         
-        return view('admin.admin');
     }
 }

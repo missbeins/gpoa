@@ -26,40 +26,42 @@
             </div>
         </div>
         <div class="card-body table-responsive text-center">        
-            {{-- @if (isset($paidmembers)) --}}
+            @if (isset($upcoming_events))
                 <table class="table table-light table-sm table-striped table-hover table-responsive">
                     <thead>
                         <tr>
                             <th class="col-sm-1">Name/Title of Activity</th>
-                            <th class="col-sm-1">Head Organization</th>
+                            <th class="col-sm-2">Head Organization</th>
                             <th class="col-sm-1">Participant(s)</th>
-                            <th class="col-sm-1">Head Organization</th>
                             <th class="col-sm-1">Partnerships</th>
                             <th class="col-sm-1">Date</th>
                             <th class="col-sm-1">Venue & time</th>
-                            <th class="col-sm-1">Actions</th>
+                            <th class="col-sm-2">Semester & School Year</th>
+           
                             
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @if ($paidmembers->isNotEmpty())
-                            @foreach ($paidmembers as $member)
+                        @if ($upcoming_events->isNotEmpty())
+                            @foreach ($upcoming_events as $upcoming_event)
                                 <tr>
-                                    <td>{{ $member->control_number }}</td>
-                                    <td>{{ $member->last_name }}, {{ $member->first_name }}
-                                        {{ $member->middle_name }}</td>
-                                    <td>{{ $member->email }}</td>
-                                    <td>{{ $member->contact }}</td>
-                                    <td>₱ {{ $member->membership_fee }}.00</td>
+                                    <td>{{ $upcoming_event->title_of_activity }}</td>
+                                    <td>{{ $upcoming_event->organization_name }}</td>
+                                    <td>{{ $upcoming_event->participants }}</td>
+                                    <td>{{ $upcoming_event->partnerships }}</td>
+                                    <td>{{ $upcoming_event->date }}</td>
+                                    <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
+                                    <td>{{ $upcoming_event->semester }}({{ $upcoming_event->school_year }})</td>
                                 
                                 </tr>
                             @endforeach
                         @else
                         <tr><td colspan="6">No results found!</td></tr>
-                        @endif --}}
+                        @endif
                     </tbody>
                 </table>
-            {{-- @endif --}}
+                {{ $upcoming_events->links() }}
+            @endif
         </div>
     </div>
 </div>

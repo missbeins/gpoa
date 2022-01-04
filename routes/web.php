@@ -36,8 +36,10 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function(){
 
 //Officer Routes
 Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(){
-    Route::get('/gpoa/officer/upcoming-events', [OfficerController::class, 'index'])->name('officer.home');
+    Route::get('/gpoa/officer/upcoming-events', [EventsController::class, 'upcomingEvents'])->name('officer.home');
     Route::resource('/gpoa/officer/events', EventsController::class);
+    Route::post('/gpoa/officer/import-events', [EventsController::class, 'import'])->name('event-import');
+    Route::post('/gpoa/officer/mark-as-done/{event}', [EventsController::class, 'markasDone'])->name('mark-as-done');
 });
 
 //Adviser Routes

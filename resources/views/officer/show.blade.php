@@ -1,29 +1,50 @@
 @extends('layouts.officer')
 @section('content')
-<div class="container mt-5">
     
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-              {{-- Title and Breadcrumbs --}}
-            <div class="d-flex justify-content-between align-items-center">
-            
-                {{-- Breadcrumbs --}}
-                <nav aria-label="breadcrumb align-items-center">
-                    <ol class="breadcrumb justify-content-center ">
-                        <li class="breadcrumb-item">
-                            <a href="{{route('officer.events.index')}}" class="text-decoration-none">Organization's Events</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            Add New Events
-                        </li>
-                    
-                    </ol>
-                </nav>
+    <div class="mt-3">
+        {{-- Title and Breadcrumbs --}}
+        <div class="d-flex justify-content-between align-items-center">
+           
+            {{-- Breadcrumbs --}}
+            <nav aria-label="breadcrumb align-items-center">
+                <ol class="breadcrumb justify-content-center ">
+                    <li class="breadcrumb-item">
+                        <a href="{{route('officer.events.index')}}" class="text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                    Organization's Events / Event Details
+                    </li>
+                   
+                </ol>
+            </nav>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-8 mt-1">
+                        <h5 class="float-left">Event Details</h5>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <div class="card-header">{{ __('New Event') }}</div>
-                <div class="card-body">
-                    <form class="row g-3" method="POST" action="{{ route('officer.events.store') }}">
+            <div class="card-body">        
+                @if (isset($upcoming_events))
+                {{-- <label class="col-sm-1">Name/Title of Activity</label>
+                <label class="col-sm-1">Objectives</label>
+                <label class="col-sm-1">Semester & School year</label>
+                <label class="col-sm-1">Sponsor(s)</label>
+                <label class="col-sm-1">Fund Sourcing</label>
+                <label class="col-sm-1">Type of Activity</label>
+                <label class="col-sm-2">Head Organization</label>
+                <label class="col-sm-1">Participant(s)</label>
+                <label class="col-sm-1">Partnerships</label>
+                <label class="col-sm-1">Date</label>
+                <label class="col-sm-1">Venue & time</label>
+                <label class="col-sm-1">Projected Budget</label>
+                <label class="col-sm-1">Approval Staus</label>
+                <label class="col-sm-1">Status</label> --}}
+                  
+                    {{-- {{ $upcoming_events->links() }} --}}
+                    <form class="row g-3>
                         @csrf
                         <div class="col-md-4 mb-2">
                             <label for="organization" class="form-label">{{ __('Head Organization') }}</label>
@@ -202,9 +223,9 @@
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
-                </div>
+                @endif
             </div>
         </div>
     </div>
-</div>
+
 @endsection

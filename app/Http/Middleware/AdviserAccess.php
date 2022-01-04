@@ -21,7 +21,7 @@ class AdviserAccess
             
             return $next($request);
         }
-        
+       
         abort(403);
     }
 }

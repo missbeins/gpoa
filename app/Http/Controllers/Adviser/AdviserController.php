@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adviser;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\upcoming_events;
 
 class AdviserController extends Controller
 {
@@ -14,7 +15,10 @@ class AdviserController extends Controller
      */
     public function index()
     {
+        $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+            ->where('upcoming_events.status','=','upcoming')
+            ->paginate(5, ['*'], 'upcoming-events');        
+        return view('adviser.adviser',compact('upcoming_events'));
         
-        return view('adviser.adviser');
     }
 }

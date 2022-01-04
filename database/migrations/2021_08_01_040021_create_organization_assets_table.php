@@ -20,8 +20,27 @@ class CreateOrganizationAssetsTable extends Migration
             $table->string('file');
             $table->timestamps();
 
+            $table->string('asset_name')->nullable();
+            $table->integer('is_latest_logo')->nullable();
+            $table->integer('is_latest_banner')->nullable();
+            $table->boolean('is_latest_image')->nullable();
+
+            $table->unsignedBigInteger('user_id')->nullable()->default(NULL);
+            $table->foreign('user_id')->references('user_id')->on('users');
+
+            $table->unsignedBigInteger('page_type_id')->nullable()->default(NULL);
+            $table->foreign('page_type_id')->references('page_types_id')->on('page_types');
+
             $table->foreign('organization_id')->references('organization_id')->on('organizations');
             $table->foreign('asset_type_id')->references('asset_type_id')->on('asset_types');
+
+            $table->boolean('status');
+
+            $table->unsignedBigInteger('announcement_id')->nullable();
+            $table->foreign('announcement_id')->references('announcements_id')->on('announcements');
+
+            $table->unsignedBigInteger('articles_id')->nullable();
+            $table->foreign('articles_id')->references('articles_id')->on('articles');
         });
     }
 

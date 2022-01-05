@@ -23,7 +23,10 @@ class EventsController extends Controller
      */
     public function index()
     {
-        $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')->paginate(5, ['*'], 'upcoming-events');
+        $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                        ->paginate(5, ['*'], 'upcoming-events');
+                       // ->sortBy(['created_at','desc']);
+  
         return view('officer.events',compact('upcoming_events'));
     }
     
@@ -36,7 +39,10 @@ class EventsController extends Controller
     {
         $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                         ->where('upcoming_events.status','=','upcoming')
+                        ->where('upcoming_events.advisers_approval','=','approved')
+                        ->where('upcoming_events.studAffairs_approval','=','approved')
                         ->paginate(5, ['*'], 'upcoming-events');
+        
         return view('officer.upcoming-events',compact('upcoming_events'));
     }
     /**
@@ -108,11 +114,16 @@ class EventsController extends Controller
      * @return \Illuminate\Http\Response
      */
    
-    public function show(upcoming_events $upcoming_events)
+    public function show($id)
     {
-        //$upcoming_event = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')->paginate(5, ['*'], 'upcoming-events');
+        
+        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 403);
         $organizations = organization::all();
-        return view('officer.show',compact('upcoming_events','organizations'));
+        $upcoming_event = upcoming_events::find($id);
+        return view('officer.show',compact([
+            'upcoming_event',
+            'organizations'
+        ]));
     }
 
 

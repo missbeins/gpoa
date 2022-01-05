@@ -1,4 +1,4 @@
-@extends('layouts.officer')
+@extends('layouts.adviser')
 @section('content')
     
     <div class="mt-3">
@@ -12,7 +12,7 @@
                         <a href="{{route('officer.officer.home')}}" class="text-decoration-none">Home</a>
                     </li> --}}
                     <li class="breadcrumb-item active" aria-current="page">
-                    Organization's Events
+                    Organization's Events / Event Approval
                     </li>
                    
                 </ol>
@@ -41,14 +41,7 @@
                         <button class="input-group-text btn-secondary"type="submit">Enter</button>
             
                     </form>
-                    <div class="col-md-12">
-                      
-                        {{-- <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            Import GPOA
-                        </button> --}}
-                        <a href="{{ route('officer.events.create') }}" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event">New Event</a>
-                        @include('officer.includes.import')
-                    </div>
+                    
                 </div>
             </div>
             <div class="card-body table-responsive text-center">        
@@ -72,16 +65,19 @@
                                         <td>{{ $upcoming_event->title_of_activity }}</td>
                                         <td>{{ $upcoming_event->organization_name }}</td>
                                         <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
-                                        <td>
-                                          @if ($upcoming_event->advisers_approval == 'approved' && $upcoming_event->studAffairs_approval == 'approved' && $upcoming_event->status == 'upcoming')
-                                            <button type="button" class="btn btn-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#mark-as-done-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished">
-                                                Mark as done
-                                            </button>
-                                            @include('officer.includes.markasdone')  
-                                          @endif
-                                            
-                                            <a href="{{ route('officer.events.show', $upcoming_event->upcoming_event_id) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
-                                            <a href="{{ route('officer.events.edit', $upcoming_event->upcoming_event_id) }}"class="btn btn-primary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Update event">Edit</a>
+                                        <td>                                            
+                                            <button type="button" class="btn btn-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#approved-event-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Approve Event">
+                                                Approve
+                                            </button> 
+                                            @include('adviser.includes.approved')  
+                                            <a href=""class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
+
+                                            <button type="button" class="btn btn-danger btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#disapproved-event-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Approve Event">
+                                                Disapprove
+                                            </button>   
+                                            @include('adviser.includes.disapproved')        
+                                                                           
+
                                         </td>
                                     </tr>
                                 @endforeach

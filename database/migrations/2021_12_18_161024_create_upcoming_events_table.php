@@ -31,7 +31,8 @@ class CreateUpcomingEventsTable extends Migration
             $table->string('sponsor');
             $table->string('fund_sourcing');
             $table->string('type_of_activity');
-            $table->string('approval_status')->default('pending'); //values = pending/disapproved/approved
+            $table->string('advisers_approval')->default('pending'); //values = pending/disapproved/approved
+            $table->string('studAffairs_approval')->default('pending'); //values = pending/disapproved/approved
             $table->string('status')->default('upcoming'); //values = upcoming/accomplished
             $table->timestamps();
 

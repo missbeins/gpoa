@@ -47,7 +47,7 @@
                     <a href="{{ route('admin.admin.home') }}"
                         class="list-group-item list-group-item-action  second-text fw-bold "><i
                             class="fas fa-users me-2"></i>Upcoming Events</a>
-                    <a href=""
+                    <a href="{{ route('admin.admin.event-approval') }}"
                         class="list-group-item list-group-item-action second-text fw-bold"><i
                             class="fas fa-money-check me-2"></i>Event Approval</a>
                     {{-- <a href="#" class="list-group-item list-group-item-action second-text fw-bold"><i

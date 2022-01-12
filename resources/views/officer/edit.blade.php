@@ -27,8 +27,8 @@
                         @csrf
                         @method('PUT')
                         <div class="col-md-4 mb-2">
-                            <label for="organization" class="form-label">{{ __('Head Organization') }}</label>
-                            <select name="organization" class="form-control @error('organization') is-invalid @enderror">
+                            <label for="head_organization" class="form-label">{{ __('Head Organization') }}</label>
+                            <select name="head_organization" class="form-control @error('head_organization') is-invalid @enderror">
                                 @foreach ($organizations as $organization)
                                     <option value="{{ $organization->organization_id }}"{{ $organization->organization_id == $upcoming_events->organization_id ? 'selected' : '' }}>
                                         {{ $organization->organization_name }}
@@ -36,7 +36,7 @@
                                 @endforeach
                             </select>
 
-                            @error('organization')
+                            @error('head_organization')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

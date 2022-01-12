@@ -28,7 +28,7 @@
                         <div class="col-lg-12 mb-1">
                             <label for="title_of_activity" class="form-label">{{ __('Title of Event') }}</label>
                             <input id="title_of_activity" type="text" class="form-control @error('title_of_activity') is-invalid @enderror" name="title_of_activity"
-                                value="{{ old('title_of_activity') }} @isset($upcoming_event){{ $upcoming_event->title_of_activity }}@endisset" required
+                                value="{{ old('title_of_activity') }} @isset($upcoming_event){{ $upcoming_event->title }}@endisset" required
                                 autocomplete="title_of_activity" autofocus readonly>
 
                             @error('title_of_activity')
@@ -126,7 +126,7 @@
                         <div class="col-md-3 mb-1">
                             <label for="fund_sourcing" class="form-label">{{ __('Fund Sourcing') }}</label>
                             <input id="fund_sourcing" type="text" class="form-control @error('fund_sourcing') is-invalid @enderror" name="fund_sourcing"
-                                value="{{ old('fund_sourcing') }}@isset($upcoming_event){{ $upcoming_event->fund_sourcing }}@endisset" readonly required autocomplete="fund_sourcing">
+                                value="{{ old('fund_sourcing') }}@isset($upcoming_event){{ $upcoming_event->fund_source }}@endisset" readonly required autocomplete="fund_sourcing">
 
                                 @error('fund_sourcing')
                                     <span class="invalid-feedback" role="alert">
@@ -162,7 +162,7 @@
                             <label for="type_of_activity" class="form-label">{{ __('Type of Activity') }}</label>
                             <input id="type_of_activity" type="text" class="form-control @error('type_of_activity') is-invalid @enderror"
                                 name="type_of_activity"
-                                value="{{ old('type_of_activity') }}@isset($upcoming_event){{ $upcoming_event->type_of_activity }}@endisset"readonly required>
+                                value="{{ old('type_of_activity') }}@isset($upcoming_event){{ $upcoming_event->activity_type }}@endisset"readonly required>
 
                             @error('type_of_activity')
                                 <span class="invalid-feedback" role="alert">

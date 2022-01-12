@@ -61,7 +61,7 @@
                             @foreach ($upcoming_events as $upcoming_event)
                                 <tr>
                                     <td>{{ $upcoming_event->date }}</td>
-                                    <td>{{ $upcoming_event->title_of_activity }}</td>
+                                    <td>{{ $upcoming_event->title }}</td>
                                     <td>{{ $upcoming_event->organization_name }}</td>
                                     <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
                                     <td>                                            

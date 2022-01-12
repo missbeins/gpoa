@@ -26,17 +26,17 @@
                     <form class="row g-3" method="POST" action="{{ route('officer.events.store') }}">
                         @csrf
                         <div class="col-md-4 mb-2">
-                            <label for="organization" class="form-label">{{ __('Head Organization') }}</label>
-                            <select name="organization" class="form-control @error('organization') is-invalid @enderror">
+                            <label for="head_organization" class="form-label">{{ __('Head Organization') }}</label>
+                            <select name="head_organization" class="form-control @error('head_organization') is-invalid @enderror">
 
                                 @foreach ($organizations as $organization)
-                                    <option value="{{ $organization->organization_id }}">
+                                    <option value="{{ $organization->organization_acronym }}">
                                         {{-- @isset($user){{ $course->course_id == $user->course_id ? 'selected' : '' }} @endisset> --}}
                                         {{ $organization->organization_name }}</option>
                                 @endforeach
                             </select>
 
-                            @error('organization')
+                            @error('head_organization')
                                 <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

@@ -18,6 +18,26 @@
                 </ol>
             </nav>
         </div>
+        <div class="row">
+            <form class="col-md-4 input-group mb-2" style="width:33%" action="" method="get">
+                    
+                <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
+                <select class="form-control @error('query') is-invalid @enderror" id="inputGroupSelect01" name="query">
+                    {{-- @foreach ($academic_memberships as $academic_membership)
+                        <option value="{{ $academic_membership->academic_membership_id }}">{{ $academic_membership->semester }}({{ $academic_membership->school_year }})</option>                          
+                    @endforeach --}}
+                </select>                        
+                        @error('query')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                <a class="input-group-text btn btn-secondary"type="submit"><i class="fas fa-search"></i></a>
+    
+            </form>
+            <a href="{{ route('officer.print-pdf') }}" class="col-md-1 mb-2 btn btn-danger">PDF</a>
+        </div>
+        
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -25,9 +45,10 @@
                         <h5 class="float-left"> Upcoming Events</h5>
                         
                     </div>
+                    
                     <form class="col-md-4 input-group" style="width:33%" action="" method="get">
                     
-                        <label class="input-group-text" for="inputGroupSelect01">{{ __('Filter') }}</label>
+                        <label class="input-group-text" for="inputGroupSelect01">{{ __('Semester') }}</label>
                         <select class="form-control @error('query') is-invalid @enderror" id="inputGroupSelect01" name="query">
                             {{-- @foreach ($academic_memberships as $academic_membership)
                                 <option value="{{ $academic_membership->academic_membership_id }}">{{ $academic_membership->semester }}({{ $academic_membership->school_year }})</option>                          
@@ -62,7 +83,7 @@
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
                                         <td>{{ $upcoming_event->date }}</td>
-                                        <td>{{ $upcoming_event->title_of_activity }}</td>
+                                        <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->organization_name }}</td>
                                         <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
                                         <td>                                            

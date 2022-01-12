@@ -43,6 +43,7 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::resource('/gpoa/events', EventsController::class);
     Route::post('/gpoa/import-events', [EventsController::class, 'import'])->name('event-import');
     Route::post('/gpoa/mark-as-done/{event}', [EventsController::class, 'markasDone'])->name('mark-as-done');
+    Route::get('generate-pdf', [EventsController::class, 'generatePDF'])->name('print-pdf');
 });
 
 //Adviser Routes

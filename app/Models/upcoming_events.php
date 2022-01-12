@@ -15,7 +15,8 @@ class upcoming_events extends Model
     protected $fillable = [
         
         'organization_id',
-        'title_of_activity',
+        'head_organization',
+        'title',
         'objectives',
         'semester',
         'school_year',
@@ -24,10 +25,13 @@ class upcoming_events extends Model
         'venue',
         'projected_budget',
         'sponsor',
-        'type_of_activity',
+        'activity_type',
         'time',
         'date',
-        'fund_sourcing',
+        'fund_source',
+        'status',
+        'adviser_approval',
+        'studAffairs_approval'
         
     ];
     /**

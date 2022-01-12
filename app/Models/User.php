@@ -67,5 +67,8 @@ class User extends Authenticatable
 
         return null !== $this->roles()->whereIn('role', $role)->first();
     }
-
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'permission_user', 'user_id', 'permission_id');
+    }
 }

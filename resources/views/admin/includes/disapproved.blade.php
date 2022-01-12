@@ -13,7 +13,7 @@
                 <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text" id="title_of_activity">{{ __('Title of Event') }}</span>
                     <input type="text" class="form-control @error('time') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="title_of_activity" name="title_of_activity"
-                    value="{{ $upcoming_event->title_of_activity }}" required>
+                    value="{{ $upcoming_event->title }}" required>
                     @error('tititle_of_activityme')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

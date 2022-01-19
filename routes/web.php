@@ -65,8 +65,8 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::put('/update-signature/{signature}', [EventsController::class, 'updateSignature'])->name('update-signature');
     Route::get('/events/filter', [EventsController::class, 'filterEvents'])->name('filterEvents');
     Route::get('/events/search', [EventsController::class, 'searchEvent'])->name('searchEvents');
-    Route::get('/events/approved-events', [EventsController::class, 'approvedEvents'])->name('approvedEvents');
-    Route::get('/events/disapproved-events', [EventsController::class, 'disapprovedEvent'])->name('disapprovedEvent');
+    // Route::get('/events/approved-events', [EventsController::class, 'approvedEvents'])->name('approvedEvents');
+    // Route::get('/events/disapproved-events', [EventsController::class, 'disapprovedEvent'])->name('disapprovedEvent');
 
 });
 
@@ -82,8 +82,8 @@ Route::prefix('/adviser')->middleware('auth')->name('adviser.')->group(function(
     Route::put('/update-signature/{signature}', [AdviserController::class, 'updateSignature'])->name('update-signature');
     Route::get('/gpoa/events/{event}/{orgId}', [AdviserController::class, 'show'])->name('events.show');
     Route::get('/events/search', [AdviserController::class, 'searchEvent'])->name('searchEvents');
-    Route::get('/events/approved-events', [AdviserController::class, 'approvedEvents'])->name('approvedEvents');
-    Route::get('/events/disapproved-events', [AdviserController::class, 'disapprovedEvent'])->name('disapprovedEvent');
+    // Route::get('/events/approved-events', [AdviserController::class, 'approvedEvents'])->name('approvedEvents');
+    // Route::get('/events/disapproved-events', [AdviserController::class, 'disapprovedEvent'])->name('disapprovedEvent');
 
 });
 

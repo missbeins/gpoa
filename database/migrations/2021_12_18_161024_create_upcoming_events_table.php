@@ -38,7 +38,7 @@ class CreateUpcomingEventsTable extends Migration
             $table->string('completion_status')->default('upcoming'); //values = upcoming/accomplished
             $table->timestamps();
 
-            $table->foreign('organization_id')->references('organization_id')->on('organizations')->onDelete('cascade');
+            $table->foreign('organization_id')->references('organization_id')->on('organizations');
             $table->foreign('accomplished_event_id')->references('accomplished_event_id')->on('accomplished_events');
             //$table->foreign('course_id')->references('course_id')->on('courses')->onDelete('cascade');
         

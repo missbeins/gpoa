@@ -81,10 +81,10 @@
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
-                                        <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
+                                        <td>{{ $upcoming_event->date }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->head_organization }}</td>
-                                        <td>{{ $upcoming_event->venue }} / {{ date_format(date_create($upcoming_event->time), 'H : i a')}}</td>
+                                        <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
                                         <td>
                                           @if ($upcoming_event->advisers_approval == 'approved' && $upcoming_event->studAffairs_approval == 'approved' && $upcoming_event->completion_status == 'upcoming')
                                             <button type="button" class="btn btn-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#mark-as-done-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished">

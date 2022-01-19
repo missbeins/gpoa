@@ -12,7 +12,13 @@ class event_signatures extends Model
     protected $table = 'event_signatures';
 
     protected $fillable = [
+        'role_id',
+        'organization_id',
         'user_id',
-        'signature',
+        'signature_path',
     ];
+
+    public function user(){
+       return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
 }

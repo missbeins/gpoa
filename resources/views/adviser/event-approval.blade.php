@@ -25,13 +25,13 @@
                         <h5 class="float-left">Organization's Events</h5>
                         
                     </div>
-                    <form class="col-md-4 input-group" style="width:33%" action="" method="get">
+                    {{-- <form class="col-md-4 input-group" style="width:33%" action="" method="get">
                     
                         <label class="input-group-text" for="inputGroupSelect01">{{ __('Filter') }}</label>
                         <select class="form-control @error('query') is-invalid @enderror" id="inputGroupSelect01" name="query">
                             {{-- @foreach ($academic_memberships as $academic_membership)
                                 <option value="{{ $academic_membership->academic_membership_id }}">{{ $academic_membership->semester }}({{ $academic_membership->school_year }})</option>                          
-                            @endforeach --}}
+                            @endforeach
                         </select>                        
                                 @error('query')
                                     <span class="invalid-feedback" role="alert">
@@ -40,7 +40,7 @@
                                 @enderror
                         <button class="input-group-text btn-secondary"type="submit">Enter</button>
             
-                    </form>
+                    </form> --}}
                     
                 </div>
             </div>
@@ -70,7 +70,7 @@
                                                 Approve
                                             </button> 
                                             @include('adviser.includes.approved')  
-                                            <a href=""class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
+                                            <a href="{{ route('adviser.events.show', [$upcoming_event->upcoming_event_id , $upcoming_event->organization_id]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
 
                                             <button type="button" class="btn btn-danger btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#disapproved-event-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Approve Event">
                                                 Disapprove

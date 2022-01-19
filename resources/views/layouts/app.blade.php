@@ -127,7 +127,7 @@
             </nav>
             {{-- Table --}}
             <div class="container-fluid">
-                {{-- @include('alerts.alerts') --}}
+                @include('alerts.alerts')
                 @yield('content')
             </div>
 

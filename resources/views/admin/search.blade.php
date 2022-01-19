@@ -12,7 +12,9 @@
                     <li class="breadcrumb-item active" aria-current="page">
                     Organization's Events / Upcoming Events
                     </li>
-
+                    <li class="breadcrumb-item">
+                        <a href="{{route('admin.admin.home')}}" class="text-decoration-none">Back</a>
+                    </li>
                 </ol>
             </nav>
         </div>

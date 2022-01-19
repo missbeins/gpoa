@@ -19,23 +19,26 @@
             </nav>
         </div>
         <div class="row">
-            <form class="col-md-4 input-group mb-2" style="width:33%" action="" method="get">
+            <form class="col-md-4 input-group mb-2" style="width:33%" action="{{ route('officer.searchEvents') }}" method="GET">
                     
-                <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
-                <select class="form-control @error('query') is-invalid @enderror" id="inputGroupSelect01" name="query">
-                    {{-- @foreach ($academic_memberships as $academic_membership)
-                        <option value="{{ $academic_membership->academic_membership_id }}">{{ $academic_membership->semester }}({{ $academic_membership->school_year }})</option>                          
-                    @endforeach --}}
-                </select>                        
-                        @error('query')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                <a class="input-group-text btn btn-secondary"type="submit"><i class="fas fa-search"></i></a>
+                <div class="input-group flex-nowrap">
+                    <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
+                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query">
+    
+                    @error('query')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                    <button class="input-group-text btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+                </div>
     
             </form>
-            <a href="{{ route('officer.print-pdf') }}" class="col-md-1 mb-2 btn btn-danger">PDF</a>
+            <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
+                class="fas fa-file-pdf me-2"></i>Generate PDF</button>
+
+            @include('officer.includes.generate-pdf')
+            
         </div>
         
         <div class="card">
@@ -46,22 +49,6 @@
                         
                     </div>
                     
-                    <form class="col-md-4 input-group" style="width:33%" action="" method="get">
-                    
-                        <label class="input-group-text" for="inputGroupSelect01">{{ __('Semester') }}</label>
-                        <select class="form-control @error('query') is-invalid @enderror" id="inputGroupSelect01" name="query">
-                            {{-- @foreach ($academic_memberships as $academic_membership)
-                                <option value="{{ $academic_membership->academic_membership_id }}">{{ $academic_membership->semester }}({{ $academic_membership->school_year }})</option>                          
-                            @endforeach --}}
-                        </select>                        
-                                @error('query')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                        <button class="input-group-text btn-secondary"type="submit">Enter</button>
-            
-                    </form>
                    
                 </div>
             </div>
@@ -82,12 +69,12 @@
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
-                                        <td>{{ $upcoming_event->date }}</td>
+                                        <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->organization_name }}</td>
-                                        <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
+                                        <td>{{ $upcoming_event->venue }} / {{ date_format(date_create($upcoming_event->time), 'H : i a')}}</td>
                                         <td>                                            
-                                            <a href="{{ route('officer.events.show', $upcoming_event->upcoming_event_id) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
+                                            <a href="{{ route('officer.events.show', [$upcoming_event->upcoming_event_id, $upcoming_event->organization_id]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach

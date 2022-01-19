@@ -8,6 +8,8 @@
         </div>
         <form action="{{ route('admin.admin.disapproved', $upcoming_event->upcoming_event_id) }}" enctype="multipart/form-data"  method="POST">
             @csrf
+            <input type="hidden" name="organization_id" value="{{ $upcoming_event->organization_id }}" readonly required>
+
             <div class="modal-body">
                 <h5 class="mb-3">Click submit to continue.</h5>
                 <div class="input-group input-group-sm mb-3">

@@ -44,16 +44,22 @@
             </div>
             <div class="list-group list-group-flush my-3" id="myList">
                 @can('is-officer')
+
                     <a href="{{ route('officer.officer.home') }}"
                     class="list-group-item list-group-item-action  second-text fw-bold "><i
-                        class="fas fa-bullhorn me-2"></i>Upcoming Events</a>
+                        class="fas fa-calendar-alt me-2"></i>Upcoming Events</a>
                     <a href="{{ route('officer.events.index') }}"
                         class="list-group-item list-group-item-action second-text fw-bold"><i
-                            class="fas fa-file-signature me-2"></i>Events</a>
-                   
-                   
-                    {{-- <a href="#" class="list-group-item list-group-item-action second-text fw-bold"><i
-                            class="fas fa-paperclip me-2"></i>Reports</a> --}}
+                            class="fas fa-file-signature me-2"></i>Events</a>                                    
+                    <button class="dropdown-btn second-text fw-bold"><i
+                        class="fas fa-file-alt me-2"></i>Reports
+                        <i class="fa fa-caret-down"></i>
+                        </button>
+                    <div class="dropdown-container">
+                        <a href="">Approved Events</a>
+                        <a href="">Disapproved Events</a>
+                    </div>
+                    
                 @endcan
                 <a class=" list-group-item list-group-item-action second-text fw-bold" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
@@ -91,6 +97,8 @@
                                 {{ auth()->user()->middle_name }}
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ route('officer.profile') }}"><i
+                                    class="fas fa-user me-2"></i>Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();"><i class="fas fa-power-off me-2"></i>
                                         {{ __('Logout') }}
@@ -108,7 +116,7 @@
             </nav>
             {{-- Table --}}
             <div class="container-fluid">
-                {{-- @include('alerts.alerts') --}}
+                @include('alerts.alerts')
                 @yield('content')
             </div>
 
@@ -147,6 +155,24 @@
             });
         }
     </script>
+     <script>
+        //* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+            dropdownContent.style.display = "none";
+            } else {
+            dropdownContent.style.display = "block";
+            }
+        });
+        }
+    </script>
+   
 </body>
 
 </html>

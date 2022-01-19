@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Title From OnlineWebTutorBlog</title>
+    <title>General Plan of Activities</title>
     <link rel="stylesheet" href="{{ public_path('css/pdf-file.css') }}">
 </head>
 <body>
@@ -20,14 +20,19 @@
                     <p>Office of the Vice President for Branches and Satellite Campuses</p>
                     <p>TAGUIG BRANCH</p>
                     <p>Office of Student Services</p>
-                    <p>COMPUTER SOCIETY</p>
+                    <p style="text-transform: uppercase;">{{ $organization->organization_name }}</p>
             </div>
         </header>
         <hr>
         <h4 class="text-center">
             GENERAL PLAN OF ACTIVITIES  <br>
-            FIRST SEMESTER <br>
-            ACADEMIC YEAR 2021-2022
+            @if ($inputSem == '1st Semester')
+                FIRST SEMESTER
+            @else
+                SECOND SEMESTER
+            @endif
+            <br>
+            ACADEMIC YEAR {{ $inputYear }}
 
         </h4>
         <div>        
@@ -77,7 +82,7 @@
                                @php
                                    $data++;
                                @endphp
-                                @if ($data == 1)
+                                @if ($data == 3)
 
                                 </tbody>
                                 </table>
@@ -141,14 +146,13 @@
                             @endforeach
                            
                         @else
-                        <tr><td colspan="7">No results found!</td></tr>
+                        <tr><td colspan="12">No results found!</td></tr>
                         @endif
                     </tbody>
                 </table>
                 
             @endif
-        </div>
-        
+        </div>    
         <footer>
           
             <p class="footer-text">Gen. Santos Ave. Lower Bicutan, Taguig City 1772; (Direct Line) 837-5858 to 60; (Telefax) 837-5859;</p> 
@@ -162,7 +166,7 @@
          
     </div>
     <div class="page-break"></div>
-    <div class="page">
+    <div class="last-page">
         <header>
             <div class="left-div">
                 <img src="{{ public_path('images/pup-logo-Polytechnic_University_of_the_Philippines.png') }}" style="width: 100px; height: 100px">
@@ -171,14 +175,15 @@
             </div>
             <div class="right-div">
                     <small>Republic of the Philippines   </small> 
-                    <p> POLYTECHNIC UNIVERSITY OF THE PHILIPPINES</p>  
+                    <p>POLYTECHNIC UNIVERSITY OF THE PHILIPPINES</p>  
                     <p>Office of the Vice President for Branches and Satellite Campuses</p>
                     <p>TAGUIG BRANCH</p>
                     <p>Office of Student Services</p>
-                    <p>COMPUTER SOCIETY</p>
+                    <p style="text-transform: uppercase;">{{ $organization->organization_name }}</p>
             </div>
         </header>
         <hr>
+
         <h4 class="text-center">
            BREAKDOWN OF FEES (Membership Fee)
         </h4>
@@ -188,41 +193,40 @@
                 <TH>AMOUNT</TH>
             </tr> 
             <tr>
-                <td>CS Membership Fee</td>
-                <td>P 0.00</td>
+                <td>Membership Fee</td>
+                <td>P {{ $inputMembershipfee }}.00</td>
             </tr>
             <tr>   
                 <td>Total Collection</td>
-                <td>P 0.00</td>               
+                <td>P {{ $inputCollection }}.00</td>               
             </tr>
         </table>
-        <div class="upper-signatures">
+        
+        <div class="signatures">
             <div class="prepared">
                 <p>Prepared by:</p>
-                <small>name</small><br>
-                <small>President, Computer Society	</small>
+                <img src="{{ public_path('signatures/'. $president_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;"alt="signature">
+                <span style="font-style: bold;">{{ $president_signature->user->first_name }} {{ $president_signature->user->middle_name }} {{ $president_signature->user->last_name }}</span>
+                <span style="font-style: italic;">President, {{ $organization->organization_name }}	</span>
             </div>
-           <div class="approved">
+            <div class="approved">  
                 <p>Approved by:</p>
-                <small>name</small><br>
-                <small>Head of Student Services</small>
-           </div>
-           
-        </div>
-        <div class="lower-signatures">
-            <p>Noted by:</p>
-            <div class="adviser">
-                <small>name</small><br>
-                <small>Adviser</small>
-            </div>
-            <div class="director">
-                <small>name</small><br>
-                <small>Director</small>
+                <img src="{{ public_path('signatures/'. $admin_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                <span style="font-style: bold;">{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
+                <span style="font-style: italic;">Head of Student Services</span>
             </div>
             
+            <div class="adviser">
+                <p>Noted by:</p>
+                <img src="{{ public_path('signatures/'. $adviser_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                <span style="font-style: bold;">{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
+                <span style="font-style: italic;">Adviser</span>
+            </div>
+            <div class="director">
+                <span style="font-style: bold;">DR. Marissa B. Ferrer</span>
+                <span style="font-style: italic;">Director</span>
+            </div>
         </div>
-       
-       
         <footer>
           
             <p class="footer-text">Gen. Santos Ave. Lower Bicutan, Taguig City 1772; (Direct Line) 837-5858 to 60; (Telefax) 837-5859;</p> 

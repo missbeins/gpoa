@@ -48,6 +48,7 @@
 
 #sidebar-wrapper .list-group {
     width: 15rem;
+    
 }
 
 #page-content-wrapper {
@@ -76,24 +77,101 @@
     box-shadow: 0px 10px 20px -10px rgba(51, 47, 47, 0.9);
 }
 
+
+/* Style the sidenav links and the dropdown button */
+.dropdown-container a {
+    padding: .4rem 0rem .4rem 2rem;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    border: none;
+    background: none;
+    width:100%;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    -webkit-transition: all 0.1s ease;
+    -moz-transition: all 0.1s ease;
+    -o-transition: all 0.1s ease;
+    -ms-transition: all 0.1s ease;
+    transition: all 0.1s ease;
+  }
+.dropdown-btn{
+    padding: 1.4rem 0rem 1.4rem 2rem;
+    text-decoration: none;
+    font-size: 1rem;
+    color: #ffffff;
+    display: block;
+    border: none;
+    background: none;
+    width:100%;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    -webkit-transition: all 0.1s ease;
+    -moz-transition: all 0.1s ease;
+    -o-transition: all 0.1s ease;
+    -ms-transition: all 0.1s ease;
+    transition: all 0.1s ease;
+  }
+  
+  /* On mouse-over */
+ .dropdown-btn:hover {
+    color: #a00000;
+    background-color: #ffffff;
+  }
+  .dropdown-container a:hover{
+    color: #a00000;
+    background-color: #ffffff;
+    text-decoration: underline;
+    font-size: 22px;
+  } 
+  /* Main content */
+  .main {
+    margin-left: 210px; /* Same as the width of the sidenav */
+    font-size: 20px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+  }
+  
+  /* Add an active class to the active dropdown button */
+  /* .dropdown-btn:active {
+    background-color: green;
+    color: white;
+  } */
+  
+  /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+  .dropdown-container {
+    display: none;
+    background-color: #ffffff;
+    padding-left: 10px;
+  }
+  
+  /* Optional: Style the caret down icon */
+  .fa-caret-down {
+    float: end;
+    padding-right: 8px;
+  }
 .list-group-item {
     border: none;
     background-color: #c62128;
     padding: 20px 30px;
+    color: #ffffff;
 }
+
 
 .list-group-item.active {
     color: #a00000;
     background-color: #ffffff;
-    border-bottom-left-radius: 15%;
-    border-top-left-radius: 15%;
+    /* border-bottom-left-radius: 15%;
+    border-top-left-radius: 15%; */
 }
 
 .list-group-item:hover {
     color: #a00000;
     background-color: #ffffff;
-    border-bottom-left-radius: 15%;
-    border-top-left-radius: 15%;
+    /* border-bottom-left-radius: 15%;
+    border-top-left-radius: 15%; */
 }
 
 @media (min-width: 768px) {

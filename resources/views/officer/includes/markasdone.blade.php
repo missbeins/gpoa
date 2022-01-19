@@ -6,15 +6,16 @@
           <h5 class="modal-title" id="staticBackdropLabel">Update Event</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form action="{{ route('officer.mark-as-done', $upcoming_event->upcoming_event_id) }}" enctype="multipart/form-data"  method="POST">
+        <form action="{{ route('officer.mark-as-done', [$upcoming_event->upcoming_event_id , $upcoming_event->organization_id]) }}" enctype="multipart/form-data"  method="POST">
             @csrf
+            @method('PUT')
             <div class="modal-body">
                 <h5 class="mb-3">Click submit to continue.</h5>
                 <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text" id="title_of_activity">{{ __('Title of Event') }}</span>
                     <input type="text" class="form-control @error('time') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="title_of_activity" name="title_of_activity"
-                    value="{{ $upcoming_event->title_of_activity }}" required readonly>
-                    @error('tititle_of_activityme')
+                    value="{{ $upcoming_event->title }}" required readonly>
+                    @error('tititle_of_activity')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

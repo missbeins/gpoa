@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.officer')
 @section('content')
     
     <div class="mt-3">
@@ -12,12 +12,14 @@
                     <li class="breadcrumb-item active" aria-current="page">
                     Organization's Events / Upcoming Events
                     </li>
-
+                    <li class="breadcrumb-item">
+                        <a href="{{route('officer.officer.home')}}" class="text-decoration-none">Back</a>
+                    </li>
                 </ol>
             </nav>
         </div>
         <div class="row">
-            <form class="col-md-4 input-group mb-2" style="width:33%" action="{{ route('admin.searchEvents') }}" method="GET">
+            <form class="col-md-4 input-group mb-2" style="width:33%" action="{{ route('officer.searchEvents') }}" method="GET">
                     
                 <div class="input-group flex-nowrap">
                     <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
@@ -32,10 +34,10 @@
                 </div>
     
             </form>
-            {{-- <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
+            <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
                 class="fas fa-file-pdf me-2"></i>Generate PDF</button>
 
-            @include('admin.includes.generate-pdf') --}}
+            @include('officer.includes.generate-pdf')
             
         </div>
         
@@ -67,12 +69,12 @@
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
-                                        <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
+                                        <td>{{ $upcoming_event->date }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->organization_name }}</td>
-                                        <td>{{ $upcoming_event->venue }} / {{ date_format(date_create($upcoming_event->time), 'H : i a')}}</td>
+                                        <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
                                         <td>                                            
-                                            <a href="{{ route('admin.events.show', [$upcoming_event->upcoming_event_id, $upcoming_event->organization_id]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
+                                            <a href="{{ route('officer.events.show', [$upcoming_event->upcoming_event_id, $upcoming_event->organization_id]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach

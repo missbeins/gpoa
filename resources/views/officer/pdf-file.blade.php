@@ -201,32 +201,74 @@
                 <td>P {{ $inputCollection }}.00</td>               
             </tr>
         </table>
+            <div class="signatures">
+                <div class="prepared">
+                    <p>Prepared by:</p>
+                    @if ($president_signature != null)
+                        @if ($president_signature->signature_path != null)
+                            <img src="{{ public_path('signatures/'. $president_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;"alt="signature">
+                            <span style="font-style: bold;">{{ $president_signature->user->first_name }} {{ $president_signature->user->middle_name }} {{ $president_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">President, {{ $organization->organization_name }}	</span>
+                        @else
+                            <img src="" style="width: 100px; height: 60px; margin-top: 5px;"alt="signature">
+                            <span style="font-style: bold;">{{ $president_signature->user->first_name }} {{ $president_signature->user->middle_name }} {{ $president_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">President, {{ $organization->organization_name }}	</span>
+                        @endif
+                        
+                    @else
+                    <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                    <span style="font-style: italic; color: red;"> No faculty member registered</span>
+                        <span style="font-style: italic;">President, {{ $organization->organization_name }}</span>
+                    @endif
+                    
+                </div>
+                <div class="approved">  
+                    <p>Approved by:</p>
+                   
+                    @if ($admin_signature != null)
+                        @if ($admin_signature->signature_path != null)
+                            <img src="{{ public_path('signatures/'. $admin_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <span style="font-style: bold;">{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Head of Student Services</span>
+                        @else
+                            <img src="" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <span style="font-style: bold;">{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Head of Student Services</span>
+                        @endif
+                      
+                    @else
+                    <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                    <span style="font-style: italic; color: red;"> No faculty member registered</span>
+                            <span style="font-style: italic;">Head of Student Services</span>
+                    @endif
+                </div>
+                <div class="adviser">
+                    <p>Noted by:</p>
+                    @if ($adviser_signature != null)
+                        @if ($adviser_signature->signature_path != null)
+                            <img src="{{ public_path('signatures/'. $adviser_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <span style="font-style: bold;">{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Adviser, {{ $organization->organization_name }}</span>
+                        @else
+                            <img src="" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <span style="font-style: bold;">{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Adviser, {{ $organization->organization_name }}</span>
+                        @endif
+                       
+                    @else
+                        <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                        <span style="font-style: italic; color: red;"> No faculty member registered</span>
+                        <span style="font-style: italic;">Adviser</span>
+                    @endif
+                    
+                </div>
+                <div class="director">
+                    <span style="font-style: bold;">DR. Marissa B. Ferrer</span>
+                    <span style="font-style: italic;">Director</span>
+                </div>
+            </div>
         
-        <div class="signatures">
-            <div class="prepared">
-                <p>Prepared by:</p>
-                <img src="{{ public_path('signatures/'. $president_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;"alt="signature">
-                <span style="font-style: bold;">{{ $president_signature->user->first_name }} {{ $president_signature->user->middle_name }} {{ $president_signature->user->last_name }}</span>
-                <span style="font-style: italic;">President, {{ $organization->organization_name }}	</span>
-            </div>
-            <div class="approved">  
-                <p>Approved by:</p>
-                <img src="{{ public_path('signatures/'. $admin_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
-                <span style="font-style: bold;">{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
-                <span style="font-style: italic;">Head of Student Services</span>
-            </div>
-            
-            <div class="adviser">
-                <p>Noted by:</p>
-                <img src="{{ public_path('signatures/'. $adviser_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
-                <span style="font-style: bold;">{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
-                <span style="font-style: italic;">Adviser</span>
-            </div>
-            <div class="director">
-                <span style="font-style: bold;">DR. Marissa B. Ferrer</span>
-                <span style="font-style: italic;">Director</span>
-            </div>
-        </div>
+       
         <footer>
           
             <p class="footer-text">Gen. Santos Ave. Lower Bicutan, Taguig City 1772; (Direct Line) 837-5858 to 60; (Telefax) 837-5859;</p> 

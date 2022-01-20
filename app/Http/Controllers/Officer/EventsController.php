@@ -456,6 +456,7 @@ class EventsController extends Controller
     }
     public function generatePDF(Request $request)
     {   
+        
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
        
@@ -486,13 +487,13 @@ class EventsController extends Controller
         $inputCollection = $request->total_collection;
 
         $request->validate([
-            'semester' => ['required','integer'],
-            'school_year' => ['required','integer'],
+            'semester' => ['required'],
+            'school_year' => ['required'],
             'membership_fee' => ['required','integer'],
             'total_collection' => ['required','integer'],
         ]);
+        
         $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                        ->where('upcoming_events.completion_status','=','upcoming')
                         ->where('upcoming_events.advisers_approval','=','approved')
                         ->where('upcoming_events.studAffairs_approval','=','approved')
                         ->where('upcoming_events.organization_id',$organizationID)
@@ -504,7 +505,6 @@ class EventsController extends Controller
                             ->where('organization_id', $organizationID)
                             ->where('role_id',6)
                             ->first();
-        // dd($president_signature);
         $adviser_signature = event_signatures::with('user')
                             ->where('organization_id', $organizationID)
                             ->where('role_id',9)
@@ -512,7 +512,7 @@ class EventsController extends Controller
         $admin_signature = event_signatures::with('user')
                             ->where('role_id',1)
                             ->first();    
-        
+        //dd($president_signature, $admin_signature, $adviser_signature);
         $pdf = PDF::loadView('officer.pdf-file', compact([
             'upcoming_events', 
             'organization',
@@ -827,6 +827,7 @@ class EventsController extends Controller
                 $event = $_GET['query'];
     
                 $upcoming_events = DB::table('upcoming_events')
+                    ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                     ->where('upcoming_events.title','LIKE','%'.$event.'%')
                     ->where('upcoming_events.advisers_approval','=','approved')
                     ->where('upcoming_events.studAffairs_approval','=','approved')

@@ -34,10 +34,13 @@
                 </div>
     
             </form>
-            <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
+            @if ($upcoming_events->isNotEmpty())
+                <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
                 class="fas fa-file-pdf me-2"></i>Generate PDF</button>
 
-            @include('officer.includes.generate-pdf')
+                @include('officer.includes.generate-pdf')
+            @endif
+         
             
         </div>
         

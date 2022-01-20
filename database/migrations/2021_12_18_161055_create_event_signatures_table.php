@@ -19,7 +19,7 @@ class CreateEventSignaturesTable extends Migration
             $table->foreignId('user_id');
             $table->foreignId('organization_id')->nullable();
             $table->foreignId('role_id');
-            $table->string('signature_path');
+            $table->string('signature_path')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users');

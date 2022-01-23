@@ -560,6 +560,7 @@ class EventsController extends Controller
     }
 
     public function updateProfile(Request $request, $id){
+       
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
 
@@ -582,8 +583,9 @@ class EventsController extends Controller
             $data = $request->validate([
 
                 'first_name' => ['required', 'string', 'max:255'],
-                'middle_name' => ['required', 'string', 'max:255'],
+                'middle_name' => ['nullable','string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
+                'suffix' =>['nullable','string','max:10'],
                 'email' => [
                     'required', 
                     'string', 
@@ -605,6 +607,7 @@ class EventsController extends Controller
                 'first_name' => $data['first_name'],
                 'middle_name' => $data['middle_name'],
                 'last_name' => $data['last_name'],
+                'suffix' => $data['suffix'],
                 'email' => $data['email'],  
                 'student_number' => $data['student_number'],
                 'course_id' => $data['course_id'],

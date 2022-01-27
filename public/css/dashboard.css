@@ -82,7 +82,7 @@
 .dropdown-container a {
     padding: .4rem 0rem .4rem 2rem;
     text-decoration: none;
-    font-size: 20px;
+    font-size: 1rem;
     color: #818181;
     display: block;
     border: none;
@@ -125,7 +125,7 @@
     color: #a00000;
     background-color: #ffffff;
     text-decoration: underline;
-    font-size: 22px;
+    font-size: 1.2rem;
   } 
   /* Main content */
   .main {

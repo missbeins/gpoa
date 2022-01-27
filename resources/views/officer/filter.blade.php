@@ -14,6 +14,9 @@
                     <li class="breadcrumb-item active" aria-current="page">
                     Organization's Events
                     </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{route('officer.events.index')}}" class="text-decoration-none">Back</a>
+                    </li>
                    
                 </ol>
             </nav>

@@ -51,6 +51,13 @@
                                         <label for="floatingInputGrid">Input your Lastname</label>
                                     </div>
                                 </div>
+                                <div class="col-md">
+                                    <label for="suffix">Suffix</label>
+                                    <div class="form-floating" id="suffix">
+                                        <input type="text" class="form-control" id="floatingInputGrid"  value="{{ Auth::user()->suffix }}" name="suffix">
+                                        <label for="floatingInputGrid">Input your Suffix</label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row g-2 mb-2">
                                 <div class="col-md-6">
@@ -108,6 +115,13 @@
                                     </select>
                                         </select>
                                         <label for="gender_id">Input your Gender</label>
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <label for="title">Title</label>
+                                    <div class="form-floating" id="title">
+                                        <input type="text" class="form-control" id="floatingInputGrid"value="{{ Auth::user()->title }}" name="title">
+                                        <label for="floatingInputGrid">Input your title(Mr/Mrs/Ms/Dr)</label></label>
                                     </div>
                                 </div>
                             </div>

@@ -23,7 +23,7 @@
                     
                 <div class="input-group flex-nowrap">
                     <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
-                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query">
+                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query" required>
     
                     @error('query')
                         <span class="invalid-feedback" role="alert">
@@ -49,10 +49,7 @@
                 <div class="row">
                     <div class="col-md-8 mt-1">
                         <h5 class="float-left"> Upcoming Events</h5>
-                        
                     </div>
-                    
-                   
                 </div>
             </div>
             <div class="card-body table-responsive text-center">        

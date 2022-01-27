@@ -15,6 +15,7 @@ use App\Models\organization;
 use App\Models\User;
 use File;
 use Illuminate\Support\Facades\DB;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AdviserController extends Controller
 { 
@@ -34,7 +35,7 @@ class AdviserController extends Controller
     * @return \Illuminate\Http\Response
     */
    public function index()
-   {
+    {
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
 
@@ -94,7 +95,7 @@ class AdviserController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         if(Gate::allows('is-adviser')){
         $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-            ->where('upcoming_events.completion_status','=','upcoming')
+            ->where('upcoming_events.completion_status','=','pending')
             ->where('upcoming_events.advisers_approval','=','pending')
             ->where('upcoming_events.organization_id',$organizationID)
             ->orderBy('upcoming_events.date','asc')
@@ -134,13 +135,21 @@ class AdviserController extends Controller
                 
             ]);
         
-            $upcoming_events = upcoming_events::where('upcoming_event_id',$id)->update([
+            $upcoming_events = upcoming_events::where('upcoming_event_id',$id)->first();
+            $upcoming_events->update([
 
-                'advisers_approval' => 'approved'
-
+                'advisers_approval' => 'approved',
+               
+                
             ]);
-            
-            return redirect(route('adviser.adviser.event-approval'));
+            if ($upcoming_events->studAffairs_approval == 'approved') {
+                $upcoming_events->update([
+
+                    'completion_status' => 'upcoming'
+                ]);
+               
+            }
+           return redirect(route('adviser.adviser.event-approval'));
         }
         else{
             abort(403);
@@ -224,8 +233,10 @@ class AdviserController extends Controller
             $data = $request->validate([
 
                 'first_name' => ['required', 'string', 'max:255'],
-                'middle_name' => ['required', 'string', 'max:255'],
+                'middle_name' => ['nullable', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
+                'suffix' => ['nullable', 'string'],
+                'title' => ['nullable', 'string'],
                 'email' => [
                     'required', 
                     'string', 
@@ -238,18 +249,20 @@ class AdviserController extends Controller
                     'max:50', 
                     Rule::unique('users')->ignore($id,'user_id')],
                 'year_and_section' => ['nullable', 'string'],
-                'course_id' => ['nullable', 'integer'],
+                // 'course_id' => ['nullable', 'integer'],
                 'mobile_number' => ['required', 'string'], 
                 'gender_id' =>['required','integer']
             ]);
-
+            // dd($request);
             $user = User::where('user_id',$id)->update([
                 'first_name' => $data['first_name'],
                 'middle_name' => $data['middle_name'],
                 'last_name' => $data['last_name'],
+                'suffix' => $data['suffix'],
+                'title' => $data['title'],
                 'email' => $data['email'],  
                 'student_number' => $data['student_number'],
-                'course_id' => $data['course_id'],
+                // 'course_id' => $data['course_id'],
                 'gender_id' => $data['gender_id'],
                 'year_and_section' => $data['year_and_section'],
                 'mobile_number' => $data['mobile_number'],
@@ -265,7 +278,6 @@ class AdviserController extends Controller
         }
     }
     
-
     public function addSignature(Request $request){
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
@@ -304,6 +316,8 @@ class AdviserController extends Controller
             $request->session()->flash('success','Successfully added signature!');
             
             return redirect(route('adviser.profile'));
+        }else{
+            abort(403);
         }
 
     }
@@ -385,14 +399,18 @@ class AdviserController extends Controller
          // Get the Organization from which the user is GPOA Admin
          $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
          $organizationID = $userRoles[$userRoleKey]['organization_id'];
-        if(Gate::allows('is-adviser') && $orgId == $organizationID){
-        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 403);
-        $organizations = organization::all();
-        $upcoming_event = upcoming_events::find($id);
-        return view('adviser.show',compact([
-            'upcoming_event',
-            'organizations'
-        ]));
+        if(Gate::allows('is-adviser')){
+            abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
+            if ($orgId == $organizationID) {
+                $organizations = organization::all();
+                $upcoming_event = upcoming_events::find($id);
+                return view('adviser.show',compact([
+                    'upcoming_event',
+                    'organizations'
+                ]));
+            } else {
+                abort(403);
+            }
         }
         else{
             abort(403);
@@ -452,7 +470,11 @@ class AdviserController extends Controller
                    
                 return view('adviser.search',compact(['upcoming_events','newsemcollection','newyearcollection']));
             
+            }else{
+                return redirect()->back()->with('error','Input field is empty!');
             }
+        }else{
+            abort(403);
         }
     }
     public function approvedEvents(){

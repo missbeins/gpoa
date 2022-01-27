@@ -9,7 +9,6 @@ use App\Models\upcoming_events;
 use App\Models\Role;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
-use App\Models\Accomplished_Events;
 use App\Models\course;
 use App\Models\event_signatures;
 use App\Models\Genders;
@@ -21,8 +20,6 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 
 class EventsController extends Controller
-
-
 {
 
      /**
@@ -42,26 +39,24 @@ class EventsController extends Controller
      */
     public function index()
     {
-        
-         // Pluck all User Roles
-         $userRoleCollection = Auth::user()->roles;
-
-         // Remap User Roles into array with Organization ID
-         $userRoles = array();
-         foreach ($userRoleCollection as $role) 
-         {
-             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-         }
- 
-         // If User has GPOA Admin role...
-        
-         $memberRoleKey = $this->hasRole($userRoles,'User');
-         // Get the Organization from which the user is GPOA Admin
-         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-         $organizationID = $userRoles[$userRoleKey]['organization_id'];
-
         if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+    
+            // If User has GPOA Admin role...
             
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+
             $filterRange = upcoming_events::where('organization_id',$organizationID)
                 ->get();
             $yearRange = collect([]);
@@ -74,8 +69,7 @@ class EventsController extends Controller
                             ->where('upcoming_events.organization_id',$organizationID)
                             ->orderBy('upcoming_events.date','asc')
                             ->paginate(5, ['*'], 'upcoming-events');
-                        // ->sortBy(['created_at','desc']);
-            //dd($upcoming_events);
+
             return view('officer.events',compact(['upcoming_events','newYearRange']));
         }
         else{
@@ -119,7 +113,6 @@ class EventsController extends Controller
 
         $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
                         ->where('upcoming_events.studAffairs_approval','=','approved')
-                        ->where('upcoming_events.studAffairs_approval','=','approved')
                         ->where('upcoming_events.organization_id',$organizationID)
                         ->orderBy('upcoming_event_id', 'desc')
                         ->get();
@@ -150,8 +143,8 @@ class EventsController extends Controller
     public function create()
     {
         if(Gate::allows('is-officer')){
-        $organizations = organization::all();
-        return view('officer.create',compact('organizations'));
+            $organizations = organization::all();
+            return view('officer.create',compact('organizations'));
         }
         else{
             abort(403);
@@ -240,34 +233,39 @@ class EventsController extends Controller
    
     public function show($id, $orgId)
     {     
-         // Pluck all User Roles
-         $userRoleCollection = Auth::user()->roles;
+        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
 
-         // Remap User Roles into array with Organization ID
-         $userRoles = array();
-         foreach ($userRoleCollection as $role) 
-         {
-             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-         }
- 
-         // If User has GPOA Admin role...
+        if (Gate::allows('is-officer')) {
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+
+            // If User has GPOA Admin role...
         
-         $memberRoleKey = $this->hasRole($userRoles,'User');
-         // Get the Organization from which the user is GPOA Admin
-         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-         $organizationID = $userRoles[$userRoleKey]['organization_id'];
-        if(Gate::allows('is-officer') && $orgId == $organizationID){
-        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 403);
-        $organizations = organization::all();
-        $upcoming_event = upcoming_events::find($id);
-        return view('officer.show',compact([
-            'upcoming_event',
-            'organizations'
-        ]));
-        }
-        else{
-            abort(403);
-        }
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            if($orgId == $organizationID){
+                $organizations = organization::all();
+                $upcoming_event = upcoming_events::find($id);
+                return view('officer.show',compact([
+                    'upcoming_event',
+                    'organizations'
+                ]));
+            }
+            else{
+                abort(403);
+            }
+        } else {
+           abort(403);
+        }      
     }
 
 
@@ -279,36 +277,41 @@ class EventsController extends Controller
      */
     public function edit($id, $orgId)
     {
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
+        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
 
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        if (Gate::allows('is-officer')) {
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+    
+            // If User has GPOA Admin role...
+            
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            if($orgId == $organizationID){
+                //abort_if(! upcoming_events::where('organization_id', Auth::user()->organization_id), 403);
+                $organizations = organization::all();
+                $upcoming_events = upcoming_events::find($id);
+                // dd($upcoming_events);
+                return view('officer.edit',compact([
+                    'organizations',
+                    'upcoming_events'
+                ]));
+                }
+                else{
+                    abort(403);
+                }
+        } else {
+            abort(403);
         }
-
-        // If User has GPOA Admin role...
-       
-        $memberRoleKey = $this->hasRole($userRoles,'User');
-        // Get the Organization from which the user is GPOA Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id'];
-        if(Gate::allows('is-officer') && $orgId == $organizationID){
-            //abort_if(! upcoming_events::where('organization_id', Auth::user()->organization_id), 403);
-            abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 403);
-            $organizations = organization::all();
-            $upcoming_events = upcoming_events::find($id);
-            // dd($upcoming_events);
-            return view('officer.edit',compact([
-                'organizations',
-                'upcoming_events'
-            ]));
-            }
-            else{
-                abort(403);
-            }
     }
 
     /**
@@ -319,70 +322,76 @@ class EventsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id, $orgId)
-    {   // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
+    {   
+        if (Gate::allows('is-officer')) {
+             // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
 
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-        }
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
 
-        // If User has GPOA Admin role...
-       
-        $memberRoleKey = $this->hasRole($userRoles,'User');
-        // Get the Organization from which the user is GPOA Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id']; 
-        if(Gate::allows('is-officer') && $orgId == $organizationID){
-            $semesters = ['1st Semester','2nd Semester'];
-            $request->validate([
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id']; 
+            if($orgId == $organizationID){
+                $semesters = ['1st Semester','2nd Semester'];
+                $request->validate([
 
+                    
+                    'head_organization' => ['required', 'string', 'max:100'],
+                    'title_of_activity' => ['required', 'string', 'max:100'],
+                    'objectives' => ['required', 'string', 'max:255'],
+                    'partnerships' => ['required', 'string', 'max:255'],
+                    'participants' => ['required', 'string', 'max:255'],
+                    'venue' => ['required', 'string', 'max:255'],
+                    'projected_budget' => ['required','integer', 'max:255'],
+                    'sponsors' => ['required','string'],
+                    'date' => ['required', 'date'],
+                    'time' => ['required'],
+                    'type_of_activity' => ['required', 'string'],   
+                    'fund_sourcing' => ['required','string'],    
+                    'semester' => ['required',Rule::in($semesters)],   
+                    'school_year' => ['required'],      
                 
-                'head_organization' => ['required', 'string', 'max:100'],
-                'title_of_activity' => ['required', 'string', 'max:100'],
-                'objectives' => ['required', 'string', 'max:255'],
-                'partnerships' => ['required', 'string', 'max:255'],
-                'participants' => ['required', 'string', 'max:255'],
-                'venue' => ['required', 'string', 'max:255'],
-                'projected_budget' => ['required','integer', 'max:255'],
-                'sponsors' => ['required','string'],
-                'date' => ['required', 'date'],
-                'time' => ['required'],
-                'type_of_activity' => ['required', 'string'],   
-                'fund_sourcing' => ['required','string'],    
-                'semester' => ['required',Rule::in($semesters)],   
-                'school_year' => ['required'],      
-            
-            ]);
-            
-            //dd($request);
-            $upcomming_events = upcoming_events::where('upcoming_event_id',$id)->update([
+                ]);
+                
+                //dd($request);
+                $upcomming_events = upcoming_events::where('upcoming_event_id',$id)->update([
 
-                'organization_id' =>  $organizationID,
-                'head_organization' => $request['head_organization'],
-                'title' => $request['title_of_activity'],
-                'objectives' => $request['objectives'],
-                'partnerships' => $request['partnerships'],
-                'participants' => $request['participants'],
-                'venue' =>$request['venue'],
-                'projected_budget' =>$request['projected_budget'],
-                'time' => $request['time'],
-                'sponsor' => $request['sponsors'],
-                'date' => $request['date'],
-                'semester' => $request['semester'],
-                'school_year' => $request['school_year'],
-                'fund_source' => $request['fund_sourcing'],
-                'activity_type' => $request['type_of_activity']
-            ]);
-            $request->session()->flash('success','Event updated successfully!');
-            return redirect(route('officer.events.index'));
-        }
-        else{
+                    'organization_id' =>  $organizationID,
+                    'head_organization' => $request['head_organization'],
+                    'title' => $request['title_of_activity'],
+                    'objectives' => $request['objectives'],
+                    'partnerships' => $request['partnerships'],
+                    'participants' => $request['participants'],
+                    'venue' =>$request['venue'],
+                    'projected_budget' =>$request['projected_budget'],
+                    'time' => $request['time'],
+                    'sponsor' => $request['sponsors'],
+                    'date' => $request['date'],
+                    'semester' => $request['semester'],
+                    'school_year' => $request['school_year'],
+                    'fund_source' => $request['fund_sourcing'],
+                    'activity_type' => $request['type_of_activity']
+                ]);
+                $request->session()->flash('success','Event updated successfully!');
+                return redirect(route('officer.events.index'));
+            }
+            else{
+                abort(403);
+            }
+
+        } else {
             abort(403);
         }
-
+        
     }
 
     /**
@@ -392,7 +401,8 @@ class EventsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function markasDone($id, Request $request, $orgId)
-    {
+    {   abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
+
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
 
@@ -437,117 +447,104 @@ class EventsController extends Controller
         }
     }
 
-    public function import(Request $request){
-        // $request->validate([
-        //     'file' => 'required|max:10000|mimes:xlsx,xls',
-        // ]);
-        
-        // $path = $request->file('file');
-        // $import = new UpcomingEventsImport;
-        // $import->import($path);
-
-        // if ($import->failures()->isNotEmpty()) {
-        //     return back()->withFailures($import->failures());
-        // }
-        // //Excel::import(new ExpectedStudentsImport, $path);  
-        // //dd($import->failures());
-        // $request->session()->flash('success','Imported successfully!');    
-        // return redirect()->back();
-    }
     public function generatePDF(Request $request)
     {   
+        if (Gate::allows('is-officer')) {
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
         
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
-       
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id, 'role_id'=>$role->role_id]);
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id, 'role_id'=>$role->role_id]);
+            }
+
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            $role_id =  $userRoles[$userRoleKey]['role_id'];
+            
+            //Get Organization Details including a single Logo
+            $organization = Organization::with('logo')
+                    ->where('organization_id', $organizationID)
+                    ->first();
+            // dd($organization);
+
+            $inputSem = $request->semester;
+            $inputYear = $request->school_year;
+            $inputMembershipfee = $request->membership_fee;
+            $inputCollection = $request->total_collection;
+
+            $request->validate([
+                'semester' => ['required'],
+                'school_year' => ['required'],
+                'membership_fee' => ['required','integer'],
+                'total_collection' => ['required','integer'],
+            ]);
+            
+            $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                            ->where('upcoming_events.advisers_approval','=','approved')
+                            ->where('upcoming_events.studAffairs_approval','=','approved')
+                            ->where('upcoming_events.organization_id',$organizationID)
+                            ->where('upcoming_events.semester',$inputSem)
+                            ->where('upcoming_events.school_year',$inputYear)
+                            ->get();
+            
+            $president_signature = event_signatures::with('user')
+                                ->where('organization_id', $organizationID)
+                                ->where('role_id',6)
+                                ->first();
+            $adviser_signature = event_signatures::with('user')
+                                ->where('organization_id', $organizationID)
+                                ->where('role_id',9)
+                                ->first();
+            $admin_signature = event_signatures::with('user')
+                                ->where('role_id',1)
+                                ->first();    
+            //dd($president_signature, $admin_signature, $adviser_signature);
+            $pdf = PDF::loadView('officer.pdf-file', compact([
+                'upcoming_events', 
+                'organization',
+                'president_signature',
+                'admin_signature',
+                'adviser_signature',
+                'inputYear',
+                'inputSem',
+                'inputMembershipfee',
+                'inputCollection'
+            ]))->setPaper('legal', 'landscape');
+            
+            return $pdf->stream('General-Plan-of-Activities.pdf');
+        } else {
+            abort(403);
         }
-
-        // If User has GPOA Admin role...
-       
-        $memberRoleKey = $this->hasRole($userRoles,'User');
-        // Get the Organization from which the user is GPOA Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id'];
-        $role_id =  $userRoles[$userRoleKey]['role_id'];
-        
-        //Get Organization Details including a single Logo
-        $organization = Organization::with('logo')
-                ->where('organization_id', $organizationID)
-                ->first();
-        // dd($organization);
-
-        $inputSem = $request->semester;
-        $inputYear = $request->school_year;
-        $inputMembershipfee = $request->membership_fee;
-        $inputCollection = $request->total_collection;
-
-        $request->validate([
-            'semester' => ['required'],
-            'school_year' => ['required'],
-            'membership_fee' => ['required','integer'],
-            'total_collection' => ['required','integer'],
-        ]);
-        
-        $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                        ->where('upcoming_events.advisers_approval','=','approved')
-                        ->where('upcoming_events.studAffairs_approval','=','approved')
-                        ->where('upcoming_events.organization_id',$organizationID)
-                        ->where('upcoming_events.semester',$inputSem)
-                        ->where('upcoming_events.school_year',$inputYear)
-                        ->get();
-        
-        $president_signature = event_signatures::with('user')
-                            ->where('organization_id', $organizationID)
-                            ->where('role_id',6)
-                            ->first();
-        $adviser_signature = event_signatures::with('user')
-                            ->where('organization_id', $organizationID)
-                            ->where('role_id',9)
-                            ->first();
-        $admin_signature = event_signatures::with('user')
-                            ->where('role_id',1)
-                            ->first();    
-        //dd($president_signature, $admin_signature, $adviser_signature);
-        $pdf = PDF::loadView('officer.pdf-file', compact([
-            'upcoming_events', 
-            'organization',
-            'president_signature',
-            'admin_signature',
-            'adviser_signature',
-            'inputYear',
-            'inputSem',
-            'inputMembershipfee',
-            'inputCollection'
-        ]))->setPaper('legal', 'landscape');
-        
-        return $pdf->stream('gpoa.pdf');
     }
 
     public function profile(){
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
-
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-        }
-
-        // If User has GPOA Admin role...
-       
-        $memberRoleKey = $this->hasRole($userRoles,'User');
-
-        // Get the Organization from which the user is GPOA Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id']; 
-
         if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id']; 
+
+        
             $event_signature = event_signatures::where('event_signatures.user_id',Auth::user()->user_id)->first();
             $courses = course::All();
             $genders= Genders::All();
@@ -560,26 +557,26 @@ class EventsController extends Controller
     }
 
     public function updateProfile(Request $request, $id){
-       
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
-
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-        }
-
-        // If User has GPOA Admin role...
-       
-        $memberRoleKey = $this->hasRole($userRoles,'User');
-
-        // Get the Organization from which the user is GPOA Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id']; 
-
         if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id']; 
+
+        
             $data = $request->validate([
 
                 'first_name' => ['required', 'string', 'max:255'],
@@ -628,24 +625,25 @@ class EventsController extends Controller
     
 
     public function addSignature(Request $request){
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
-        $userRoles = array();
-        // Remap User Roles into array with Organization ID
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id, 'role_id'=>$role->role_id]);
-        }
-
-        // If User has GPOA Admin role...
-       
-        $memberRoleKey = $this->hasRole($userRoles,'User');
-        // Get the Organization from which the user is GPOA Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id'];
-        $role_id =  $userRoles[$userRoleKey]['role_id'];
-
         if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+            $userRoles = array();
+            // Remap User Roles into array with Organization ID
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id, 'role_id'=>$role->role_id]);
+            }
+
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            $role_id =  $userRoles[$userRoleKey]['role_id'];
+
+            
             $request->validate([
                 'user_id' =>['required','integer'],
                 'signature' => ['required','mimes:png'],
@@ -662,6 +660,7 @@ class EventsController extends Controller
                 'user_id' => $request['user_id'],
                 'signature_path' => $newImageName,
             ]);
+            
             $request->session()->flash('success','Successfully added signature!');
             
             return redirect(route('officer.profile'));
@@ -669,24 +668,25 @@ class EventsController extends Controller
 
     }
     public function updateSignature(Request $request, $id){
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
-
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-        }
-
-        // If User has GPOA Admin role...
-    
-        $memberRoleKey = $this->hasRole($userRoles,'User');
-
-        // Get the Organization from which the user is GPOA Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        
         if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+        
+       
             //Find if the image exists
             $image = event_signatures::find($id);
 
@@ -722,24 +722,25 @@ class EventsController extends Controller
         }
     }
     public function filterEvents(Request $request){
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
-
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-        }
-
-        // If User has AR President Admin role...
-
-        
-        // Get the Organization from which the user is AR President Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id'];
-         
         if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+
+            // If User has AR President Admin role...
+
+            
+            // Get the Organization from which the user is AR President Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            
+        
             if(isset($_GET['semester'], $_GET['school_year'])){
                
 
@@ -760,35 +761,39 @@ class EventsController extends Controller
                         ['upcoming_events.semester','LIKE','%'.$semester.'%'],
                         ['upcoming_events.school_year','LIKE','%'.$school_year.'%'],  
                     ])
-                    ->where('upcoming_events.advisers_approval','=','approved')
-                    ->where('upcoming_events.studAffairs_approval','=','approved')
+                    // ->where('upcoming_events.advisers_approval','=','approved')
+                    // ->where('upcoming_events.studAffairs_approval','=','approved')
                     ->orderBy('upcoming_events.date','asc')
                     ->paginate(5, ['*'], 'events');
                 return view('officer.filter',compact(['upcoming_events','newYearRange']));
-            
+            }else{
+                return redirect()->back()->with('error','Record not found! Please make sure to select a semester and school year.');
             }
+        }else{
+            abort(403);
         }
     }
 
     public function searchEvent(Request $request){
-        // Pluck all User Roles
-        $userRoleCollection = Auth::user()->roles;
-
-        // Remap User Roles into array with Organization ID
-        $userRoles = array();
-        foreach ($userRoleCollection as $role) 
-        {
-            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-        }
-
-        // If User has AR President Admin role...
-
-        
-        // Get the Organization from which the user is AR President Admin
-        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-        $organizationID = $userRoles[$userRoleKey]['organization_id'];
-         
         if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+
+            // If User has AR President Admin role...
+
+            
+            // Get the Organization from which the user is AR President Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            
+      
             if(isset($_GET['query'])){
                 // Pluck all User Roles
                 $userRoleCollection = Auth::user()->roles;
@@ -799,11 +804,9 @@ class EventsController extends Controller
                 {
                     array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
                 }
-
-                // If User has AR President Admin role...
             
                 
-                // Get the Organization from which the user is AR President Admin
+                // Get the Organization from which the user is Gpoa Admin
                 $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
                 $organizationID = $userRoles[$userRoleKey]['organization_id'];
 
@@ -837,8 +840,11 @@ class EventsController extends Controller
                     ->where('upcoming_events.completion_status','=','upcoming')
                     ->paginate(5, ['*'], 'events');
                 return view('officer.search',compact(['upcoming_events','newsemcollection','newyearcollection']));
-            
+            }else{
+                return redirect()->back()->with('error','Record not found!. Please make sure to type the title of the event properly.');
             }
+        }else{
+            abort(403);
         }
     }
 

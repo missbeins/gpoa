@@ -15,7 +15,7 @@
                 <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text" id="title_of_activity">{{ __('Title of Event') }}</span>
                     <input type="text" class="form-control @error('time') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="title_of_activity" name="title_of_activity"
-                    value="{{ $upcoming_event->title }}" required>
+                    value="{{ $upcoming_event->title }}" required readonly>
                     @error('tititle_of_activityme')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -26,7 +26,7 @@
                 <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text" id="date">{{ __('Date') }}</span>
                     <input type="date" class="form-control @error('date') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="date" name="date"
-                    value="{{ $upcoming_event->date }}" required>
+                    value="{{ $upcoming_event->date }}" required readonly>
                     @error('date')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -38,7 +38,7 @@
                 <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text" id="time">{{ __('Time') }}</span>
                     <input type="time" class="form-control @error('time') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="time" name="time"
-                    value="{{ $upcoming_event->time }}" required>
+                    value="{{ $upcoming_event->time }}" required readonly>
                     @error('time')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

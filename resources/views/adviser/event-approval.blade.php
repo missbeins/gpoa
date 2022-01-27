@@ -8,9 +8,7 @@
             {{-- Breadcrumbs --}}
             <nav aria-label="breadcrumb align-items-center">
                 <ol class="breadcrumb justify-content-center ">
-                    {{-- <li class="breadcrumb-item">
-                        <a href="{{route('officer.officer.home')}}" class="text-decoration-none">Home</a>
-                    </li> --}}
+                  
                     <li class="breadcrumb-item active" aria-current="page">
                     Organization's Events / Event Approval
                     </li>
@@ -44,6 +42,15 @@
                     
                 </div>
             </div>
+            @if (isset($errors) && $errors->any())
+                <div class="alert alert-danger alert-dismissible mt-2">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                    @foreach ($errors->all() as $error )
+                        {{ $error }}
+                    @endforeach
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="card-body table-responsive text-center">        
                 @if (isset($upcoming_events))
                     <table class="table table-light table-sm table-striped table-hover table-responsive">

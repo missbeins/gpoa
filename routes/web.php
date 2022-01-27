@@ -42,6 +42,7 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function(){
     Route::put('/update-signature/{signature}', [SuperAdminController::class, 'updateSignature'])->name('update-signature');
     Route::get('/gpoa/events/{event}/{orgId}', [SuperAdminController::class, 'show'])->name('events.show');
     Route::get('/events/search', [SuperAdminController::class, 'searchEvent'])->name('searchEvents');
+    Route::post('generate-gpoa', [SuperAdminController::class, 'generatePDF'])->name('print-pdf');
     // Route::get('/gpoa/events/{event}/{orgId}', [SuperAdminController::class, 'show'])->name('events.show');
     // Route::get('/events/search', [SuperAdminController::class, 'searchEvent'])->name('searchEvents');
 

@@ -14,12 +14,12 @@
                         <div class="mb-3">
                             <label for="formFileSm" class="form-label">Upload your new signature. <span class="text-danger">Note: Please upload signature image in PNG file format.</span></label>
                             <input class="form-control form-control-sm" id="formFileSm" type="file" name="signature" required>
-                            @error('signature')
-                                <span class="invalid-feedback d-block" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
                         </div>
+                        @error('signature')
+                            <span class="invalid-feedback d-block" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Submit</button>

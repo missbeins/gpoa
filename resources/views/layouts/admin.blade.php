@@ -32,13 +32,7 @@
             <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom">
 
                 @can('is-superadmin')
-                    <a class="second-text brand" href=""><i
-                            class="fas fa-swatchbook me-2"></i>SOIS : GPOA</a>
-                @elsecan('is-officer')
-                    <a class="second-text brand" href=""><i
-                            class="fas fa-swatchbook me-2"></i>SOIS : GPOA</a>
-                @elsecan('is-adviser')
-                    <a class="second-text brand" href=""><i
+                    <a class="second-text brand" href="{{ route('admin.admin.home') }}"><i
                             class="fas fa-swatchbook me-2"></i>SOIS : GPOA</a>
                 @endcan
             </div>
@@ -49,6 +43,7 @@
                         <i class="fa fa-caret-down"></i>
                         </button>
                     <div class="dropdown-container">
+                            <a href="{{ route('admin.admin.home') }}">All events</a>
                         @foreach(\App\Models\organization::all() as $organization)
                            <a href="{{ route('admin.organization-events', $organization->organization_id) }}" value="{{ $organization->organization_id}}">{{ $organization->organization_acronym }}</a>
                         @endforeach

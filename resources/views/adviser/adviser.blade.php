@@ -8,29 +8,27 @@
             {{-- Breadcrumbs --}}
             <nav aria-label="breadcrumb align-items-center">
                 <ol class="breadcrumb justify-content-center ">
-                    
                     <li class="breadcrumb-item active" aria-current="page">
                     Organization's Events / Upcoming Events
                     </li>
-                   
                 </ol>
             </nav>
         </div>
         <div class="row">
             <form class="col-md-4 input-group mb-2" style="width:33%" action="{{ route('adviser.searchEvents') }}" method="GET">
-                    
+                @csrf
                 <div class="input-group flex-nowrap">
                     <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
-                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query">
+                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query" required>
     
-                    @error('query')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                    <button class="input-group-text btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+                   
+                    <button class="input-group-text btn btn-info" type="submit"><i class="fas fa-search"></i></button>
                 </div>
-    
+                @error('query')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </form>
             {{-- <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
                 class="fas fa-file-pdf me-2"></i>Generate PDF</button>

@@ -29,6 +29,7 @@ Route::get('/sois-gpoa/initializeStorageLink/', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
     return redirect()->route('officer.officer.home');
 })->middleware('auth');
+
 //Route::get('/home', [HomeController::class, 'index'])->name('home');
 /////////////////////////////////////LOGIN REDIRECT BY ROLES//////////////////////////////////////////
 

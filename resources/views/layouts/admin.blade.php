@@ -62,8 +62,8 @@
                         <i class="fa fa-caret-down"></i>
                         </button>
                     <div class="dropdown-container">
-                       <a href="">Approved Events</a>
-                       <a href="">Disapproved Events</a>
+                       <a href="{{ route('admin.approvedEvents') }}">Approved Events</a>
+                       <a href="{{ route('admin.disapprovedEvent') }}">Disapproved Events</a>
                     </div>
                 @endcan
                     <a class=" list-group-item list-group-item-action second-text fw-bold" href="{{ route('logout') }}"

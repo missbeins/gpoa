@@ -21,7 +21,7 @@
                     
                 <div class="input-group flex-nowrap">
                     <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
-                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query">
+                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query" required>
     
                     @error('query')
                         <span class="invalid-feedback" role="alert">

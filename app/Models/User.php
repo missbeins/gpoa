@@ -33,6 +33,7 @@ class User extends Authenticatable
         'password',
         'date_of_birth',
         'suffix',
+        'title',
         'address',
         'status',
         
@@ -84,5 +85,11 @@ class User extends Authenticatable
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'permission_user', 'user_id', 'permission_id');
+    }
+
+    public function signature(){
+        
+        return $this->hasOne(event_signatures::class, 'signature_id');
+
     }
 }

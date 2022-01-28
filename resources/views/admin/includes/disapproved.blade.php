@@ -45,6 +45,15 @@
                     </span>
                     @enderror
                   </div>
+                  <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text" id="reason">{{ __('Reason/s') }}</span>
+                    <input type="text" class="form-control @error('reason') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="reason" name="reason" required>
+                    @error('reason')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                  </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -33,11 +33,20 @@
                   </div>
                 
                 
-                <div class="input-group input-group-sm mb-3">
+                  <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text" id="time">{{ __('Time') }}</span>
                     <input type="time" class="form-control @error('time') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="time" name="time"
                     value="{{ $upcoming_event->time }}" required readonly>
                     @error('time')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                  </div>
+                  <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text" id="reason">{{ __('Reason/s') }}</span>
+                    <input type="text" class="form-control @error('reason') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="reason" name="reason" required>
+                    @error('reason')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

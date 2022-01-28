@@ -23,7 +23,7 @@
                     
                 <div class="input-group flex-nowrap">
                     <label class="input-group-text" for="inputGroupSelect01">{{ __('Search') }}</label>
-                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query">
+                    <input type="text" class="form-control" placeholder="Input the event title.." aria-label="query" aria-describedby="addon-wrapping" name="query" required>
     
                     @error('query')
                         <span class="invalid-feedback" role="alert">
@@ -34,10 +34,12 @@
                 </div>
     
             </form>
-            {{-- <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
-                class="fas fa-file-pdf me-2"></i>Generate PDF</button>
+            @if ($upcoming_events->isNotEmpty())
+            <button class="col-md-2 mb-2 btn btn-danger second-text fw-bold" data-bs-toggle="modal" data-bs-target="#generate-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
+            class="fas fa-file-pdf me-2"></i>Generate PDF</button>
 
-            @include('admin.includes.generate-pdf') --}}
+            @include('admin.includes.generate-pdf')
+        @endif
             
         </div>
         

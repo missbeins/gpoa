@@ -23,6 +23,15 @@
                 </ol>
             </nav>
         </div>
+        @if (isset($errors) && $errors->any())
+            <div class="alert alert-danger alert-dismissible mt-2">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                @foreach ($errors->all() as $error )
+                    {{ $error }}
+                @endforeach
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="col-md-12">
             <form action="{{ route('adviser.update-profile', Auth::user()->user_id) }}" method="POST">
                 @csrf
@@ -136,15 +145,7 @@
                     </div>
                 </div>
             </form>
-            @if (isset($errors) && $errors->any())
-                <div class="alert alert-danger alert-dismissible mt-2">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-                    @foreach ($errors->all() as $error )
-                        {{ $error }}
-                    @endforeach
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+           
             <div class="card mt-2">
                 <div class="card-header">{{ __('Signature') }}</div>
                 <div class="card-body">

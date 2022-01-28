@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\upcoming_events;
 use App\Models\course;
+use App\Models\Disapproved_events;
 use App\Models\event_signatures;
 use App\Models\Genders;
 use App\Models\organization;
 use App\Models\User;
 use File;
 use Illuminate\Support\Facades\DB;
-use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AdviserController extends Controller
 { 
@@ -95,7 +95,7 @@ class AdviserController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         if(Gate::allows('is-adviser')){
         $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-            ->where('upcoming_events.completion_status','=','pending')
+            ->where('upcoming_events.completion_status','=','upcoming')
             ->where('upcoming_events.advisers_approval','=','pending')
             ->where('upcoming_events.organization_id',$organizationID)
             ->orderBy('upcoming_events.date','asc')
@@ -135,21 +135,15 @@ class AdviserController extends Controller
                 
             ]);
         
-            $upcoming_events = upcoming_events::where('upcoming_event_id',$id)->first();
+            $upcoming_events = upcoming_events::where('upcoming_event_id',$id);
             $upcoming_events->update([
 
                 'advisers_approval' => 'approved',
                
                 
             ]);
-            if ($upcoming_events->studAffairs_approval == 'approved') {
-                $upcoming_events->update([
-
-                    'completion_status' => 'upcoming'
-                ]);
-               
-            }
-           return redirect(route('adviser.adviser.event-approval'));
+            
+            return redirect(route('adviser.adviser.event-approval'));
         }
         else{
             abort(403);
@@ -171,6 +165,12 @@ class AdviserController extends Controller
 
                 'advisers_approval' => 'disapproved'
 
+            ]);
+
+            Disapproved_events::create([
+                'reason' => $request['reason'],
+                'upcoming_event_id' => $id,
+                'disapproved_by' => Auth::user()->user_id,
             ]);
             
             return redirect(route('adviser.adviser.event-approval'));
@@ -439,7 +439,6 @@ class AdviserController extends Controller
 
                 $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
                             ->where('upcoming_events.studAffairs_approval','=','approved')
-                            ->where('upcoming_events.studAffairs_approval','=','approved')
                             ->where('upcoming_events.organization_id',$organizationID)
                             ->orderBy('upcoming_event_id', 'desc')
                             ->get();
@@ -478,10 +477,93 @@ class AdviserController extends Controller
         }
     }
     public function approvedEvents(){
-        //
+
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has GPOA Admin role...
+        
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is GPOA Admin
+        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+        
+        if(Gate::allows('is-adviser')){
+            $approved_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                            
+                ->where('upcoming_events.advisers_approval','=','approved')
+                // ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.organization_id',$organizationID)
+                ->orderBy('upcoming_events.date','asc')
+                ->paginate(5, ['*'], 'upcoming-events');
+
+            return view('adviser.approved-events',compact('approved_events'));
+        }
+        else{
+            abort(403);
+        }
     }
-    public function disapprovedEvents(){
-        //
+    public function disapprovedEvent(){
+        
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has GPOA Admin role...
+        
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is GPOA Admin
+        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+        
+        if(Gate::allows('is-adviser')){
+            $disapproved_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                ->join('disapproved_events','disapproved_events.upcoming_event_id','=','upcoming_events.upcoming_event_id')
+                ->where('upcoming_events.advisers_approval','=','disapproved')
+                // ->where('upcoming_events.studAffairs_approval','=','disapproved')
+                ->where('upcoming_events.organization_id',$organizationID)
+                ->where('disapproved_events.disapproved_by', Auth::user()->user_id)
+                ->orderBy('upcoming_events.date','asc')
+                ->paginate(5, ['*'], 'upcoming-events');
+
+            $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
+                ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.organization_id',$organizationID)
+                ->orderBy('upcoming_event_id', 'desc')
+                ->get();
+            
+            $semcollection = collect([]);
+            
+            foreach ($semesters as  $semester) {
+                $semcollection->push($semester);
+            }
+            $newsemcollection = $semcollection->unique('semester');
+            $yearcollection = collect([]);
+            
+            foreach ($semesters as  $semester) {
+                $yearcollection->push($semester);
+            }
+            $newyearcollection = $yearcollection->unique('school_year');
+            return view('adviser.disapproved-events',compact(['disapproved_events','newsemcollection','newyearcollection']));
+        }
+        else{
+            abort(403);
+        }
+
     }
 
 }

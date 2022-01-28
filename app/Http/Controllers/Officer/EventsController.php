@@ -233,9 +233,9 @@ class EventsController extends Controller
    
     public function show($id, $orgId)
     {     
-        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
-
         if (Gate::allows('is-officer')) {
+            abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
+
             // Pluck all User Roles
             $userRoleCollection = Auth::user()->roles;
 
@@ -351,7 +351,7 @@ class EventsController extends Controller
                     'partnerships' => ['required', 'string', 'max:255'],
                     'participants' => ['required', 'string', 'max:255'],
                     'venue' => ['required', 'string', 'max:255'],
-                    'projected_budget' => ['required','integer', 'max:255'],
+                    'projected_budget' => ['required','integer','max:2147483647'],
                     'sponsors' => ['required','string'],
                     'date' => ['required', 'date'],
                     'time' => ['required'],
@@ -401,7 +401,7 @@ class EventsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function markasDone($id, Request $request, $orgId)
-    {   abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
+    {   
 
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
@@ -422,6 +422,7 @@ class EventsController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id']; 
 
         if(Gate::allows('is-officer') && $orgId == $organizationID){
+            abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
             //$upcoming_event = upcoming_events::find($id);
             $request->validate([
 
@@ -505,7 +506,8 @@ class EventsController extends Controller
             $admin_signature = event_signatures::with('user')
                                 ->where('role_id',1)
                                 ->first();    
-            //dd($president_signature, $admin_signature, $adviser_signature);
+            // dd($president_signature->user->title);
+
             $pdf = PDF::loadView('officer.pdf-file', compact([
                 'upcoming_events', 
                 'organization',
@@ -849,59 +851,92 @@ class EventsController extends Controller
     }
 
     public function approvedEvents(){
+
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has GPOA Admin role...
         
-       // Pluck all User Roles
-       $userRoleCollection = Auth::user()->roles;
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is GPOA Admin
+        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+        
+        if(Gate::allows('is-officer')){
+            $approved_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                            
+                ->where('upcoming_events.advisers_approval','=','approved')
+                ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.organization_id',$organizationID)
+                ->orderBy('upcoming_events.date','asc')
+                ->paginate(5, ['*'], 'upcoming-events');
 
-       // Remap User Roles into array with Organization ID
-       $userRoles = array();
-       foreach ($userRoleCollection as $role) 
-       {
-           array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-       }
-
-       // If User has GPOA Admin role...
-      
-       $memberRoleKey = $this->hasRole($userRoles,'User');
-       // Get the Organization from which the user is GPOA Admin
-       $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-       $organizationID = $userRoles[$userRoleKey]['organization_id'];
-       
-      if(Gate::allows('is-officer')){
-       $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                       
-                       ->where('upcoming_events.advisers_approval','=','approved')
-                       ->where('upcoming_events.studAffairs_approval','=','approved')
-                       ->where('upcoming_events.organization_id',$organizationID)
-                       ->orderBy('upcoming_events.date','asc')
-                       ->paginate(5, ['*'], 'upcoming-events');
-
-       $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
-                       ->where('upcoming_events.studAffairs_approval','=','approved')
-                       ->where('upcoming_events.studAffairs_approval','=','approved')
-                       ->where('upcoming_events.organization_id',$organizationID)
-                       ->orderBy('upcoming_event_id', 'desc')
-                       ->get();
-       
-       $semcollection = collect([]);
-      
-       foreach ($semesters as  $semester) {
-           $semcollection->push($semester);
-       }
-       $newsemcollection = $semcollection->unique('semester');
-       $yearcollection = collect([]);
-      
-       foreach ($semesters as  $semester) {
-           $yearcollection->push($semester);
-       }
-       $newyearcollection = $yearcollection->unique('school_year');
-       return view('officer.upcoming-events',compact(['upcoming_events','newsemcollection','newyearcollection']));
-       }
-       else{
-           abort(403);
-       }
+            return view('officer.approved-events',compact('approved_events'));
+        }
+        else{
+            abort(403);
+        }
     }
     public function disapprovedEvents(){
-        //
+        
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has GPOA Admin role...
+        
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is GPOA Admin
+        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+        
+        if(Gate::allows('is-officer')){
+            $disapproved_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                ->join('disapproved_events','disapproved_events.upcoming_event_id','=','upcoming_events.upcoming_event_id')
+                ->where('upcoming_events.advisers_approval','=','disapproved')
+                ->where('upcoming_events.studAffairs_approval','=','disapproved')
+                ->where('upcoming_events.organization_id',$organizationID)
+                ->orderBy('upcoming_events.date','asc')
+                ->paginate(5, ['*'], 'upcoming-events');
+
+            $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
+                ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.organization_id',$organizationID)
+                ->orderBy('upcoming_event_id', 'desc')
+                ->get();
+            
+            $semcollection = collect([]);
+            
+            foreach ($semesters as  $semester) {
+                $semcollection->push($semester);
+            }
+            $newsemcollection = $semcollection->unique('semester');
+            $yearcollection = collect([]);
+            
+            foreach ($semesters as  $semester) {
+                $yearcollection->push($semester);
+            }
+            $newyearcollection = $yearcollection->unique('school_year');
+            return view('officer.disapproved-events',compact(['disapproved_events','newsemcollection','newyearcollection']));
+        }
+        else{
+            abort(403);
+        }
+
     }
+
 }

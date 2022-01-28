@@ -197,8 +197,6 @@
                             @enderror --}}
                             @if ( $upcoming_event->status=='accomplished')
                                 <p class="text-danger"> Note: The event is already accomplished.</p>
-                            @else
-                                <p class="text-danger"> Note: This is an upcoming event.</p>
                             @endif
                            
                         </div>         

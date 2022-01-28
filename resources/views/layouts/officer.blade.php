@@ -50,8 +50,8 @@
                         <i class="fa fa-caret-down"></i>
                         </button>
                     <div class="dropdown-container">
-                        <a href="">Approved Events</a>
-                        <a href="">Disapproved Events</a>
+                        <a href="{{ route('officer.approvedEvents') }}">Approved Events</a>
+                        <a href="{{ route('officer.disapprovedEvents') }}">Disapproved Events</a>
                     </div>
                     
                 @endcan

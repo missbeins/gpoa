@@ -21,7 +21,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 
-
+    @stack('scripts')
 </head>
 
 <body>
@@ -165,6 +165,7 @@
         });
         }
     </script>
+    @yield('scripts')
 </body>
 
 </html>

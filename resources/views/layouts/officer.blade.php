@@ -20,8 +20,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
-
-
+    {{-- target the @push at blades --}}
+    @stack('scripts')
 </head>
 
 <body>
@@ -166,7 +166,8 @@
         });
         }
     </script>
-   
+    {{-- target secong @section on blades --}}
+   @yield('scripts')
 </body>
 
 </html>

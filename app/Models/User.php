@@ -92,4 +92,8 @@ class User extends Authenticatable
         return $this->hasOne(event_signatures::class, 'signature_id');
 
     }
+
+    public function event(){
+        return $this->belongsTo(Disapproved_events::class, 'disapproved_by', 'user_id');
+     }
 }

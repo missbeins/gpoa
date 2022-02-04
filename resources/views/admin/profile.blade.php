@@ -32,15 +32,15 @@
                 @csrf
                 @method('PUT')
                 <div class="card">
-                    <div class="card-header">{{ __('Update Profile') }}
+                    <div class="card-header"style="background-color: #c62128; color:azure; font-weight: bold;">{{ __('Update Profile') }}
                         <button type="submit" class="btn btn-success btn-sm float-end">Save</button>
                     </div>
                     <div class="card-body">
                             <div class="row g-2 mb-2">
                                 <div class="col-md">
-                                    <label for="first_name">First Name</label>
+                                    <label for="first_name">First Name <span class="text-danger">*</span></label>
                                     <div class="form-floating" id="first_name">
-                                        <input type="text" class="form-control" id="floatingInputGrid" placeholder="name@example.com" value="{{ Auth::user()->first_name }}" name="first_name">
+                                        <input type="text" class="form-control" id="floatingInputGrid" value="{{ Auth::user()->first_name }}" name="first_name" required>
                                         <label for="floatingInputGrid">Input your Firstname</label>
                                     </div>
                                 </div>
@@ -48,15 +48,15 @@
                                 <div class="col-md">
                                     <label for="middle_name">Middle Name</label>
                                     <div class="form-floating" id="middle_name">
-                                        <input type="text" class="form-control" id="floatingInputGrid" placeholder="name@example.com" value="{{ Auth::user()->middle_name }}" name="middle_name">
+                                        <input type="text" class="form-control" id="floatingInputGrid" value="{{ Auth::user()->middle_name }}" name="middle_name">
                                         <label for="floatingInputGrid">Input your Middlename</label></label>
                                     </div>
                                 </div>
                                 
                                 <div class="col-md">
-                                    <label for="last_name">Last Name</label>
+                                    <label for="last_name">Last Name <span class="text-danger">*</span></label>
                                     <div class="form-floating" id="last_name">
-                                        <input type="text" class="form-control" id="floatingInputGrid" placeholder="name@example.com" value="{{ Auth::user()->last_name }}" name="last_name">
+                                        <input type="text" class="form-control" id="floatingInputGrid" required value="{{ Auth::user()->last_name }}" name="last_name">
                                         <label for="floatingInputGrid">Input your Lastname</label>
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                             <div class="row g-2 mb-2">
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label for="course">Course</label>
                                     <div class="form-floating" id="course">
                                         <select name="course_id" class="form-control" id="course_id" aria-label="Floating label select example">
@@ -82,38 +82,37 @@
                                         </select>
                                         <label for="course_id">Select Course</label>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-3">
                                     <label for="email">Email</label>
                                     <div class="form-floating" id="email">
-                                        <input type="email" class="form-control" id="floatingInputGrid" placeholder="name@example.com" value="{{ Auth::user()->email }}" name="email">
+                                        <input type="email" class="form-control" id="floatingInputGrid" required value="{{ Auth::user()->email }}" name="email">
                                         <label for="floatingInputGrid">Input your Email</label>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                {{-- <div class="col-md-3">
                                     <label for="studnum">Student Number</label>
                                     <div class="form-floating" id="studnum">
-                                        <input type="text" class="form-control" id="floatingInputGrid" placeholder="name@example.com" value="{{ Auth::user()->student_number }}" name="student_number">
+                                        <input type="text" class="form-control" id="floatingInputGrid" required value="{{ Auth::user()->student_number }}" name="student_number">
                                         <label for="floatingInputGrid">Input your Student Number</label></label>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mb-2">
-                                <div class="col-md">
+                                </div> --}}
+                           
+                                {{-- <div class="col-md">
                                     <label for="year_n_section">Year and Section</label>
                                     <div class="form-floating" id="year_n_section">
                                         <input type="text" class="form-control" id="floatingInputGrid" value="{{ Auth::user()->year_and_section }}" name="year_and_section">
                                         <label for="floatingInputGrid">Input your Year and Section</label>
                                     </div>
-                                </div>
-                                <div class="col-md">
+                                </div> --}}
+                                <div class="col-md-3">
                                     <label for="contact">Contact</label>
                                     <div class="form-floating" id="contact">
-                                        <input type="text" class="form-control" id="floatingInputGrid"value="{{ Auth::user()->mobile_number }}" name="mobile_number">
+                                        <input type="text" class="form-control" id="floatingInputGrid"value="{{ Auth::user()->mobile_number }}" name="mobile_number" required>
                                         <label for="floatingInputGrid">Input your Contact Number</label></label>
                                     </div>
                                 </div>
-                                <div class="col-md">
+                                <div class="col-md-3">
                                     <label for="gender">Gender</label>
                                     <div class="form-floating" id="gender">
                                         <select class="form-select" id="gender_id" aria-label="Floating label select example" name="gender_id">
@@ -126,7 +125,7 @@
                                         <label for="gender_id">Input your Gender</label>
                                     </div>
                                 </div>
-                                <div class="col-md">
+                                <div class="col-md-3">
                                     <label for="title">Title</label>
                                     <div class="form-floating" id="title">
                                         <input type="text" class="form-control" id="floatingInputGrid"value="{{ Auth::user()->title }}" name="title">
@@ -138,7 +137,7 @@
                 </div>
             </form>
             <div class="card mt-2">
-                <div class="card-header">{{ __('Signature') }}</div>
+                <div class="card-header" style="background-color: #c62128; color:azure; font-weight: bold;">{{ __('Signature') }}</div>
                 <div class="card-body">
                         <label for="signature">My signature</label>
                         @if (empty($event_signature))

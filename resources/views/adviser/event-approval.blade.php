@@ -17,7 +17,7 @@
             </nav>
         </div>
         <div class="card">
-            <div class="card-header">
+            <div class="card-header" style="background-color: #c62128; color:azure; font-weight: bold;">
                 <div class="row">
                     <div class="col-md-8 mt-1">
                         <h5 class="float-left">Organization's Events</h5>
@@ -51,9 +51,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <div class="card-body table-responsive text-center">        
+            <div class="card-body table-responsive">        
                 @if (isset($upcoming_events))
-                    <table class="table table-light table-sm table-striped table-hover table-responsive">
+                    <table class="table table-light table-sm table-striped table-hover table-responsive" id="approval">
                         <thead>
                             <tr>
                                 <th class="col-sm-1">Date</th>
@@ -68,9 +68,9 @@
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
-                                        <td>{{ $upcoming_event->date }}</td>
+                                        <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
-                                        <td>{{ $upcoming_event->organization_name }}</td>
+                                        <td>{{ $upcoming_event->head_organization }}</td>
                                         <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>
                                         <td>                                            
                                             <button type="button" class="btn btn-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#approved-event-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Approve Event">
@@ -89,7 +89,7 @@
                                     </tr>
                                 @endforeach
                             @else
-                            <tr><td colspan="7">No results found!</td></tr>
+                            <tr><td class="text-center"colspan="7">No results found!</td></tr>
                             @endif
                         </tbody>
                     </table>
@@ -99,4 +99,27 @@
         </div>
     </div>
 
+
+@endsection
+@push('scripts')
+    {{-- Import Datatables --}}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+@endpush
+
+@section('scripts')
+    <script type="module">
+        // Simple-DataTables
+        // https://github.com/fiduswriter/Simple-DataTables
+        window.addEventListener('DOMContentLoaded', event => {
+            const dataTable = new simpleDatatables.DataTable("#approval", {
+                perPage: 10,
+                searchable: true,
+                labels: {
+                    placeholder: "Search on current page...",
+                    noRows: "No user to display in this page or try in the next page.",
+                },
+            });
+        });
+    </script>
 @endsection

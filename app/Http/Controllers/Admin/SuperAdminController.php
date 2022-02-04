@@ -225,13 +225,6 @@ class SuperAdminController extends Controller
                     'email', 
                     'max:255',
                     Rule::unique('users')->ignore($id,'user_id')],
-                'student_number' => [
-                    'nullable', 
-                    'string', 
-                    'max:50', 
-                    Rule::unique('users')->ignore($id,'user_id')],
-                'year_and_section' => ['nullable', 'string'],
-                // 'course_id' => ['nullable', 'integer'],
                 'mobile_number' => ['required', 'string'], 
                 'gender_id' =>['required','integer'],
                 'title' =>['nullable','string']
@@ -243,10 +236,7 @@ class SuperAdminController extends Controller
                 'last_name' => $data['last_name'],
                 'suffix' => $data['suffix'],
                 'email' => $data['email'],  
-                'student_number' => $data['student_number'],
-                // 'course_id' => $data['course_id'],
                 'gender_id' => $data['gender_id'],
-                'year_and_section' => $data['year_and_section'],
                 'mobile_number' => $data['mobile_number'],
                 'title' =>$data['title']
                 
@@ -369,8 +359,8 @@ class SuperAdminController extends Controller
     {   
         abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
         abort_if(! organization::where('organization_id', $OrgId)->exists(), 404);
-        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists() || organization::where('organization_id', $OrgId)->exists(), 404);
-         // Pluck all User Roles
+        // abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists() || organization::where('organization_id', $OrgId)->exists(), 404);
+        // Pluck all User Roles
          $userRoleCollection = Auth::user()->roles;
 
          // Remap User Roles into array with Organization ID

@@ -243,12 +243,7 @@ class AdviserController extends Controller
                     'email', 
                     'max:255',
                     Rule::unique('users')->ignore($id,'user_id')],
-                'student_number' => [
-                    'nullable', 
-                    'string', 
-                    'max:50', 
-                    Rule::unique('users')->ignore($id,'user_id')],
-                'year_and_section' => ['nullable', 'string'],
+               
                 // 'course_id' => ['nullable', 'integer'],
                 'mobile_number' => ['required', 'string'], 
                 'gender_id' =>['required','integer']
@@ -261,10 +256,7 @@ class AdviserController extends Controller
                 'suffix' => $data['suffix'],
                 'title' => $data['title'],
                 'email' => $data['email'],  
-                'student_number' => $data['student_number'],
-                // 'course_id' => $data['course_id'],
                 'gender_id' => $data['gender_id'],
-                'year_and_section' => $data['year_and_section'],
                 'mobile_number' => $data['mobile_number'],
                 
             ]);

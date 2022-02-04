@@ -64,15 +64,15 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body table-responsive text-center">        
+            <div class="card-body table-responsive">        
                 @if (isset($upcoming_events))
-                    <table class="table table-light table-sm table-striped table-hover table-responsive">
+                    <table class="table table-light table-sm table-striped table-hover table-responsive" id="orgevents">
                         <thead>
                             <tr>
-                                <th class="col-sm-1">Date</th>
-                                <th class="col-sm-2">Name/Title of Activity</th>
-                                <th class="col-sm-3">Head Organization</th>
-                                <th class="col-sm-1">Venue & time</th>
+                                <th class="col-sm-2">Date</th>
+                                <th class="col-sm-3">Name/Title of Activity</th>
+                                <th class="col-sm-2">Head Organization</th>
+                                <th class="col-sm-3">Venue & time</th>
                                 <th class="col-sm-2">Actions</th>
                                 
                             </tr>
@@ -109,4 +109,26 @@
         </div>
     </div>
 
+@endsection
+@push('scripts')
+    {{-- Import Datatables --}}
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+@endpush
+
+@section('scripts')
+    <script type="module">
+        // Simple-DataTables
+        // https://github.com/fiduswriter/Simple-DataTables
+        window.addEventListener('DOMContentLoaded', event => {
+            const dataTable = new simpleDatatables.DataTable("#orgevents", {
+                perPage: 10,
+                searchable: true,
+                labels: {
+                    placeholder: "Search on current page...",
+                    noRows: "No user to display in this page or try in the next page.",
+                },
+            });
+        });
+    </script>
 @endsection

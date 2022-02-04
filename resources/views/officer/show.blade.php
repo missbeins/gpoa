@@ -21,7 +21,7 @@
                 </nav>
             </div>
             <div class="card">
-                <div class="card-header">{{ __('Event Details') }}</div>
+                <div class="card-header"  style="background-color: #c62128; color:azure; font-weight: bold;">{{ __('Event Details') }}</div>
                 <div class="card-body">
                     <form class="row g-3">
 
@@ -51,15 +51,11 @@
                         </div>   
                         <div class="col-md-4 mb-1">
                             <label for="organization" class="form-label">{{ __('Head Organization') }}</label>
-                            <select name="organization" class="form-control @error('organization') is-invalid @enderror" disabled>
-                                @foreach ($organizations as $organization)
-                                    <option value="{{ $organization->organization_id }}"{{ $organization->organization_id == $upcoming_event->organization_id ? 'selected' : '' }}>
-                                        {{ $organization->organization_name }}
-                                    </option>   
-                                @endforeach
-                            </select>
+                            <input id="head_organization" type="text" class="form-control @error('partnership') is-invalid @enderror" name="head_organization"
+                            value="{{ old('head_organization') }}@isset($upcoming_event){{ $upcoming_event->head_organization }}@endisset" required
+                            autocomplete="head_organization" autofocus readonly>
 
-                            @error('organization')
+                            @error('head_organization')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

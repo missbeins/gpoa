@@ -10,6 +10,7 @@ use App\Models\Role;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\course;
+use App\Models\Disapproved_events;
 use App\Models\event_signatures;
 use App\Models\Genders;
 use Illuminate\Support\Facades\Auth;
@@ -904,14 +905,14 @@ class EventsController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         
         if(Gate::allows('is-officer')){
-            $disapproved_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                ->join('disapproved_events','disapproved_events.upcoming_event_id','=','upcoming_events.upcoming_event_id')
-                ->where('upcoming_events.advisers_approval','=','disapproved')
-                ->where('upcoming_events.studAffairs_approval','=','disapproved')
+            $disapproved_events = Disapproved_events::with('user')
+                ->join('upcoming_events','upcoming_events.upcoming_event_id','=','disapproved_events.upcoming_event_id')
+                ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                 ->where('upcoming_events.organization_id',$organizationID)
-                ->orderBy('upcoming_events.date','asc')
+                // ->join('users','users.user_id','=','disapproved_events.disapproved_by')
+                ->orderBy('disapproved_event_id','DESC')
                 ->paginate(5, ['*'], 'upcoming-events');
-
+            // dd($disapproved_events);
             $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')

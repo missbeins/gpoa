@@ -28,13 +28,9 @@
                         @method('PUT')
                         <div class="col-md-4 mb-2">
                             <label for="head_organization" class="form-label">{{ __('Head Organization') }}</label>
-                            <select name="head_organization" class="form-control @error('head_organization') is-invalid @enderror">
-                                @foreach ($organizations as $organization)
-                                    <option value="{{ $organization->organization_acronym }}"{{ $organization->organization_id == $upcoming_events->organization_id ? 'selected' : '' }}>
-                                        {{ $organization->organization_name }}
-                                    </option>   
-                                @endforeach
-                            </select>
+                            <input id="head_organization" type="text" class="form-control @error('head_organization') is-invalid @enderror" name="head_organization"
+                            value="{{ old('head_organization') }}@isset($upcoming_events){{ $upcoming_events->head_organization }}@endisset" required
+                            autocomplete="head_organization" autofocus>
 
                             @error('head_organization')
                                 <span class="invalid-feedback d-block" role="alert">

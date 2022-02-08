@@ -45,7 +45,7 @@
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
-                                        <td>{{ date_format(date_create($approved_event->date), 'F d, Y') }}</td>
+                                        <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->organization_name }}</td>
                                         <td>{{ $upcoming_event->venue }}/{{ $upcoming_event->time }}</td>

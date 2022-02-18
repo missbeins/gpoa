@@ -61,6 +61,7 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.completion_status','=','upcoming')
                 ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.directors_approval','=','approved')
                 ->orderBy('upcoming_events.date','asc')
                 ->paginate(5, ['*'], 'upcoming-events');        
             return view('admin.admin',compact(['upcoming_events','newsemcollection','newyearcollection']));
@@ -77,6 +78,7 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.completion_status','=','upcoming')
                 ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.directors_approval','=','approved')
                 ->where('upcoming_events.organization_id',$OrgId)
                 ->orderBy('upcoming_events.date','asc')
                 ->paginate(5, ['*'], 'upcoming-events');        

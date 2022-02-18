@@ -31,7 +31,8 @@ class upcoming_events extends Model
         'fund_source',
         'status',
         'adviser_approval',
-        'studAffairs_approval'
+        'studAffairs_approval',
+        'partnership_status'
         
     ];
     /**

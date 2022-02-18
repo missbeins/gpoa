@@ -72,7 +72,7 @@
                             <input id="partnerships" type="text" class="form-control @error('partnership') is-invalid @enderror" name="partnerships"
                                 value="{{ old('partnerships') }}" required
                                 autocomplete="partnerships" autofocus>
-
+                            
                             @error('partnerships')
                                 <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -192,6 +192,16 @@
                                 value="{{ old('school_year') }}" required>
 
                             @error('school_year')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>  
+                        <div class="col-md-3 mb-2">
+                            <input type="checkbox" name="partnership_status" value="on">
+                            <label>Set event as open for partnerships</label><br/><br/>
+
+                            @error('partnership_status')
                                 <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

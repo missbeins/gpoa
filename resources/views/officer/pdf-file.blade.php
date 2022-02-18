@@ -216,8 +216,8 @@
                         @endif
                         
                     @else
-                    <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
-                    <span style="font-style: italic; color: red;"> No faculty member registered</span>
+                        <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                        <span style="font-style: italic; color: red;"> No faculty member registered</span>
                         <span style="font-style: italic;">President, {{ $organization->organization_name }}</span>
                     @endif
                     
@@ -226,46 +226,37 @@
                     <p>Approved by:</p>
                    
                     @if ($admin_signature != null)
-                        @if ($admin_signature->signature_path != null)
-                            @if ($admin_signature->user->title != null)
-                                <img src="{{ public_path('signatures/'. $admin_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
-                                <span style="font-style: bold;">{{ $admin_signature->user->title.'. ' }}{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
-                                <span style="font-style: italic;">Head of Student Services</span>
-                            @else
-                                <img src="{{ public_path('signatures/'. $admin_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
-                                <span style="font-style: bold;">{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
-                                <span style="font-style: italic;">Head of Student Services</span>   
-                            @endif
-                       
-                        @else
-                            <img src="" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                        @if ($admin_signature->signature_path != null && $admin_signature->user->title != null)
+                           
+                            <img src="{{ public_path('signatures/'. $admin_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
                             <span style="font-style: bold;">{{ $admin_signature->user->title.'. ' }}{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
                             <span style="font-style: italic;">Head of Student Services</span>
+                        @else
+                            <img src="{{ public_path('signatures/'. $admin_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <span style="font-style: bold;">{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Head of Student Services</span>   
                         @endif
+                       
+                        
                     @else
-                    <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
-                    <span style="font-style: italic; color: red;"> No faculty member registered</span>
-                            <span style="font-style: italic;">Head of Student Services</span>
+                        <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                        <span style="font-style: italic; color: red;"> No faculty member registered</span>
+                        <span style="font-style: italic;">Head of Student Services</span>
                     @endif
                 </div>
                 <div class="adviser">
                     <p>Noted by:</p>
                     @if ($adviser_signature != null)
-                        @if ($adviser_signature->signature_path != null)
-                            @if ($adviser_signature->user->title != null)
-                                <img src="{{ public_path('signatures/'. $adviser_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
-                                <span style="font-style: bold;">{{ $adviser_signature->user->title.'. ' }}{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
-                                <span style="font-style: italic;">Adviser, {{ $organization->organization_name }}</span>
-                            @else
-                                <img src="{{ public_path('signatures/'. $adviser_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
-                                <span style="font-style: bold;">{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
-                                <span style="font-style: italic;">Adviser, {{ $organization->organization_name }}</span>
-                            @endif
+                        @if ($adviser_signature->signature_path != null && $adviser_signature->user->title != null)
+                            <img src="{{ public_path('signatures/'. $adviser_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <span style="font-style: bold;">{{ $adviser_signature->user->title.'. ' }}{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Adviser, {{ $organization->organization_name }}</span>
                         @else
-                            <img src="" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
-                            <span style="font-style: bold;">{{ $admin_signature->user->title.'. ' }}{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
+                            <img src="{{ public_path('signatures/'. $adviser_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <span style="font-style: bold;">{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
                             <span style="font-style: italic;">Adviser, {{ $organization->organization_name }}</span>
                         @endif
+                       
                        
                     @else
                         <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
@@ -275,8 +266,30 @@
                     
                 </div>
                 <div class="director">
+                    <p>Approved by:</p>
+                    {{-- <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
                     <span style="font-style: bold;">Dr. Marissa B. Ferrer</span>
-                    <span style="font-style: italic;">Director</span>
+                    <span style="font-style: italic;">Director</span> --}}
+                    @if ($director_signature != null)
+                        @if ($director_signature->signature_path != null && $director_signature->user->title != null)
+                            <img src="{{ public_path('signatures/'. $director_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                            <span style="font-style: bold;">{{ $director_signature->user->title.'. ' }}{{ $director_signature->user->first_name }} {{ $director_signature->user->middle_name }} {{ $director_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Director</span>
+    
+                        @else
+                            <img src="{{ public_path('signatures/'. $director_signature->signature_path) }}" style="width: 100px; height: 60px; margin-top: 5px;" alt="signature">
+                            <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                            <span style="font-style: bold;">{{ $director_signature->user->first_name }} {{ $director_signature->user->middle_name }} {{ $director_signature->user->last_name }}</span>
+                            <span style="font-style: italic;">Director</span>
+   
+                        @endif
+                        
+                    @else
+                        <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
+                        <span style="font-style: italic; color: red;"> No faculty member registered</span>
+                        <span style="font-style: italic;">Director</span>
+                    @endif
                 </div>
             </div>
         

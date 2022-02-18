@@ -3,6 +3,7 @@
 use App\Http\Controllers\Officer\OfficerController;
 use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Adviser\AdviserController;
+use App\Http\Controllers\Director\DirectorController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
@@ -53,6 +54,26 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function(){
 
 });
 
+//Director Routes
+Route::prefix('/director')->middleware('auth')->name('director.')->group(function(){
+    Route::get('/gpoa/upcoming-events', [DirectorController::class, 'index'])->name('director.home');
+    Route::get('/gpoa/upcoming-events/{organization}', [DirectorController::class, 'viewOrganizationevents'])->name('organization-events');
+    Route::get('/gpoa/event-approval/{organization}', [DirectorController::class, 'eventApproval'])->name('director.event-approval');
+    Route::post('/gpoa/approved-event/{event}', [DirectorController::class, 'approved'])->name('director.approved');
+    Route::post('/gpoa/disapproved-event/{event}', [DirectorController::class, 'disapproved'])->name('director.disapproved');
+    Route::get('profile',[DirectorController::class, 'profile'])->name('profile');
+    Route::put('/update-profile/{user}', [DirectorController::class, 'updateProfile'])->name('update-profile');
+    Route::post('/add-signature', [DirectorController::class, 'addSignature'])->name('add-signature');
+    Route::put('/update-signature/{signature}', [DirectorController::class, 'updateSignature'])->name('update-signature');
+    Route::get('/gpoa/events/{event}/{orgId}', [DirectorController::class, 'show'])->name('events.show');
+    Route::get('/events/search', [DirectorController::class, 'searchEvent'])->name('searchEvents');
+    Route::post('generate-gpoa', [DirectorController::class, 'generatePDF'])->name('print-pdf');
+    Route::get('/events/approved-events', [DirectorController::class, 'approvedEvents'])->name('approvedEvents');
+    Route::get('/events/disapproved-events', [DirectorController::class, 'disapprovedEvent'])->name('disapprovedEvent');
+
+
+});
+
 //Officer Routes
 Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(){
     Route::get('/gpoa/upcoming-events', [EventsController::class, 'upcomingEvents'])->name('officer.home');
@@ -65,6 +86,7 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::post('/gpoa/import-events', [EventsController::class, 'import'])->name('event-import');
     Route::put('/gpoa/mark-as-done/{event}/{orgId}', [EventsController::class, 'markasDone'])->name('mark-as-done');
     Route::post('generate-pdf', [EventsController::class, 'generatePDF'])->name('print-pdf');
+    Route::post('generate-presentation-pdf', [EventsController::class, 'generatePresentationPDF'])->name('presentation-pdf');
     Route::get('profile',[EventsController::class, 'profile'])->name('profile');
     Route::put('/update-profile/{user}', [EventsController::class, 'updateProfile'])->name('update-profile');
     Route::post('/add-signature', [EventsController::class, 'addSignature'])->name('add-signature');
@@ -73,8 +95,14 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::get('/events/search', [EventsController::class, 'searchEvent'])->name('searchEvents');
     Route::get('/events/approved-events', [EventsController::class, 'approvedEvents'])->name('approvedEvents');
     Route::get('/events/disapproved-events', [EventsController::class, 'disapprovedEvents'])->name('disapprovedEvents');
-    
+    Route::get('/events/partnership-requests', [EventsController::class, 'partnershipRequests'])->name('partnershipRequests');
+    Route::get('/events/partnership-applications', [EventsController::class, 'partnershipApplications'])->name('partnershipApplications');
+    Route::post('/partnerships/accept-request/{event}', [EventsController::class, 'acceptRequest'])->name('acceptRequest');
+    Route::post('/partnerships/decline-request/{event}', [EventsController::class, 'declineRequest'])->name('declineRequest');
+    Route::get('/gpoa/event-details/{event}', [EventsController::class, 'availablePartnershipDetails'])->name('availablePartnershipDetails');
+    Route::post('/partnerships/apply/{event}', [EventsController::class, 'applyPartnership'])->name('applyPartnership');
 
+    
 });
 
 //Adviser Routes

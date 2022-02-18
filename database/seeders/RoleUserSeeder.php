@@ -52,6 +52,12 @@ class RoleUserSeeder extends Seeder
                 'organization_id' => $organization_id,
             ],
             [  
+                //membership - user role
+                'user_id' => 5,
+                'role_id' => 8,
+                'organization_id' => $organization_id,
+            ],
+            [  
                 // gpoa
                 'user_id' => 6,
                 'role_id' => 6,
@@ -80,13 +86,48 @@ class RoleUserSeeder extends Seeder
                 'user_id' => 9,
                 'role_id' => 8,
                 'organization_id' => $organization_id,
-            ], 
+            ],
             [  
                 // Adviser
                 'user_id' => 10,
                 'role_id' => 9,
                 'organization_id' => $organization_id,
             ],
+
+            //Jones additional users
+            [  
+                // Membership BSA
+                'user_id' => 11,
+                'role_id' => 5,
+                'organization_id' => 4,
+            ],
+            [  
+                // GPOA BSA
+                'user_id' => 12,
+                'role_id' => 6,
+                'organization_id' => 4,
+            ],
+            [  
+                // Membership ERG
+                'user_id' => 13,
+                'role_id' => 5,
+                'organization_id' => 11,
+            ],
+            [  
+                // MEMBERSHIP PUPUKAW
+                'user_id' => 14,
+                'role_id' => 5,
+                'organization_id' => 13,
+            ],
+            [  
+                // Director
+                'user_id' => 15,
+                'role_id' => 10,
+                'organization_id' => NULL,
+            ],
+
+
+            
         ];
         DB::table('role_user')->insert($data);
     }

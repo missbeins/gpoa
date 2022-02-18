@@ -54,15 +54,30 @@
                         <button class="input-group-text btn-secondary"type="submit">Enter</button>
             
                     </form>
-                    <div class="col-md-12">
-                      
-                        {{-- <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            Import GPOA
-                        </button> --}}
-                        <a href="{{ route('officer.events.create') }}" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event">New Event</a>
-                        @include('officer.includes.import')
-                    </div>
                 </div>
+                <div class="row">
+                    @if ($upcoming_events->isNotEmpty())
+                        <div class="col-md-2">
+                        
+                                <button class="btn btn-danger btn-sm second-text fw-bold" data-bs-toggle="modal" data-bs-target="#initial-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished"><i
+                                class="fas fa-file-pdf me-2"></i>Generate PDF</button>
+                                @include('officer.includes.initial-pdf')
+                        
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" style="margin-left: -80px;"data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
+                                class="fas fa-calendar-plus me-2"></i>New Event</a>
+                                
+                        </div>
+                    @else
+                        <div class="col-md-2">
+                            <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
+                                class="fas fa-calendar-plus me-2"></i>New Event</a>
+                               
+                        </div>
+                    @endif
+                    
+                </div>  
             </div>
             <div class="card-body table-responsive">        
                 @if (isset($upcoming_events))
@@ -99,7 +114,7 @@
                                     </tr>
                                 @endforeach
                             @else
-                            <tr><td colspan="7">No results found!</td></tr>
+                            <tr class="text-center"><td colspan="7">No results found!</td></tr>
                             @endif
                         </tbody>
                     </table>

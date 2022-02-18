@@ -42,6 +42,8 @@ class LoginController extends Controller
             return redirect()->route('officer.officer.home');
         elseif ( ($user->roles->pluck('role'))->containsStrict('Adviser') ) 
             return redirect()->route('adviser.adviser.home');
+        elseif ( ($user->roles->pluck('role'))->containsStrict('Director') ) 
+            return redirect()->route('director.director.home');
 
         // User | President | Other Admins
         else

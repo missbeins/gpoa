@@ -46,13 +46,25 @@
                         class="list-group-item list-group-item-action second-text fw-bold"><i
                             class="fas fa-file-signature me-2"></i>Events</a>                                    
                     <button class="dropdown-btn second-text fw-bold"><i
+                        class="fas fa-handshake me-2"></i>Partnerships
+                        <i class="fa fa-caret-down"></i>
+                        </button>
+                    <div class="dropdown-container">
+                        <a href="{{ route('officer.partnershipRequests') }}"><i class="fas fa-clipboard-list me-2"></i>Partnership Requests</a>
+                        <a href="{{ route('officer.partnershipApplications') }}"><i class="fas fa-list me-1"></i>Partnership Application</a>
+                    </div>      
+                    <button class="dropdown-btn second-text fw-bold"><i
                         class="fas fa-file-alt me-2"></i>Reports
                         <i class="fa fa-caret-down"></i>
                         </button>
                     <div class="dropdown-container">
-                        <a href="{{ route('officer.approvedEvents') }}">Approved Events</a>
-                        <a href="{{ route('officer.disapprovedEvents') }}">Disapproved Events</a>
+                        <a href="{{ route('officer.approvedEvents') }}"><i class="fas fa-thumbs-up me-2"></i>Approved Events</a>
+                        <a href="{{ route('officer.disapprovedEvents') }}"><i class="fas fa-thumbs-down me-2"></i>Disapproved Events</a>
+                        <a href=""><i class="fas fa-thumbs-up me-2"></i>Accepted Partnerships</a>
+                        <a href=""><i class="fas fa-thumbs-down me-2"></i>Declined Partnerships</a>
+                    
                     </div>
+
                     
                 @endcan
                 <a class=" list-group-item list-group-item-action second-text fw-bold" href="{{ route('logout') }}"

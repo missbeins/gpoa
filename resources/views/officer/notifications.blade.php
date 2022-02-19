@@ -1,4 +1,4 @@
-@extends('layouts.director')
+@extends('layouts.officer')
 @section('content')
     
     <div class="mt-3">
@@ -12,47 +12,41 @@
                         <a href="{{route('officer.officer.home')}}" class="text-decoration-none">Home</a>
                     </li> --}}
                     <li class="breadcrumb-item active" aria-current="page">
-                    Organization's Events / Reports / Disapproved Events
+                    Organization's Events / Notifications
                     </li>
                    
                 </ol>
             </nav>
         </div>      
         <div class="card">
-            <div class="card-header"  style="background-color: #c62128; color:azure; font-weight: bold;">
+            <div class="card-header">
                 <div class="row">
                     <div class="col-md-8 mt-1">
-                        <h5 class="float-left"> Disapproved Events</h5>
+                        <h5 class="float-left">Notifications</h5>
                     </div>
                 </div>
             </div>
             <div class="card-body table-responsive">        
-                @if (isset($disapproved_events))
-                    <table class="table table-light table-sm table-striped table-hover table-responsive" id="disapprovedevents">
+                @if (isset($notifications))
+                    <table class="table table-light table-sm table-striped table-hover table-responsive" id="approvedevents">
                         <thead>
                             <tr>
-                                <th class="col-sm-2">Date</th>
-                                <th class="col-sm-3">Name/Title of Activity</th>
-                                <th class="col-sm-2">Head Organization</th>
-                                <th class="col-sm-3">Venue & time</th>
+                                <th class="col-sm-1">#</th>
+                                <th class="col-sm-2">Organization</th>
+                                <th class="col-sm-7">Message</th>
                                 <th class="col-sm-2">Actions</th>
                                 
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($disapproved_events->isNotEmpty())
-                                @foreach ($disapproved_events as $disapproved_event)
+                            @if ($notifications->isNotEmpty())
+                                @foreach ($notifications as $notification)
                                     <tr>
-                                        <td>{{ date_format(date_create($disapproved_event->date), 'F d, Y') }}</td>
-                                        <td>{{ $disapproved_event->title }}</td>
-                                        <td>{{ $disapproved_event->head_organization }}</td>
-                                        <td>{{ $disapproved_event->venue }} / {{ date_format(date_create($disapproved_event->time), 'H : i a')}}</td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $notification->organization_name }}</td>
+                                        <td>{{ $notification->message }}</td>
                                         <td>                                            
-                                            <a href="{{ route('director.events.show', [$disapproved_event->upcoming_event_id, $disapproved_event->organization_id]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
-                                            <button type="button" class="btn btn-warning btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#reason{{ $disapproved_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Reasons">
-                                                Reason/s
-                                            </button>
-                                            @include('director.includes.reason')
+                                            <a href="{{ route('officer.events.show', [$notification->upcoming_event_id, $notification->from]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -61,7 +55,7 @@
                             @endif
                         </tbody>
                     </table>
-                    {{ $disapproved_events->links() }}
+                    {{ $notifications->links() }} 
                 @endif
             </div>
         </div>
@@ -79,7 +73,7 @@
         // Simple-DataTables
         // https://github.com/fiduswriter/Simple-DataTables
         window.addEventListener('DOMContentLoaded', event => {
-            const dataTable = new simpleDatatables.DataTable("#disapprovedevents", {
+            const dataTable = new simpleDatatables.DataTable("#approvedevents", {
                 perPage: 10,
                 searchable: true,
                 labels: {

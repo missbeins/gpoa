@@ -69,10 +69,19 @@
                         </div>     
                         <div class="col-md-3 mb-2">
                             <label for="partnerships" class="form-label">{{ __('Partnership(s)') }}</label>
-                            <input id="partnerships" type="text" class="form-control @error('partnership') is-invalid @enderror" name="partnerships"
+                            {{-- <input id="partnerships" type="text" class="form-control @error('partnership') is-invalid @enderror" name="partnerships"
                                 value="{{ old('partnerships') }}" required
-                                autocomplete="partnerships" autofocus>
-                            
+                                autocomplete="partnerships" autofocus> --}}
+
+                            <select class="form-control" id="partnerships" name="partnerships[]" multiple id="partnerships">
+                                <option value="None">None</option>
+                                <option value="All Organizations">All Organizations</option>
+                                @foreach ($organizations as $organization)
+                                    <option value="{{ $organization->organization_acronym }}">
+                                        {{ $organization->organization_name }}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('partnerships')
                                 <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -217,4 +226,30 @@
         </div>
     </div>
 </div>
+
+@endsection
+@section('scripts')
+    
+    @push('scripts')
+        {{-- Javascript Imports --}}
+        
+        {{-- <script src="{{ asset('js/app.js') }}"></script> --}}
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @endpush
+
+       
+<script>
+  $(document).ready(function() {
+      // Select2 Multiple
+      $('#partnerships').select2({
+          placeholder: "Select",
+          allowClear: true
+      });
+
+  });
+
+</script>
 @endsection

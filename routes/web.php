@@ -101,6 +101,9 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::post('/partnerships/decline-request/{event}', [EventsController::class, 'declineRequest'])->name('declineRequest');
     Route::get('/gpoa/event-details/{event}', [EventsController::class, 'availablePartnershipDetails'])->name('availablePartnershipDetails');
     Route::post('/partnerships/apply/{event}', [EventsController::class, 'applyPartnership'])->name('applyPartnership');
+    Route::get('/events/approved-partnership', [EventsController::class, 'approvedPartnerships'])->name('approvedPartnerships');
+    Route::get('/events/disapproved-partnership', [EventsController::class, 'disapprovedPartnerships'])->name('disapprovedPartnerships');
+    Route::get('/gpoa/notifications', [EventsController::class, 'notifications'])->name('notifications');
 
     
 });

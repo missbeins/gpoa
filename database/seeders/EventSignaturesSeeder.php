@@ -37,6 +37,13 @@ class EventSignaturesSeeder extends Seeder
                 'organization_id' => 2,
                 'signature_path' => NULL
             ],
+            [
+                //director
+                'user_id' => '15',
+                'role_id' => '10',
+                'organization_id' => NULL,
+                'signature_path' => NULL
+            ],
             
             
         ];

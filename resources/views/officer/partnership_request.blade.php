@@ -34,7 +34,7 @@
                                 
                                 <th class="col-sm-1">#</th></th>
                                 <th class="col-sm-4">Name/Title of Activity</th>
-                                <th class="col-sm-4">Head Organization</th>
+                                <th class="col-sm-4">Request By</th>
                                 <th class="col-sm-2">Actions</th>
                                 
                             </tr>

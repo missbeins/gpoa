@@ -147,7 +147,7 @@
                 <div class="card-header" style="background-color: #c62128; color:azure; font-weight: bold;">{{ __('Signature') }}</div>
                 <div class="card-body">
                         <label for="signature">My signature</label>
-                        @if (empty($event_signature))
+                        @if (empty($event_signature->signature_path))
                            <input type="text" name="" id="signature" readonly value=" No signature has been uploaded. Please upload your signature." style="width: 50%">
                            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Add

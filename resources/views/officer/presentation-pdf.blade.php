@@ -204,7 +204,7 @@
             <div class="signatures">
                 <div class="prepared">
                     <p>Prepared by:</p>
-                    @if ($president_signature != null)                       
+                    @if ($president_signature != null)
                         <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
                         <span style="font-style: bold;">{{ $president_signature->user->first_name }} {{ $president_signature->user->middle_name }} {{ $president_signature->user->last_name }}</span>
                         <span style="font-style: italic;">President, {{ $organization->organization_name }}	</span>
@@ -219,7 +219,7 @@
                     <p>Recommending Approval:</p>
                    
                     @if ($admin_signature != null)
-                        @if ($admin_signature->signature_path != null && $admin_signature->user->title != null)
+                        @if ( $admin_signature->user->title != null)
                            
                             <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
                             <span style="font-style: bold;">{{ $admin_signature->user->title.'. ' }}{{ $admin_signature->user->first_name }} {{ $admin_signature->user->middle_name }} {{ $admin_signature->user->last_name }}</span>
@@ -238,7 +238,7 @@
                 <div class="adviser">
                     <p>Noted by:</p>
                     @if ($adviser_signature != null)
-                        @if ($adviser_signature->signature_path != null && $adviser_signature->user->title != null)
+                        @if ($adviser_signature->user->title != null)
                             
                             <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
                             <span style="font-style: bold;">{{ $adviser_signature->user->title.'. ' }}{{ $adviser_signature->user->first_name }} {{ $adviser_signature->user->middle_name }} {{ $adviser_signature->user->last_name }}</span>
@@ -257,11 +257,9 @@
                 </div>
                 <div class="director">
                     <p>Approved by:</p>
-                    {{-- <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
-                    <span style="font-style: bold;">Dr. Marissa B. Ferrer</span>
-                    <span style="font-style: italic;">Director</span> --}}
+                  
                     @if ($director_signature != null)
-                        @if ($director_signature->signature_path != null && $director_signature->user->title != null)
+                        @if ( $director_signature->user->title != null)
                             <div style="width: 100px; height: 60px; margin-top: 5px;"></div>
                             <span style="font-style: bold;">{{ $director_signature->user->title.'. ' }}{{ $director_signature->user->first_name }} {{ $director_signature->user->middle_name }} {{ $director_signature->user->last_name }}</span>
                             <span style="font-style: italic;">Director</span>

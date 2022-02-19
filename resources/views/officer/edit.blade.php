@@ -28,10 +28,20 @@
                         @method('PUT')
                         <div class="col-md-4 mb-2">
                             <label for="head_organization" class="form-label">{{ __('Head Organization') }}</label>
-                            <input id="head_organization" type="text" class="form-control @error('head_organization') is-invalid @enderror" name="head_organization"
+                            {{-- <input id="head_organization" type="text" class="form-control @error('head_organization') is-invalid @enderror" name="head_organization"
                             value="{{ old('head_organization') }}@isset($upcoming_events){{ $upcoming_events->head_organization }}@endisset" required
-                            autocomplete="head_organization" autofocus>
-
+                            autocomplete="head_organization" autofocus> --}}
+                            <select class="form-control" id="head_organization" name="head_organization" required>
+                                @foreach ($organizations as $organization)
+                                    {{-- <option value="{{ $organization->organization_acronym }}">
+                                        {{ $organization->organization_name }}
+                                    </option> --}}
+                                    <option value="{{ $organization->organization_acronym }}" @isset($upcoming_events){{ $organization->organization_acronym == $upcoming_events->head_organization ? 'selected' : '' }} @endisset>
+                                        {{ $organization->organization_name }}
+                                    </option>
+                                    
+                                @endforeach
+                            </select>
                             @error('head_organization')
                                 <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -65,11 +75,20 @@
                         </div>     
                         <div class="col-md-3 mb-2">
                             <label for="partnerships" class="form-label">{{ __('Partnership(s)') }}</label>
-                            <input id="partnerships" type="text" class="form-control @error('partnership') is-invalid @enderror" name="partnerships"
+                            {{-- <input id="partnerships" type="text" class="form-control @error('partnership') is-invalid @enderror" name="partnerships"
                                 value="@isset($upcoming_events){{ $upcoming_events->partnerships }}@endisset" required
-                                autocomplete="partnerships" autofocus>
-
-                            @error('partnership')
+                                autocomplete="partnerships" autofocus> --}}
+                            <select class="form-control" id="partnerships" name="partnerships[]" multiple>
+                                <option value="All Organizations">All Organizations</option>
+                                @foreach ($organizations as $organization)
+                                   
+                                    {{-- <option value="{{ $organization->organization_acronym }}" @isset($upcoming_events){{ $organization->organization_acronym == $upcoming_events->head_organization ? 'selected' : '' }} @endisset>
+                                        {{ $organization->organization_name }}
+                                    </option> --}}
+                                    <option value="{{ $organization->organization_acronym }}" @if(in_array($organization->organization_acronym,$selectedPartnerships)) selected @endif> {{ $organization->organization_name }}</option>
+                                @endforeach
+                            </select>
+                            @error('partnerships')
                                 <span class="invalid-feedback d-block" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -205,4 +224,29 @@
     </div>
 </div>
 
+@endsection
+@section('scripts')
+    
+    @push('scripts')
+        {{-- Javascript Imports --}}
+        
+        {{-- <script src="{{ asset('js/app.js') }}"></script> --}}
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @endpush
+
+       
+<script>
+  $(document).ready(function() {
+      // Select2 Multiple
+      $('#partnerships').select2({
+          placeholder: "Select",
+          allowClear: true
+      });
+
+  });
+
+</script>
 @endsection

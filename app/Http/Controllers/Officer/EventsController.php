@@ -14,6 +14,7 @@ use App\Models\Disapproved_events;
 use App\Models\Event_Partnerships;
 use App\Models\event_signatures;
 use App\Models\Genders;
+use App\Models\GPOA_Notifications;
 use App\Models\Partnerships_Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -179,6 +180,7 @@ class EventsController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
          // Pluck all User Roles
          $userRoleCollection = Auth::user()->roles;
 
@@ -203,7 +205,7 @@ class EventsController extends Controller
                 'head_organization' => ['required','string'],
                 'title_of_activity' => ['required', 'string', 'max:100'],
                 'objectives' => ['required', 'string', 'max:255'],
-                'partnerships' => ['required', 'string', 'max:255'],
+                'partnerships' => ['required'],
                 'participants' => ['required', 'string', 'max:255'],
                 'venue' => ['required', 'string', 'max:255'],
                 'projected_budget' => ['nullable','integer'],
@@ -216,7 +218,8 @@ class EventsController extends Controller
                 'school_year' => ['required'],      
                 'partnership_status' => ['nullable'],
             ]);
-            
+            $getPartnerships = $request['partnerships'];
+            $partnerships = implode(',', $getPartnerships);
             // dd($request->partnership_status);
             if($request->has('partnership_status')){
                 $upcomming_events = upcoming_events::create([
@@ -225,7 +228,7 @@ class EventsController extends Controller
                     'head_organization' => $request['head_organization'],
                     'title' => $request['title_of_activity'],
                     'objectives' => $request['objectives'],
-                    'partnerships' => $request['partnerships'],
+                    'partnerships' => $partnerships,
                     'participants' => $request['participants'],
                     'venue' =>$request['venue'],
                     'projected_budget' =>$request['projected_budget'],
@@ -247,7 +250,7 @@ class EventsController extends Controller
                     'head_organization' => $request['head_organization'],
                     'title' => $request['title_of_activity'],
                     'objectives' => $request['objectives'],
-                    'partnerships' => $request['partnerships'],
+                    'partnerships' => $partnerships,
                     'participants' => $request['participants'],
                     'venue' =>$request['venue'],
                     'projected_budget' =>$request['projected_budget'],
@@ -347,9 +350,11 @@ class EventsController extends Controller
                 $organizations = organization::all();
                 $upcoming_events = upcoming_events::find($id);
                 // dd($upcoming_events);
+                $selectedPartnerships = explode(',', $upcoming_events->partnerships);
                 return view('officer.edit',compact([
                     'organizations',
-                    'upcoming_events'
+                    'upcoming_events',
+                    'selectedPartnerships'
                 ]));
                 }
                 else{
@@ -394,7 +399,7 @@ class EventsController extends Controller
                     'head_organization' => ['required', 'string', 'max:100'],
                     'title_of_activity' => ['required', 'string', 'max:100'],
                     'objectives' => ['required', 'string', 'max:255'],
-                    'partnerships' => ['required', 'string', 'max:255'],
+                    'partnerships' => ['required'],
                     'participants' => ['required', 'string', 'max:255'],
                     'venue' => ['required', 'string', 'max:255'],
                     'projected_budget' => ['required','integer','max:2147483647'],
@@ -407,7 +412,8 @@ class EventsController extends Controller
                     'school_year' => ['required'],      
                 
                 ]);
-                
+                $getPartnerships = $request['partnerships'];
+                $partnerships = implode(',', $getPartnerships);
                 //dd($request);
                 $upcomming_events = upcoming_events::where('upcoming_event_id',$id)->update([
 
@@ -415,7 +421,7 @@ class EventsController extends Controller
                     'head_organization' => $request['head_organization'],
                     'title' => $request['title_of_activity'],
                     'objectives' => $request['objectives'],
-                    'partnerships' => $request['partnerships'],
+                    'partnerships' => $partnerships,
                     'participants' => $request['participants'],
                     'venue' =>$request['venue'],
                     'projected_budget' =>$request['projected_budget'],
@@ -628,6 +634,7 @@ class EventsController extends Controller
             $director_signature = event_signatures::with('user')
                                 ->where('role_id',10)
                                 ->first();
+            // dd($president_signature);
             $adviser_signature = event_signatures::with('user')
                                 ->where('organization_id', $organizationID)
                                 ->where('role_id',9)
@@ -1089,6 +1096,7 @@ class EventsController extends Controller
                         ->join('organizations','organizations.organization_id','=','partnership_requests.request_by')
                         ->where('partnership_requests.request_to', $organizationID)
                         ->where('partnership_requests.request_status','=','pending')
+                        ->orderBy('partnership_requests.event_id','DESC')
                         ->paginate(5);
         
         return view('officer.partnership_request',compact('partnership_requests'));
@@ -1110,8 +1118,10 @@ class EventsController extends Controller
         // Get the Organization from which the user is GPOA Admin
         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
-        $available_partnerships = upcoming_events::where('upcoming_events.partnership_status','=','on')
+        $available_partnerships = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                                ->where('upcoming_events.partnership_status','=','on')
                                 ->where('upcoming_events.organization_id','!=', $organizationID)
+                                ->orderBy('upcoming_events.upcoming_event_id','DESC')
                                 ->paginate(5);
         return view('officer.partnerships',compact('available_partnerships'));
 
@@ -1201,7 +1211,7 @@ class EventsController extends Controller
             abort(403);
         }
     }
-    public function acceptRequest($id, Request $request){
+    public function acceptRequest($id){
         if (Gate::allows('is-officer')) {
             abort_if(! Partnerships_Requests::where('event_id', $id)->exists(), 404);
            
@@ -1243,7 +1253,14 @@ class EventsController extends Controller
                 'activity_type' => $event[0]['activity_type'],
                 'partnership_status' => 'off'
             ]);
-            
+
+            GPOA_Notifications::create([
+                'event_id' => $event[0]['upcoming_event_id'],
+                'message' => 'Your request has been accepted. Event is now added to your organizations events.',
+                'from' => $event[0]['request_by'],
+                'to' => $event[0]['request_to']           
+            ]);
+
             Partnerships_Requests::where('event_id', $id)->update([
                'request_status' => 'accepted'
             ]);
@@ -1271,7 +1288,8 @@ class EventsController extends Controller
             // Get the Organization from which the user is GPOA Admin
             $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
             $organizationID = $userRoles[$userRoleKey]['organization_id'];
-
+            $event = Partnerships_Requests::join('upcoming_events','upcoming_events.upcoming_event_id','=','partnership_requests.event_id')
+                    ->where('partnership_requests.event_id', $id)->get()->toArray();
             $request->validate([
                 'reason' => ['required','string']
             ]);
@@ -1280,10 +1298,89 @@ class EventsController extends Controller
                'reason' => $request['reason']
 
             ]);
-
+            GPOA_Notifications::create([
+                'event_id' => $event[0]['upcoming_event_id'],
+                'message' => 'Your request has been declined. You can see the reason/s at the declined partnerships tab.',
+                'from' => $event[0]['request_by'],
+                'to' => $event[0]['request_to']
+            ]);
+            
             return redirect()->back()->with('error','Partnership request declined!');
         }else{
             abort(403);
         }
     }
+
+    public function approvedPartnerships(){
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has GPOA Admin role...
+       
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is GPOA Admin
+        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+        $approved_requests = Partnerships_Requests::join('upcoming_events','upcoming_events.upcoming_event_id','=','partnership_requests.event_id')
+                            ->join('organizations','organizations.organization_id','=','partnership_requests.request_by')
+                            ->where('request_status','=','accepted')
+                            ->where('request_by',$organizationID)->paginate(5);
+        return view('officer.approved-partnerships',compact('approved_requests'));
+    }
+    public function disapprovedPartnerships(){
+         // Pluck all User Roles
+         $userRoleCollection = Auth::user()->roles;
+
+         // Remap User Roles into array with Organization ID
+         $userRoles = array();
+         foreach ($userRoleCollection as $role) 
+         {
+             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+         }
+ 
+         // If User has GPOA Admin role...
+        
+         $memberRoleKey = $this->hasRole($userRoles,'User');
+         // Get the Organization from which the user is GPOA Admin
+         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+         $organizationID = $userRoles[$userRoleKey]['organization_id'];
+         $disapproved_requests = Partnerships_Requests::join('upcoming_events','upcoming_events.upcoming_event_id','=','partnership_requests.event_id')
+                             ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                             ->where('request_status','=','declined')
+                             ->where('request_by',$organizationID)->paginate(5);
+        return view('officer.disapproved-partnerships',compact('disapproved_requests'));
+
+    }
+
+    public function notifications(){
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has GPOA Admin role...
+       
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is GPOA Admin
+        $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+        $notifications = GPOA_Notifications::join('upcoming_events','upcoming_events.upcoming_event_id','=','gpoa_notifications.event_id')
+                    ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                    ->where('gpoa_notifications.from',$organizationID)
+                    ->paginate(5);
+        return view('officer.notifications',compact('notifications'));
+    }
+    
 }

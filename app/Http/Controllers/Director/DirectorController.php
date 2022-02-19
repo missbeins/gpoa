@@ -12,6 +12,7 @@ use App\Models\course;
 use App\Models\Disapproved_events;
 use App\Models\event_signatures;
 use App\Models\Genders;
+use App\Models\GPOA_Notifications;
 use App\Models\organization;
 use App\Models\User;
 use File;
@@ -128,7 +129,11 @@ class DirectorController extends Controller
                 'directors_approval' => 'approved'
 
             ]);
-
+            GPOA_Notifications::create([
+                'event_id' => $id,
+                'message' => "Event has been approved by PUP Director.",
+                'organization_id' => $request['organization_id']
+            ]);
             return redirect()->back();
         }
         else{
@@ -157,7 +162,11 @@ class DirectorController extends Controller
                 'upcoming_event_id' => $id,
                 'disapproved_by' => Auth::user()->user_id,
             ]);
-            
+            GPOA_Notifications::create([
+                'event_id' => $id,
+                'message' => "Event has been disapproved by PUP Director. Check for the reason/s at the Disapproved Events tab.",
+                'organization_id' => $request['organization_id']
+            ]);
            return redirect()->back();
         }
         else{

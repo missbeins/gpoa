@@ -33,7 +33,7 @@
                             <tr>
                                 <th class="col-sm-1">#</th></th>
                                 <th class="col-sm-4">Name/Title of Activity</th>
-                                <th class="col-sm-4">Head Organization</th>
+                                <th class="col-sm-4">Organization</th>
                                 <th class="col-sm-2">Actions</th>
                                 
                             </tr>
@@ -41,35 +41,21 @@
                         <tbody>
                             @if ($available_partnerships->isNotEmpty())
                                 @foreach ($available_partnerships as $available_partnership)
-                                @if ()
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $available_partnership->title }}</td>
-                                        <td>{{ $available_partnership->head_organization }}</td>
-                                        <td>        
-                                            <a href="{{ route('officer.availablePartnershipDetails',$available_partnership->upcoming_event_id) }}" class="btn btn-secondary btn-sm">Details</a>
-                                            
-                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#apply{{ $available_partnership->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Reasons">
-                                                Apply
-                                            </button>
-                                            @include('officer.includes.apply')                                   
-                                        </td>
-                                    </tr>
-                                @else
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $available_partnership->title }}</td>
-                                        <td>{{ $available_partnership->head_organization }}</td>
-                                        <td>        
-                                            <a href="{{ route('officer.availablePartnershipDetails',$available_partnership->upcoming_event_id) }}" class="btn btn-secondary btn-sm">Details</a>
-                                            
-                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#apply{{ $available_partnership->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Reasons">
-                                                Apply
-                                            </button>
-                                            @include('officer.includes.apply')                                   
-                                        </td>
-                                    </tr>
-                                @endif
+                                    {{-- @if () --}}
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $available_partnership->title }}</td>
+                                            <td>{{ $available_partnership->organization_name }}</td>
+                                            <td>        
+                                                <a href="{{ route('officer.availablePartnershipDetails',$available_partnership->upcoming_event_id) }}" class="btn btn-secondary btn-sm">Details</a>
+                                                
+                                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#apply{{ $available_partnership->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="View Reasons">
+                                                    Apply
+                                                </button>
+                                                @include('officer.includes.apply')                                   
+                                            </td>
+                                        </tr>
+                                    {{-- @endif --}}
                                     
                                 @endforeach
                             @else

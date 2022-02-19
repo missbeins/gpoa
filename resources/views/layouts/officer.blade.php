@@ -60,11 +60,13 @@
                     <div class="dropdown-container">
                         <a href="{{ route('officer.approvedEvents') }}"><i class="fas fa-thumbs-up me-2"></i>Approved Events</a>
                         <a href="{{ route('officer.disapprovedEvents') }}"><i class="fas fa-thumbs-down me-2"></i>Disapproved Events</a>
-                        <a href=""><i class="fas fa-thumbs-up me-2"></i>Accepted Partnerships</a>
-                        <a href=""><i class="fas fa-thumbs-down me-2"></i>Declined Partnerships</a>
+                        <a href="{{ route('officer.approvedPartnerships') }}"><i class="fas fa-thumbs-up me-2"></i>Accepted Partnerships</a>
+                        <a href="{{ route('officer.disapprovedPartnerships') }}"><i class="fas fa-thumbs-down me-2"></i>Declined Partnerships</a>
                     
                     </div>
-
+                    <a href="{{ route('officer.notifications') }}"
+                        class="list-group-item list-group-item-action second-text fw-bold"><i
+                            class="fas fa-bell me-2"></i>Notifications</a>     
                     
                 @endcan
                 <a class=" list-group-item list-group-item-action second-text fw-bold" href="{{ route('logout') }}"

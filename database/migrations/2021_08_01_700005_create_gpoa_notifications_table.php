@@ -24,7 +24,6 @@ class CreateGPOANotificationsTable extends Migration
             $table->foreign('event_id')->references('upcoming_event_id')->on('upcoming_events');
             $table->foreign('to')->references('organization_id')->on('organizations');
             $table->foreign('from')->references('organization_id')->on('organizations');
-
         });
     }
 

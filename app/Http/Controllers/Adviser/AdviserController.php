@@ -147,7 +147,8 @@ class AdviserController extends Controller
             GPOA_Notifications::create([
                 'event_id' => $id,
                 'message' => "Event has been approved by Organization's Adviser.",
-                'organization_id' => $request['organization_id']
+                'user_id' => Auth::user()->user_id,
+                'to' => $request['organization_id']
             ]);
             
             return redirect(route('adviser.adviser.event-approval'));
@@ -156,7 +157,7 @@ class AdviserController extends Controller
             abort(403);
         }
     }
-
+    
     public function disapproved($id, Request $request)
     {
         if(Gate::allows('is-adviser')){
@@ -181,8 +182,9 @@ class AdviserController extends Controller
             ]);
             GPOA_Notifications::create([
                 'event_id' => $id,
-                'message' => "Event has been disapproved by Organization's Adviser. Check for the reason/s at the Disapproved Events tab.",
-                'organization_id' => $request['organization_id']
+                'message' => "Event has been disapproved by Organization's Adviser. Check for the reason/s at the Disapproved Events tab.",            
+                'user_id' => Auth::user()->user_id,
+                'to' => $request['organization_id']
             ]);
             return redirect(route('adviser.adviser.event-approval'));
         }

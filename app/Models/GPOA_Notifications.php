@@ -10,5 +10,5 @@ class GPOA_Notifications extends Model
     use HasFactory;
     protected $table='gpoa_notifications';
     protected $primaryKey = 'notification_id';
-    protected $fillable = ['message','to','event_id','from'];
+    protected $fillable = ['message','to','event_id','from','user_id'];
 }

@@ -42,6 +42,7 @@ class SuperAdminController extends Controller
             
             $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.directors_approval','=','approved')
                 ->orderBy('upcoming_event_id', 'desc')
                 ->get();
 
@@ -100,6 +101,7 @@ class SuperAdminController extends Controller
         if(Gate::allows('is-superadmin')){
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                 ->where('upcoming_events.completion_status','=','upcoming')
+                ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','pending')
                 ->where('upcoming_events.organization_id',$OrgId)
                 ->orderBy('upcoming_events.date','asc')
@@ -132,7 +134,8 @@ class SuperAdminController extends Controller
             GPOA_Notifications::create([
                 'event_id' => $id,
                 'message' => 'Event has been approved by Head of Academic affairs.',
-                'organization_id' => $request['organization_id']
+                'user_id' => Auth::user()->user_id,
+                'to' => $request['organization_id']
             ]);
             
             return redirect()->back();
@@ -166,7 +169,8 @@ class SuperAdminController extends Controller
             GPOA_Notifications::create([
                 'event_id' => $id,
                 'message' => 'Event has been disapproved by Head of Academic affairs. Check for the reason at the Disapproved Events tab',
-                'organization_id' => $request['organization_id']
+                'user_id' => Auth::user()->user_id,
+                'to' => $request['organization_id']
             ]);
            return redirect()->back();
         }
@@ -505,6 +509,9 @@ class SuperAdminController extends Controller
             $admin_signature = event_signatures::with('user')
                                 ->where('role_id',1)
                                 ->first();    
+            $director_signature = event_signatures::with('user')
+                                ->where('role_id',10)
+                                ->first();  
             //dd($president_signature, $admin_signature, $adviser_signature);
             $pdf = PDF::loadView('admin.gpoa-pdf-file', compact([
                 'upcoming_events', 
@@ -512,6 +519,7 @@ class SuperAdminController extends Controller
                 'president_signature',
                 'admin_signature',
                 'adviser_signature',
+                'director_signature',
                 'inputYear',
                 'inputSem',
                 'inputMembershipfee',

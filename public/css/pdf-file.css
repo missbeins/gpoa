@@ -142,10 +142,11 @@ header{
  }
 .director{
     
-    margin-top: -38px;
+    margin-top: -200px;
     margin-left: 630px;
     max-width: 50%;
     padding-left: 50px;
+    
  }
 footer{
     position: fixed; 

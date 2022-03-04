@@ -79,6 +79,7 @@
                                 value="@isset($upcoming_events){{ $upcoming_events->partnerships }}@endisset" required
                                 autocomplete="partnerships" autofocus> --}}
                             <select class="form-control" id="partnerships" name="partnerships[]" multiple>
+                                <option value="None">None</option>
                                 <option value="All Organizations">All Organizations</option>
                                 @foreach ($organizations as $organization)
                                    

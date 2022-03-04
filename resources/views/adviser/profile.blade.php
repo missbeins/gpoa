@@ -149,11 +149,12 @@
                         <label for="signature">My signature</label>
                         @if (empty($event_signature->signature_path))
                            <input type="text" name="" id="signature" readonly value=" No signature has been uploaded. Please upload your signature." style="width: 50%">
-                           <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                Add
+                           <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $event_signature->signature_id }}">
+                            Add
                             </button>
+                            @include('adviser.includes.updatesignature')   
         
-                            @include('adviser.includes.addsignature')
+                            {{-- @include('adviser.includes.addsignature') --}}
                         @else
                             <img src="{{ asset('signatures/'. $event_signature->signature_path) }}" alt="signature" style="width: 100px; height:100px; margin-left:10px;">
                         

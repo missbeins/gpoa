@@ -142,7 +142,7 @@ class AdviserController extends Controller
 
                 'advisers_approval' => 'approved',
                
-                
+            
             ]);
             GPOA_Notifications::create([
                 'event_id' => $id,

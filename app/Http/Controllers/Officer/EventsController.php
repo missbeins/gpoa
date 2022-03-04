@@ -561,7 +561,7 @@ class EventsController extends Controller
             $director_signature = event_signatures::with('user')
                                 ->where('role_id',10)
                                 ->first();
-            // dd($president_signature->user->title);
+            // dd($director_signature->user->title);
 
             $pdf = PDF::loadView('officer.pdf-file', compact([
                 'upcoming_events', 
@@ -686,6 +686,7 @@ class EventsController extends Controller
             $event_signature = event_signatures::where('event_signatures.user_id',Auth::user()->user_id)->first();
             $courses = course::All();
             $genders= Genders::All();
+            // dd($event_signature);
             return view('officer.profile',compact([ 
                 'courses',
                 'genders',
@@ -1234,6 +1235,7 @@ class EventsController extends Controller
                     ->where('partnership_requests.event_id', $id)->get()->toArray();
             // dd($event[0]['request_by']);
             // dd($request->organization_id);
+            
             upcoming_events::create([
 
                 'organization_id' => $event[0]['request_by'],
@@ -1253,12 +1255,19 @@ class EventsController extends Controller
                 'activity_type' => $event[0]['activity_type'],
                 'partnership_status' => 'off'
             ]);
-
+            // $getPartnersOrg = organization::join('upcoming_events','upcoming_events.organization_id','=','organizations.organization_id')
+            //                 ->where('organizations.organization_id',$event[0]['request_by'])
+            //                 ->select('organizations.organization_acronym')
+            //                 ->first();
+            //             dd($getPartnersOrg['organization_acronym']);
+            // upcoming_events::where('upcoming_event_id',$id)->update([
+            //     'partnerships' => $getPartnersOrg,
+            // ]);
             GPOA_Notifications::create([
                 'event_id' => $event[0]['upcoming_event_id'],
                 'message' => 'Your request has been accepted. Event is now added to your organizations events.',
-                'from' => $event[0]['request_by'],
-                'to' => $event[0]['request_to']           
+                'from' => $event[0]['request_to'],
+                'to' => $event[0]['request_by']           
             ]);
 
             Partnerships_Requests::where('event_id', $id)->update([
@@ -1378,7 +1387,8 @@ class EventsController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         $notifications = GPOA_Notifications::join('upcoming_events','upcoming_events.upcoming_event_id','=','gpoa_notifications.event_id')
                     ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                    ->where('gpoa_notifications.from',$organizationID)
+                    // ->join('users','users.user_id','=','gpoa_notifications.user_id')
+                    ->where('gpoa_notifications.to',$organizationID)
                     ->paginate(5);
         return view('officer.notifications',compact('notifications'));
     }

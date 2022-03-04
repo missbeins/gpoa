@@ -9,6 +9,8 @@
         </div>
         <form action="{{ route('officer.acceptRequest', $request->event_id) }}" enctype="multipart/form-data"  method="POST">
             @csrf
+            {{-- <input type="hidden" name="organization_id" value="{{ $available_partnership->organization_id }}"> --}}
+
             <div class="modal-body">
               <p>Are you sure you want to accept the request for partnership?</p>
             </div>

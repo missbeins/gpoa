@@ -64,6 +64,39 @@ class PermissionUserSeeder extends Seeder
                 ['user_id' => 8, 'permission_id' => 30,],
                 ['user_id' => 8, 'permission_id' => 31,],
 
+                ['user_id' => 16, 'permission_id' => 28,],
+                ['user_id' => 16, 'permission_id' => 30,],
+                ['user_id' => 16, 'permission_id' => 31,],
+
+                ['user_id' => 17, 'permission_id' => 28,],
+                ['user_id' => 17, 'permission_id' => 30,],
+                ['user_id' => 17, 'permission_id' => 31,],
+
+                ['user_id' => 18, 'permission_id' => 28,],
+                ['user_id' => 18, 'permission_id' => 30,],
+                ['user_id' => 18, 'permission_id' => 31,],
+
+                ['user_id' => 19, 'permission_id' => 28,],
+                ['user_id' => 19, 'permission_id' => 30,],
+                ['user_id' => 19, 'permission_id' => 31,],
+
+                ['user_id' => 20, 'permission_id' => 28,],
+                ['user_id' => 20, 'permission_id' => 30,],
+                ['user_id' => 20, 'permission_id' => 31,],
+
+                ['user_id' => 21, 'permission_id' => 28,],
+                ['user_id' => 21, 'permission_id' => 30,],
+                ['user_id' => 21, 'permission_id' => 31,],
+
+                ['user_id' => 22, 'permission_id' => 28,],
+                ['user_id' => 22, 'permission_id' => 30,],
+                ['user_id' => 22, 'permission_id' => 31,],
+
+                ['user_id' => 23, 'permission_id' => 28,],
+                ['user_id' => 23, 'permission_id' => 30,],
+                ['user_id' => 23, 'permission_id' => 31,],
+
+              
                 // Super Admin Initial Permissions
                 ['user_id' => 1, 'permission_id' => 32,],
                 ['user_id' => 1, 'permission_id' => 33,],

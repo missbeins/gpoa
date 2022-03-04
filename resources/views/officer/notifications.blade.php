@@ -32,7 +32,7 @@
                         <thead>
                             <tr>
                                 <th class="col-sm-1">#</th>
-                                <th class="col-sm-2">Organization</th>
+                                {{-- <th class="col-sm-2">From</th> --}}
                                 <th class="col-sm-7">Message</th>
                                 <th class="col-sm-2">Actions</th>
                                 
@@ -43,10 +43,10 @@
                                 @foreach ($notifications as $notification)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $notification->organization_name }}</td>
+                                        {{-- <td>{{ $notification-> }}</td> --}}
                                         <td>{{ $notification->message }}</td>
                                         <td>                                            
-                                            <a href="{{ route('officer.events.show', [$notification->upcoming_event_id, $notification->from]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
+                                            <a href="{{ route('officer.events.show', [$notification->upcoming_event_id, $notification->to]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach

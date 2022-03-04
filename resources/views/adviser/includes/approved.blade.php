@@ -22,7 +22,7 @@
                     </span>
                     @enderror
                   </div>
-                
+                 
                 <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text" id="date">{{ __('Date') }}</span>
                     <input type="date" class="form-control @error('date') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="date" name="date"

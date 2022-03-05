@@ -349,6 +349,7 @@ class EventsController extends Controller
                 //abort_if(! upcoming_events::where('organization_id', Auth::user()->organization_id), 403);
                 $organizations = organization::all();
                 $upcoming_events = upcoming_events::find($id);
+                
                 // dd($upcoming_events);
                 $selectedPartnerships = explode(',', $upcoming_events->partnerships);
                 return view('officer.edit',compact([
@@ -410,29 +411,54 @@ class EventsController extends Controller
                     'fund_sourcing' => ['required','string'],    
                     'semester' => ['required',Rule::in($semesters)],   
                     'school_year' => ['required'],      
+                    'partnership_status' => ['nullable'],
                 
                 ]);
                 $getPartnerships = $request['partnerships'];
                 $partnerships = implode(',', $getPartnerships);
                 //dd($request);
-                $upcomming_events = upcoming_events::where('upcoming_event_id',$id)->update([
+                if($request->has('partnership_status')){
+                    upcoming_events::where('upcoming_event_id',$id)->update([
 
-                    'organization_id' =>  $organizationID,
-                    'head_organization' => $request['head_organization'],
-                    'title' => $request['title_of_activity'],
-                    'objectives' => $request['objectives'],
-                    'partnerships' => $partnerships,
-                    'participants' => $request['participants'],
-                    'venue' =>$request['venue'],
-                    'projected_budget' =>$request['projected_budget'],
-                    'time' => $request['time'],
-                    'sponsor' => $request['sponsors'],
-                    'date' => $request['date'],
-                    'semester' => $request['semester'],
-                    'school_year' => $request['school_year'],
-                    'fund_source' => $request['fund_sourcing'],
-                    'activity_type' => $request['type_of_activity']
-                ]);
+                        'organization_id' =>  $organizationID,
+                        'head_organization' => $request['head_organization'],
+                        'title' => $request['title_of_activity'],
+                        'objectives' => $request['objectives'],
+                        'partnerships' => $partnerships,
+                        'participants' => $request['participants'],
+                        'venue' =>$request['venue'],
+                        'projected_budget' =>$request['projected_budget'],
+                        'time' => $request['time'],
+                        'sponsor' => $request['sponsors'],
+                        'date' => $request['date'],
+                        'semester' => $request['semester'],
+                        'school_year' => $request['school_year'],
+                        'fund_source' => $request['fund_sourcing'],
+                        'activity_type' => $request['type_of_activity'],
+                        'partnership_status' => 'on'
+                    ]);
+                }else{
+                    upcoming_events::where('upcoming_event_id',$id)->update([
+
+                        'organization_id' =>  $organizationID,
+                        'head_organization' => $request['head_organization'],
+                        'title' => $request['title_of_activity'],
+                        'objectives' => $request['objectives'],
+                        'partnerships' => $partnerships,
+                        'participants' => $request['participants'],
+                        'venue' =>$request['venue'],
+                        'projected_budget' =>$request['projected_budget'],
+                        'time' => $request['time'],
+                        'sponsor' => $request['sponsors'],
+                        'date' => $request['date'],
+                        'semester' => $request['semester'],
+                        'school_year' => $request['school_year'],
+                        'fund_source' => $request['fund_sourcing'],
+                        'activity_type' => $request['type_of_activity'],
+                        'partnership_status' => 'off'
+                    ]);
+                }
+                
                 $request->session()->flash('success','Event updated successfully!');
                 return redirect(route('officer.events.index'));
             }

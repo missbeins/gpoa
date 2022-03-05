@@ -86,7 +86,7 @@
                                     {{-- <option value="{{ $organization->organization_acronym }}" @isset($upcoming_events){{ $organization->organization_acronym == $upcoming_events->head_organization ? 'selected' : '' }} @endisset>
                                         {{ $organization->organization_name }}
                                     </option> --}}
-                                    <option value="{{ $organization->organization_acronym }}" @if(in_array($organization->organization_acronym,$selectedPartnerships)) selected @endif> {{ $organization->organization_name }}</option>
+                                    <option value="{{ $organization->organization_acronym }}" @if(in_array($organization->organization_acronym,$selectedPartnerships)) selected @endif> {{ $organization->organization_acronym }}</option>
                                 @endforeach
                             </select>
                             @error('partnerships')
@@ -214,7 +214,28 @@
                                 </span>
                             @enderror
                         </div>         
-                            
+                        <div class="col-md-3 mb-2">
+                            @if ( $upcoming_events->partnership_status == 'on')
+                                <input type="checkbox" name="partnership_status" value="on" checked>
+                                <label>Set event as open for partnerships</label><br/><br/>
+
+                                @error('partnership_status')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            @else
+                                <input type="checkbox" name="partnership_status" value="on" >
+                                <label>Set event as open for partnerships</label><br/><br/>
+
+                                @error('partnership_status')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            @endif
+                           
+                        </div>         
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>

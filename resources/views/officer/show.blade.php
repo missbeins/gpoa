@@ -167,7 +167,7 @@
                             @enderror
                         </div>     
                         
-                        <div class="col-md-3 mb-1">
+                        <div class="col-md-3">
                             <label for="school_year" class="form-label">{{ __('School Year / Semester') }}</label>
                             <input id="school_year" type="text" class="form-control @error('school_year') is-invalid @enderror"
                                 name="school_year"
@@ -180,22 +180,21 @@
                             @enderror
                         </div>  
                         <hr>
-                        <div class="col-md-3">
-                            {{-- <label for="status" class="form-label">{{ __('Status') }}</label>
-                            <input id="status" type="text" class="form-control @error('status') is-invalid @enderror"
-                                name="status"
-                                value="{{ old('status') }}@isset($upcoming_event){{ $upcoming_event->status }}@endisset" readonly required>
+                        <div class="col-md-12">
+                            <span class="text-danger">Note:</span>
+                            @if ( $upcoming_event->partnership_status=='on')
+                                <span class="text-danger"> The event is open for partnerships.</span>
+                            @else
+                                <span class="text-danger"> The event is not open for partnerships.</span>
 
-                            @error('status  ')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror --}}
-                            @if ( $upcoming_event->status=='accomplished')
-                                <p class="text-danger"> Note: The event is already accomplished.</p>
                             @endif
-                           
-                        </div>         
+                            
+                            @if ( $upcoming_event->status=='accomplished')
+                                <span class="text-danger">The event is already accomplished.</span>
+                            @endif
+                    
+                            
+                        </div>           
                             
                     </form>
                 </div>

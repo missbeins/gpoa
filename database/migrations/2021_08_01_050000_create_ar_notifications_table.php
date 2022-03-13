@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotificationsTable extends Migration
+class CreateARNotificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateNotificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('notifications', function (Blueprint $table) {
-            $table->id('notification_id');
+        Schema::create('ar_notifications', function (Blueprint $table) {
+            $table->id('ar_notification_id');
             $table->foreignId('user_id');
             $table->string('title');
             $table->text('description')->nullable();

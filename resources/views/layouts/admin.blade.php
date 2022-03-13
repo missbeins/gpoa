@@ -53,6 +53,8 @@
                         <i class="fa fa-caret-down"></i>
                         </button>
                     <div class="dropdown-container">
+                        <a href="{{ route('admin.admin.showAllPendingApproval') }}">All Requests</a>
+
                         @foreach(\App\Models\organization::all() as $organization)
                            <a href="{{ route('admin.admin.event-approval', $organization->organization_id) }}"  value="{{ $organization->organization_id}}">{{ $organization->organization_acronym }}</a>
                         @endforeach

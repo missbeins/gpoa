@@ -27,21 +27,14 @@ class EventSignaturesSeeder extends Seeder
                 //Adviser
                 'user_id' => '10',
                 'role_id' => '9',
-                'organization_id' => 2,
+                'organization_id' => 3,
                 'signature_path' => NULL
             ],
             [
                 //gpoa admin
                 'user_id' => '6',
                 'role_id' => '6',
-                'organization_id' => 2,
-                'signature_path' => NULL
-            ],
-            [
-                //director
-                'user_id' => '15',
-                'role_id' => '10',
-                'organization_id' => NULL,
+                'organization_id' => 3,
                 'signature_path' => NULL
             ],
             

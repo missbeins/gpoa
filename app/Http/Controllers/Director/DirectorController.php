@@ -90,6 +90,22 @@ class DirectorController extends Controller
             abort(403);
         }
     }
+    public function showAllPendingApproval(){
+        //check if USER has SUPER ADMIN role 
+        if(Gate::allows('is-director')){
+                         
+            $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                ->where('upcoming_events.completion_status','=','upcoming')
+                ->where('upcoming_events.studAffairs_approval','=','approved')
+                ->where('upcoming_events.directors_approval','=','pending')
+                ->orderBy('upcoming_events.date','asc')
+                ->paginate(5, ['*'], 'all-pending-approval');            
+             return view('director.all-pending-approval',compact('upcoming_events'));
+         }
+         else{
+             abort(403);
+         }
+     }
     /**
      * Show the application dashboard.
      *
@@ -480,7 +496,7 @@ class DirectorController extends Controller
             $organizationID = $request->organization_id;
             //Get Organization Details including a single Logo
             
-            // dd($organization);
+            // dd($organization );
 
             $inputSem = $request->semester;
             $inputYear = $request->school_year;

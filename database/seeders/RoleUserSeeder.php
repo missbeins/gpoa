@@ -14,7 +14,7 @@ class RoleUserSeeder extends Seeder
      */
     public function run()
     {
-        $organization_id = 2; // CS
+        $organization_id = 3; // CS
         $data = [
             [
                 // Super Admin  
@@ -99,25 +99,25 @@ class RoleUserSeeder extends Seeder
                 // Membership BSA
                 'user_id' => 11,
                 'role_id' => 5,
-                'organization_id' => 4,
+                'organization_id' => 5,
             ],
             [  
                 // GPOA BSA
                 'user_id' => 12,
                 'role_id' => 6,
-                'organization_id' => 4,
+                'organization_id' => 5,
             ],
             [  
                 // Membership ERG
                 'user_id' => 13,
                 'role_id' => 5,
-                'organization_id' => 11,
+                'organization_id' => 12,
             ],
             [  
                 // MEMBERSHIP PUPUKAW
                 'user_id' => 14,
                 'role_id' => 5,
-                'organization_id' => 13,
+                'organization_id' => 14,
             ],
             [  
                 // Director
@@ -125,54 +125,17 @@ class RoleUserSeeder extends Seeder
                 'role_id' => 10,
                 'organization_id' => NULL,
             ],
+
             [  
-                // bsit member
+                // Bernadeth Canlas
+                // Head of Student Affairs Role
                 'user_id' => 16,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
+                'role_id' => 11,
+                'organization_id' => NULL,
             ],
-            [  
-                // bsit member
-                'user_id' => 17,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
-            ],
-            [  
-                // bsit member
-                'user_id' => 18,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
-            ],
-            [  
-                // bsit member
-                'user_id' => 19,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
-            ],
-            [  
-                // bsit member
-                'user_id' => 20,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
-            ],
-            [  
-                // bsit member
-                'user_id' => 21,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
-            ],
-            [  
-                // bsit member
-                'user_id' => 22,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
-            ],
-            [  
-                // bsit member
-                'user_id' => 23,
-                'role_id' => 8,
-                'organization_id' => $organization_id,
-            ],            
+
+
+            
         ];
         DB::table('role_user')->insert($data);
     }

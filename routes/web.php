@@ -39,6 +39,7 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function(){
     Route::get('/gpoa/upcoming-events', [SuperAdminController::class, 'index'])->name('admin.home');
     Route::get('/gpoa/upcoming-events/{organization}', [SuperAdminController::class, 'viewOrganizationevents'])->name('organization-events');
     Route::get('/gpoa/event-approval/{organization}', [SuperAdminController::class, 'eventApproval'])->name('admin.event-approval');
+    Route::get('/gpoa/event-approval', [SuperAdminController::class, 'showAllPendingApproval'])->name('admin.showAllPendingApproval');
     Route::post('/gpoa/approved-event/{event}', [SuperAdminController::class, 'approved'])->name('admin.approved');
     Route::post('/gpoa/disapproved-event/{event}', [SuperAdminController::class, 'disapproved'])->name('admin.disapproved');
     Route::get('profile',[SuperAdminController::class, 'profile'])->name('profile');
@@ -59,6 +60,7 @@ Route::prefix('/director')->middleware('auth')->name('director.')->group(functio
     Route::get('/gpoa/upcoming-events', [DirectorController::class, 'index'])->name('director.home');
     Route::get('/gpoa/upcoming-events/{organization}', [DirectorController::class, 'viewOrganizationevents'])->name('organization-events');
     Route::get('/gpoa/event-approval/{organization}', [DirectorController::class, 'eventApproval'])->name('director.event-approval');
+    Route::get('/gpoa/event-approval', [DirectorController::class, 'showAllPendingApproval'])->name('director.showAllPendingApproval');
     Route::post('/gpoa/approved-event/{event}', [DirectorController::class, 'approved'])->name('director.approved');
     Route::post('/gpoa/disapproved-event/{event}', [DirectorController::class, 'disapproved'])->name('director.disapproved');
     Route::get('profile',[DirectorController::class, 'profile'])->name('profile');
@@ -104,6 +106,13 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::get('/events/approved-partnership', [EventsController::class, 'approvedPartnerships'])->name('approvedPartnerships');
     Route::get('/events/disapproved-partnership', [EventsController::class, 'disapprovedPartnerships'])->name('disapprovedPartnerships');
     Route::get('/gpoa/notifications', [EventsController::class, 'notifications'])->name('notifications');
+    Route::get('/gpoa/budget/add-budget-breakdown/{event}', [EventsController::class, 'showBreakdownForm'])->name('showBreakdownForm');
+    Route::post('event/budget/breakdown/{event}', [EventsController::class, 'budgetBreakdown'])->name('budgetBreakdown');
+
+    // Route::get('/gpoa/budget/add-budget-breakdown/{event}/names', [EventsController::class, 'showBreakdownNamesForm'])->name('showBreakdownNamesForm');
+    // Route::post('event/budget/breakdown/{event}/names', [EventsController::class, 'budgetBreakdownNames'])->name('budgetBreakdownNames');
+    // Route::get('/gpoa/budget/add-budget-breakdown/{event}/amounts', [EventsController::class, 'showBreakdownAmountForm'])->name('showBreakdownAmountForm');
+    // Route::post('event/budget/breakdown/{event}/amounts', [EventsController::class, 'budgetBreakdownAmount'])->name('budgetBreakdownAmount');
 
     
 });

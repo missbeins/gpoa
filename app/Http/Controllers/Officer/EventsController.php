@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Officer;
 
 use App\Http\Controllers\Controller;
 use App\Imports\UpcomingEventsImport;
+use App\Models\Budget_Breakdown;
 use App\Models\organization;
 use App\Models\upcoming_events;
 use App\Models\Role;
@@ -222,7 +223,7 @@ class EventsController extends Controller
             $partnerships = implode(',', $getPartnerships);
             // dd($request->partnership_status);
             if($request->has('partnership_status')){
-                $upcomming_events = upcoming_events::create([
+                $eventId = DB::table('upcoming_events')->insertGetId([
 
                     'organization_id' => $organizationID,
                     'head_organization' => $request['head_organization'],
@@ -244,7 +245,7 @@ class EventsController extends Controller
 
                 
             }else{
-                $upcomming_events = upcoming_events::create([
+                $eventId = DB::table('upcoming_events')->insertGetId([
 
                     'organization_id' => $organizationID,
                     'head_organization' => $request['head_organization'],
@@ -265,8 +266,8 @@ class EventsController extends Controller
                 ]);
             }
             
-            $request->session()->flash('success','Successfully added new event!');
-            return redirect(route('officer.events.index'));
+        
+            return redirect(route('officer.showBreakdownNamesForm', $eventId));
         }
         else{
             abort(403);
@@ -1418,5 +1419,205 @@ class EventsController extends Controller
                     ->paginate(5);
         return view('officer.notifications',compact('notifications'));
     }
+    public function showBreakdownForm($id){
+        
+        $event_name = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
+            ->select('title')
+            ->first();
+        $projected_budget = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
+            ->select('projected_budget')
+            ->first();
+        // dd($event_name);
+        return view('officer.breakdown-names',[
+            'event_id' => $id,
+            'projected_budget'=> $projected_budget,
+            'event_name' => $event_name
+        ]);
+    }
+
+    public function budgetBreakdown(Request $request, $id){
+
+        // dd($request);
     
+        if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+    
+            // If User has GPOA Admin role...
+            
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            $request->validate([
+                'name' => ['required'],
+                'name.*' => ['string'],
+
+            ]);
+            // foreach($request['name'] as $name)
+            // {
+            //     // $request->session()->flash('success','Successfully added new event!'. $name);
+             
+            //     foreach($request['amount'] as $amount){
+            //         echo $name.'<br>';
+                
+            //         echo $amount.'<br>';
+            //     //     Budget_Breakdown::create([
+            //     //         'event_id' => $id,
+            //     //         'name' => $name,
+            //     //         'amount' => 0
+            //     //     ]);
+            //     }
+            // }
+            for ($i=0; $i < count($request['name']); $i++) { 
+                echo $request->name;
+            }
+            
+            // return redirect()->back();
+            // return redirect(route('officer.showBreakdownAmountForm', $id));
+        }else{
+            abort(403);
+        }
+    }
+    // public function showBreakdownNamesForm($id){
+        
+    //     $event_name = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
+    //         ->select('title')
+    //         ->first();
+    //     $projected_budget = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
+    //         ->select('projected_budget')
+    //         ->first();
+    //     // dd($event_name);
+    //     return view('officer.breakdown-names',[
+    //         'event_id' => $id,
+    //         'projected_budget'=> $projected_budget,
+    //         'event_name' => $event_name
+    //     ]);
+    // }
+
+    // public function budgetBreakdownNames(Request $request, $id){
+
+    //     // dd($request);
+    
+    //     if(Gate::allows('is-officer')){
+    //         // Pluck all User Roles
+    //         $userRoleCollection = Auth::user()->roles;
+
+    //         // Remap User Roles into array with Organization ID
+    //         $userRoles = array();
+    //         foreach ($userRoleCollection as $role) 
+    //         {
+    //             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+    //         }
+    
+    //         // If User has GPOA Admin role...
+            
+    //         $memberRoleKey = $this->hasRole($userRoles,'User');
+    //         // Get the Organization from which the user is GPOA Admin
+    //         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+    //         $organizationID = $userRoles[$userRoleKey]['organization_id'];
+    //         $request->validate([
+    //             'name' => ['required'],
+    //             'name.*' => ['string'],
+
+    //         ]);
+    //         foreach($request['name'] as $name)
+    //         {
+    //             Budget_Breakdown::create([
+    //                 'event_id' => $id,
+    //                 'name' => $name,
+    //                 'amount' => 0
+    //             ]);
+    //         }
+            
+    //         $request->session()->flash('success','Successfully added new event!');
+    //         return redirect(route('officer.showBreakdownAmountForm', $id));
+    //     }else{
+    //         abort(403);
+    //     }
+    // }
+    // public function showBreakdownAmountForm($id){
+        
+    //     $event_name = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
+    //         ->select('title')
+    //         ->first();
+    //     $projected_budget = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
+    //         ->select('projected_budget')
+    //         ->first();
+    //     $breakdown_names = Budget_Breakdown::where('event_id', $id)->get();
+    //     // dd($event_name);
+    //     return view('officer.breakdown-amount',[
+    //         'event_id' => $id,
+    //         'projected_budget'=> $projected_budget,
+    //         'event_name' => $event_name,
+    //         'breakdown_names' => $breakdown_names
+    //     ]);
+    // }
+
+    // public function budgetBreakdownAmount(Request $request, $id){
+
+    //     dd($request);
+    
+    //     if(Gate::allows('is-officer')){
+    //         // Pluck all User Roles
+    //         $userRoleCollection = Auth::user()->roles;
+
+    //         // Remap User Roles into array with Organization ID
+    //         $userRoles = array();
+    //         foreach ($userRoleCollection as $role) 
+    //         {
+    //             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+    //         }
+    
+    //         // If User has GPOA Admin role...
+            
+    //         $memberRoleKey = $this->hasRole($userRoles,'User');
+    //         // Get the Organization from which the user is GPOA Admin
+    //         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+    //         $organizationID = $userRoles[$userRoleKey]['organization_id'];
+    //         $request->validate([
+    //             'name' => ['required'],
+    //             'name.*' => ['string'],
+    //             'amount' => ['required'],
+    //             'amount.*' => ['integer'],
+    //         ]);
+    //         // $projected_budget = upcoming_events::join('budget_breakdowns','budget_breakdowns.event_id','=','upcoming_events.upcoming_event_id')
+    //         //     ->where('budget_breakdowns.event_id',$id)
+    //         //     ->select('projected_budget')
+    //         //     ->first();
+    //         $total_amount = 0;
+    //         $projected_budget = $request['projected_budget'];
+    //         foreach ($request['amount'] as $amount) {
+
+    //             $total_amount = $amount + $total_amount;
+    //         }
+
+    //         if ($total_amount == $projected_budget) {
+    //             foreach($request['amount'] as $amount)
+    //             {
+    //                 Budget_Breakdown::where('event_id', $id)->update([
+                       
+    //                     'amount' => $amount
+    //                 ]);
+    //             }
+                
+    //             dd('Successfully added new event!');
+    //             $request->session()->flash('success','Successfully added new event!');
+
+    //         } else {
+    //             dd('not Successfully added new event!');
+
+    //             $request->session()->flash('error','Total amount of inputs not equal to projected budget');
+    //         }
+    //     }else{
+    //         abort(403);
+    //     }
+    // }
 }

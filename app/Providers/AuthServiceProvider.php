@@ -34,7 +34,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('is-superadmin', function($user){
             
-            return $user->hasAnyRole('Super Admin');
+            return $user->hasAnyRole('Head of Student Services');
             
         });
 

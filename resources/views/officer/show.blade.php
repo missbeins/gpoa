@@ -98,7 +98,7 @@
                             @enderror
                         </div>
                         <div class="col-md-3 mb-1">
-                            <label for="projected_budget" class="form-label">{{ __('Projected Budget(₱)') }}</label>
+                            <label for="projected_budget" class="form-label">{{ __('Projected Budget(₱)') }} <a href="{{ route('officer.view-breakdown',[$upcoming_event->upcoming_event_id, $org]) }}"class="text-info ">View breakdown</a></label>
                             <input id="projected_budget" type="number" class="form-control @error('projected_budget') is-invalid @enderror"
                                 name="projected_budget" value="{{ old('projected_budget') }}@isset($upcoming_event){{ $upcoming_event->projected_budget }}@endisset"
                                 required autocomplete="student_number" autofocus readonly>

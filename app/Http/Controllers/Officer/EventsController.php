@@ -267,7 +267,7 @@ class EventsController extends Controller
             }
             
         
-            return redirect(route('officer.showBreakdownNamesForm', $eventId));
+            return redirect(route('officer.showBreakdownForm', $eventId));
         }
         else{
             abort(403);
@@ -297,7 +297,7 @@ class EventsController extends Controller
             }
 
             // If User has GPOA Admin role...
-        
+            $org = $orgId;
             $memberRoleKey = $this->hasRole($userRoles,'User');
             // Get the Organization from which the user is GPOA Admin
             $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
@@ -307,7 +307,8 @@ class EventsController extends Controller
                 $upcoming_event = upcoming_events::find($id);
                 return view('officer.show',compact([
                     'upcoming_event',
-                    'organizations'
+                    'organizations',
+                    'org'
                 ]));
             }
             else{
@@ -1420,24 +1421,98 @@ class EventsController extends Controller
         return view('officer.notifications',compact('notifications'));
     }
     public function showBreakdownForm($id){
-        
+        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
+
         $event_name = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
             ->select('title')
             ->first();
         $projected_budget = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
             ->select('projected_budget')
             ->first();
+        $particulars = Budget_Breakdown::where('event_id', $id)->get();
         // dd($event_name);
-        return view('officer.breakdown-names',[
+        return view('officer.breakdown',[
             'event_id' => $id,
             'projected_budget'=> $projected_budget,
-            'event_name' => $event_name
+            'event_name' => $event_name,
+            'particulars' => $particulars
         ]);
     }
 
     public function budgetBreakdown(Request $request, $id){
 
         // dd($request);
+        if(Gate::allows('is-officer')){
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+    
+            // If User has GPOA Admin role...
+            
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+
+            $this->validate($request, [
+                'names' => 'required',
+                'names.*' => 'string',
+                'amount' => 'required',
+                'amount.*' => 'integer'
+            ]);
+            
+            $projected_budget = $request['projected_budget'];
+            $total_amount = 0;
+            $namesCount = count($request['names']);
+            $amountCount = count($request['amount']);
+
+            for ($a=0; $a < $amountCount; $a++) { 
+
+                $amount = $request['amount'][$a];
+                $total_amount = $total_amount + $amount;
+
+            }
+
+            if ($total_amount == $projected_budget) {
+
+                if ( $namesCount == $amountCount) {
+
+                    for ($i=0; $i < $namesCount; $i++) {   
+
+                        for ($j=$i; $j < $amountCount; $j++) { 
+
+                            $amount =$request['amount'][$j];
+                            $name = $request['names'][$i];
+                            Budget_Breakdown::create([
+                                'event_id' => $id,
+                                'name' => $name,
+                                'amount'=> $amount
+                            ]);
+                            $i++;
+                        }
+
+                    }
+
+                }
+
+                $request->session()->flash('success','Successfully added a particular.');     
+                return redirect(route('officer.events.index'));
+
+            } else {
+                $request->session()->flash('error','Projected budget must be equal to the total amount input.');
+                return redirect()->back();
+            }
+        }else{
+            abort(403);
+        }
+    }
+    public function showBudgetBreakdown($id, $org){
     
         if(Gate::allows('is-officer')){
             // Pluck all User Roles
@@ -1456,168 +1531,88 @@ class EventsController extends Controller
             // Get the Organization from which the user is GPOA Admin
             $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
             $organizationID = $userRoles[$userRoleKey]['organization_id'];
-            $request->validate([
-                'name' => ['required'],
-                'name.*' => ['string'],
 
-            ]);
-            // foreach($request['name'] as $name)
-            // {
-            //     // $request->session()->flash('success','Successfully added new event!'. $name);
-             
-            //     foreach($request['amount'] as $amount){
-            //         echo $name.'<br>';
-                
-            //         echo $amount.'<br>';
-            //     //     Budget_Breakdown::create([
-            //     //         'event_id' => $id,
-            //     //         'name' => $name,
-            //     //         'amount' => 0
-            //     //     ]);
-            //     }
-            // }
-            for ($i=0; $i < count($request['name']); $i++) { 
-                echo $request->name;
+            if($org == $organizationID){
+
+                $upcoming_event = upcoming_events::find($id);
+                $breakdowns = Budget_Breakdown::join('upcoming_events','upcoming_events.upcoming_event_id','=','budget_breakdowns.event_id')
+                            ->where('event_id',$id)
+                            ->paginate(5, ['*'], 'budget-breakdown');
+                            
+                return view('officer.show-breakdown',compact([
+                    'upcoming_event',
+                    'breakdowns',
+                    
+                ]));
             }
-            
-            // return redirect()->back();
-            // return redirect(route('officer.showBreakdownAmountForm', $id));
+            else{
+                abort(403);
+            }
         }else{
             abort(403);
         }
     }
-    // public function showBreakdownNamesForm($id){
-        
-    //     $event_name = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
-    //         ->select('title')
-    //         ->first();
-    //     $projected_budget = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
-    //         ->select('projected_budget')
-    //         ->first();
-    //     // dd($event_name);
-    //     return view('officer.breakdown-names',[
-    //         'event_id' => $id,
-    //         'projected_budget'=> $projected_budget,
-    //         'event_name' => $event_name
-    //     ]);
-    // }
 
-    // public function budgetBreakdownNames(Request $request, $id){
+    public function updateBudgetBreakdown(Request $request, $id){
+        if(Gate::allows('is-officer')){
+            abort_if(! Budget_Breakdown::where('breakdown_id', $id)->exists(), 404);
 
-    //     // dd($request);
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
     
-    //     if(Gate::allows('is-officer')){
-    //         // Pluck all User Roles
-    //         $userRoleCollection = Auth::user()->roles;
-
-    //         // Remap User Roles into array with Organization ID
-    //         $userRoles = array();
-    //         foreach ($userRoleCollection as $role) 
-    //         {
-    //             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-    //         }
-    
-    //         // If User has GPOA Admin role...
+            // If User has GPOA Admin role...
             
-    //         $memberRoleKey = $this->hasRole($userRoles,'User');
-    //         // Get the Organization from which the user is GPOA Admin
-    //         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-    //         $organizationID = $userRoles[$userRoleKey]['organization_id'];
-    //         $request->validate([
-    //             'name' => ['required'],
-    //             'name.*' => ['string'],
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            $projected_budget = $request->projected_budget;
+            // dd($projected_budget);  
+            $budget_count = 0;
+            $total_amount = $request['amount'];
+            $amount = Budget_Breakdown::where('event_id','=', $request['event_id'])
+                    ->where('breakdown_id','!=',$id)
+                    ->select('amount')
+                    ->get();
+            // dd($amount);
+            foreach ($amount as $item) {
 
-    //         ]);
-    //         foreach($request['name'] as $name)
-    //         {
-    //             Budget_Breakdown::create([
-    //                 'event_id' => $id,
-    //                 'name' => $name,
-    //                 'amount' => 0
-    //             ]);
-    //         }
+                $budget_count = $budget_count + $item->amount;
+
+            }
+            $total_amount = $total_amount + $budget_count;
+            // dd($total_amount);
+            if ($total_amount == $projected_budget) {
+
+               Budget_Breakdown::where('breakdown_id',$id)->update([
+                    'name' => $request['name'],
+                    'amount' => $request['amount']
+               ]);
+
+                $request->session()->flash('success','Successfully edited a particular.');     
+                return redirect()->back();
             
-    //         $request->session()->flash('success','Successfully added new event!');
-    //         return redirect(route('officer.showBreakdownAmountForm', $id));
-    //     }else{
-    //         abort(403);
-    //     }
-    // }
-    // public function showBreakdownAmountForm($id){
-        
-    //     $event_name = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
-    //         ->select('title')
-    //         ->first();
-    //     $projected_budget = upcoming_events::where('upcoming_events.upcoming_event_id',$id)
-    //         ->select('projected_budget')
-    //         ->first();
-    //     $breakdown_names = Budget_Breakdown::where('event_id', $id)->get();
-    //     // dd($event_name);
-    //     return view('officer.breakdown-amount',[
-    //         'event_id' => $id,
-    //         'projected_budget'=> $projected_budget,
-    //         'event_name' => $event_name,
-    //         'breakdown_names' => $breakdown_names
-    //     ]);
-    // }
+            } 
+            elseif ($total_amount < $projected_budget){
+                $request->session()->flash('error','The total amount you input is less than the projected budget. Projected budget must be equal to the total amount input.');
+                return redirect()->back();
+            }
+            else {
+                $request->session()->flash('error','The total amount you input is greater than the projected budget. Projected budget must be equal to the total amount input.');
+                return redirect()->back();
+            }
 
-    // public function budgetBreakdownAmount(Request $request, $id){
-
-    //     dd($request);
-    
-    //     if(Gate::allows('is-officer')){
-    //         // Pluck all User Roles
-    //         $userRoleCollection = Auth::user()->roles;
-
-    //         // Remap User Roles into array with Organization ID
-    //         $userRoles = array();
-    //         foreach ($userRoleCollection as $role) 
-    //         {
-    //             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
-    //         }
-    
-    //         // If User has GPOA Admin role...
             
-    //         $memberRoleKey = $this->hasRole($userRoles,'User');
-    //         // Get the Organization from which the user is GPOA Admin
-    //         $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
-    //         $organizationID = $userRoles[$userRoleKey]['organization_id'];
-    //         $request->validate([
-    //             'name' => ['required'],
-    //             'name.*' => ['string'],
-    //             'amount' => ['required'],
-    //             'amount.*' => ['integer'],
-    //         ]);
-    //         // $projected_budget = upcoming_events::join('budget_breakdowns','budget_breakdowns.event_id','=','upcoming_events.upcoming_event_id')
-    //         //     ->where('budget_breakdowns.event_id',$id)
-    //         //     ->select('projected_budget')
-    //         //     ->first();
-    //         $total_amount = 0;
-    //         $projected_budget = $request['projected_budget'];
-    //         foreach ($request['amount'] as $amount) {
-
-    //             $total_amount = $amount + $total_amount;
-    //         }
-
-    //         if ($total_amount == $projected_budget) {
-    //             foreach($request['amount'] as $amount)
-    //             {
-    //                 Budget_Breakdown::where('event_id', $id)->update([
-                       
-    //                     'amount' => $amount
-    //                 ]);
-    //             }
-                
-    //             dd('Successfully added new event!');
-    //             $request->session()->flash('success','Successfully added new event!');
-
-    //         } else {
-    //             dd('not Successfully added new event!');
-
-    //             $request->session()->flash('error','Total amount of inputs not equal to projected budget');
-    //         }
-    //     }else{
-    //         abort(403);
-    //     }
-    // }
+        }else{
+            abort(403);
+        }
+    }
+   
 }

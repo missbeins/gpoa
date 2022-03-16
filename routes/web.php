@@ -108,6 +108,10 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::get('/gpoa/notifications', [EventsController::class, 'notifications'])->name('notifications');
     Route::get('/gpoa/budget/add-budget-breakdown/{event}', [EventsController::class, 'showBreakdownForm'])->name('showBreakdownForm');
     Route::post('event/budget/breakdown/{event}', [EventsController::class, 'budgetBreakdown'])->name('budgetBreakdown');
+    Route::get('event/view-budget-breakdown/{breakdown}/{org}', [EventsController::class, 'showBudgetBreakdown'])->name('view-breakdown');
+    Route::put('event/update-budget-breakdown/{breakdown}', [EventsController::class, 'updateBudgetBreakdown'])->name('update-breakdown');
+
+
 
     // Route::get('/gpoa/budget/add-budget-breakdown/{event}/names', [EventsController::class, 'showBreakdownNamesForm'])->name('showBreakdownNamesForm');
     // Route::post('event/budget/breakdown/{event}/names', [EventsController::class, 'budgetBreakdownNames'])->name('budgetBreakdownNames');

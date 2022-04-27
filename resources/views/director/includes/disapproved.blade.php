@@ -1,12 +1,12 @@
  <!-- Modal -->
- <div class="modal fade" id="admin-disapproval-form{{ $upcoming_event->upcoming_event_id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+ <div class="modal fade" id="director-disapproval-form{{ $upcoming_event->upcoming_event_id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="staticBackdropLabel">Approve Event</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form action="{{ route('admin.admin.disapproved', $upcoming_event->upcoming_event_id) }}" enctype="multipart/form-data"  method="POST">
+        <form action="{{ route('director.director.disapproved', $upcoming_event->upcoming_event_id) }}" enctype="multipart/form-data"  method="POST">
             @csrf
             <input type="hidden" name="organization_id" value="{{ $upcoming_event->organization_id }}" readonly required>
 

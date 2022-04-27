@@ -101,7 +101,7 @@
                                         <td>{{ $upcoming_event->head_organization }}</td>
                                         <td>{{ $upcoming_event->venue }} / {{ date_format(date_create($upcoming_event->time), 'H : i a')}}</td>
                                         <td>
-                                          @if ($upcoming_event->advisers_approval == 'approved' && $upcoming_event->studAffairs_approval == 'approved' && $upcoming_event->completion_status == 'upcoming')
+                                          @if ($upcoming_event->advisers_approval == 'approved' && $upcoming_event->studAffairs_approval == 'approved' && $upcoming_event->directors_approval == 'approved'  && $upcoming_event->completion_status == 'upcoming')
                                             <button type="button" class="btn btn-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#mark-as-done-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished">
                                                 Mark as done
                                             </button>

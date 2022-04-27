@@ -47,56 +47,7 @@
                         @csrf
                         <input type="hidden" name="projected_budget" value="{{ $projected_budget['projected_budget'] }}">
                         <h6>Particulars</h6>
-                        {{-- @foreach ($particulars as  $particular)
-                            <div class="col-md-6 mb-2">
-                                <label for="name" class="form-label">{{ __('Name') }}</label>
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name"
-                                    value="{{ old('name') }}" required
-                                    autocomplete="name" autofocus>
-
-                                @error('name')
-                                    <span class="invalid-feedback d-block" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div> 
-                            <div class="col-md-6 mb-2">
-                                <label for="amount" class="form-label">{{ __('Amount') }}</label>
-                                <input id="amount" type="number" class="form-control @error('amount') is-invalid @enderror" name="amount"
-                                    value="{{ old('amount') }}" required
-                                    autocomplete="amount" autofocus>
-
-                                @error('amount')
-                                    <span class="invalid-feedback d-block" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        @endforeach
-                        <div class="col-md-6 mb-2">
-                            <label for="name" class="form-label">{{ __('Name') }}</label>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name"
-                                value="{{ old('name') }}" required
-                                autocomplete="name" autofocus>
-
-                            @error('name')
-                                <span class="invalid-feedback d-block" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div> 
-                        <div class="col-md-6 mb-2">
-                            <label for="amount" class="form-label">{{ __('Amount') }}</label>
-                            <input id="amount" type="number" class="form-control @error('amount') is-invalid @enderror" name="amount"
-                                value="{{ old('amount') }}" required
-                                autocomplete="amount" autofocus>
-
-                            @error('amount')
-                                <span class="invalid-feedback d-block" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div> --}}
+                        
                         <div class="input-group hdtuto control-group lst increment" >
                             <input type="text" name="names[]" class=" form-control" placeholder="name">
                             <input type="number" name="amount[]" class=" form-control" placeholder="amount">

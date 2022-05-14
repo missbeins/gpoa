@@ -43,19 +43,19 @@
                         <h5>Event: {{ $event_name['title'] }}</h5>
                         <h5>Projected budget: ₱ {{ $projected_budget['projected_budget']}}</h5>
                     </div>
-                    <form class="row g-3" method="POST" action="{{ route('officer.budgetBreakdown',$event_id) }}">
+                    <form class="row g-3 container" method="POST" action="{{ route('officer.budgetBreakdown',$event_id) }}">
                         @csrf
                         <input type="hidden" name="projected_budget" value="{{ $projected_budget['projected_budget'] }}">
                         <h6>Particulars</h6>
                         
-                        <div class="input-group hdtuto control-group lst increment" >
+                        <div class="input-group hdtuto control-group lst increment">
                             <input type="text" name="names[]" class=" form-control" placeholder="name">
                             <input type="number" name="amount[]" class=" form-control" placeholder="amount">
                             <div class="input-group-btn"> 
-                                <button class="btn btn-success" type="button"><i class="fldemo glyphicon glyphicon-plus"></i>Add</button>
+                                <button class="btn btn-success add_input_field" type="button"><i class="fldemo glyphicon glyphicon-plus"></i>Add</button>
                             </div>
                         </div>
-                        <div class="clone">
+                        {{-- <div class="clone">
                             <div class="hdtuto control-group input-group" style="margin-top:10px">
                                 <input type="text" name="names[]" class=" form-control" placeholder="name">
                                 <input type="number" name="amount[]" class=" form-control" placeholder="amount">
@@ -63,12 +63,13 @@
                                 <button class="btn btn-danger" type="button"><i class="fldemo glyphicon glyphicon-remove"></i> Remove</button>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     
                         <button type="submit" class="btn btn-primary" style="margin-top:10px">Submit</button>
   
                         
                     </form>
+                  
                 </div>
             </div>
         </div>
@@ -89,13 +90,28 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-      $(".btn-success").click(function(){ 
-          var lsthmtl = $(".clone").html();
-          $(".increment").after(lsthmtl);
-      });
-      $("body").on("click",".btn-danger",function(){ 
-          $(this).parents(".hdtuto").remove();
-      });
+    //   $(".btn-success").click(function(){ 
+    //       var lsthmtl = $(".clone").html();
+    //       $(".increment").after(lsthmtl);
+    //   });
+    //   $("body").on("click",".btn-danger",function(){ 
+    //       $(this).parents(".hdtuto").remove();
+    //   });
+
+        var wrapper = $(".increment");
+        var add_button = $(".add_input_field")
+        $(add_button).click(function(e){
+            e.preventDefault();
+            $(wrapper).append('<div class="input-group hdtuto control-group lst increment"  style="margin-top:10px"> <input type="text" name="names[]" class=" form-control" placeholder="name"><input type="number" name="amount[]" class=" form-control" placeholder="amount"><div class="input-group-btn  remove"> <button class="btn btn-danger" type="button"><i class="fldemo glyphicon glyphicon-remove"></i> Remove</button></div></div>')
+        })
+
+        $(wrapper).on("click",".remove",function(e){
+            e.preventDefault();
+            $(this).parent('div').remove();
+        })
     });
+
+
+
 </script>
 @endsection

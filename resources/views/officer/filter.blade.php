@@ -63,7 +63,7 @@
                             Import GPOA
                         </button> --}}
                         <a href="{{ route('officer.events.create') }}" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event">New Event</a>
-                        @include('officer.includes.import')
+                        {{-- @include('officer.includes.import') --}}
                     </div>
                 </div>
             </div>

@@ -63,7 +63,8 @@ class AdviserController extends Controller
             ->where('upcoming_events.directors_approval','=','approved')
             ->where('upcoming_events.organization_id',$organizationID)
             ->orderBy('upcoming_events.date','asc')
-            ->paginate(5, ['*'], 'upcoming-events');        
+            // ->paginate(5, ['*'], 'upcoming-events'); 
+            ->get();           
         return view('adviser.adviser',compact('upcoming_events'));
         
         }
@@ -101,7 +102,8 @@ class AdviserController extends Controller
             ->where('upcoming_events.advisers_approval','=','pending')
             ->where('upcoming_events.organization_id',$organizationID)
             ->orderBy('upcoming_events.date','asc')
-            ->paginate(5, ['*'], 'upcoming-events');        
+            // ->paginate(5, ['*'], 'upcoming-events');   
+            ->get();         
         return view('adviser.event-approval',compact('upcoming_events'));
         }
         else{
@@ -470,7 +472,8 @@ class AdviserController extends Controller
                     ->where('upcoming_events.studAffairs_approval','=','approved')
                     ->where('upcoming_events.completion_status','=','upcoming')
                     ->where('upcoming_events.organization_id',$organizationID)
-                    ->paginate(5, ['*'], 'events');
+                    // ->paginate(5, ['*'], 'events');
+                    ->get();    
                    
                 return view('adviser.search',compact(['upcoming_events','newsemcollection','newyearcollection']));
             
@@ -507,7 +510,8 @@ class AdviserController extends Controller
                 // ->where('upcoming_events.studAffairs_approval','=','approved')
                 ->where('upcoming_events.organization_id',$organizationID)
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');
+                // ->paginate(5, ['*'], 'upcoming-events');
+                ->get();    
 
             return view('adviser.approved-events',compact('approved_events'));
         }
@@ -542,7 +546,8 @@ class AdviserController extends Controller
                 ->where('upcoming_events.organization_id',$organizationID)
                 ->where('disapproved_events.disapproved_by', Auth::user()->user_id)
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');
+                // ->paginate(5, ['*'], 'upcoming-events');
+                ->get();    
 
             $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')

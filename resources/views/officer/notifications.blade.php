@@ -46,7 +46,7 @@
                                         {{-- <td>{{ $notification-> }}</td> --}}
                                         <td>{{ $notification->message }}</td>
                                         <td>                                            
-                                            <a href="{{ route('officer.events.show', [$notification->upcoming_event_id, $notification->to]) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
+                                            <a href="{{ route('officer.showNotificationDetails', $notification->upcoming_event_id) }}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -55,7 +55,7 @@
                             @endif
                         </tbody>
                     </table>
-                    {{ $notifications->links() }} 
+                    {{-- {{ $notifications->links() }}  --}}
                 @endif
             </div>
         </div>
@@ -74,7 +74,7 @@
         // https://github.com/fiduswriter/Simple-DataTables
         window.addEventListener('DOMContentLoaded', event => {
             const dataTable = new simpleDatatables.DataTable("#approvedevents", {
-                perPage: 10,
+                perPage: 5,
                 searchable: true,
                 labels: {
                     placeholder: "Search on current page...",

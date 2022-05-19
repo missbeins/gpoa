@@ -63,7 +63,7 @@
                             @endif
                         </tbody>
                     </table>
-                    {{ $available_partnerships->links() }}
+                    {{-- {{ $available_partnerships->links() }} --}}
                 @endif
             </div>
         </div>
@@ -82,7 +82,7 @@
         // https://github.com/fiduswriter/Simple-DataTables
         window.addEventListener('DOMContentLoaded', event => {
             const dataTable = new simpleDatatables.DataTable("#available_partnerships", {
-                perPage: 10,
+                perPage: 5,
                 searchable: true,
                 labels: {
                     placeholder: "Search on current page...",

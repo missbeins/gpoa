@@ -89,7 +89,8 @@ class EventsController extends Controller
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                             ->where('upcoming_events.organization_id',$organizationID)
                             ->orderBy('upcoming_events.date','asc')
-                            ->paginate(5, ['*'], 'upcoming-events');
+                            ->get();
+                            // ->paginate(5, ['*'], 'upcoming-events');
 
             return view('officer.events',compact(['upcoming_events','newYearRange','newsemcollection','newyearcollection']));
         }
@@ -131,7 +132,8 @@ class EventsController extends Controller
                         ->where('upcoming_events.directors_approval','=','approved')
                         ->where('upcoming_events.organization_id',$organizationID)
                         ->orderBy('upcoming_events.date','asc')
-                        ->paginate(5, ['*'], 'upcoming-events');
+                        ->get();
+                        // ->paginate(5, ['*'], 'upcoming-events');
 
         $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
                         ->where('upcoming_events.studAffairs_approval','=','approved')
@@ -931,7 +933,8 @@ class EventsController extends Controller
                     // ->where('upcoming_events.advisers_approval','=','approved')
                     // ->where('upcoming_events.studAffairs_approval','=','approved')
                     ->orderBy('upcoming_events.date','asc')
-                    ->paginate(5, ['*'], 'events');
+                    ->get();
+                    // ->paginate(5, ['*'], 'events');
                 return view('officer.filter',compact(['upcoming_events','newYearRange']));
             }else{
                 return redirect()->back()->with('error','Record not found! Please make sure to select a semester and school year.');
@@ -1005,7 +1008,8 @@ class EventsController extends Controller
                     ->where('upcoming_events.advisers_approval','=','approved')
                     ->where('upcoming_events.studAffairs_approval','=','approved')
                     ->where('upcoming_events.completion_status','=','upcoming')
-                    ->paginate(5, ['*'], 'events');
+                    // ->paginate(5, ['*'], 'events');
+                    ->get();
                 return view('officer.search',compact(['upcoming_events','newsemcollection','newyearcollection']));
             }else{
                 return redirect()->back()->with('error','Record not found!. Please make sure to type the title of the event properly.');
@@ -1041,7 +1045,8 @@ class EventsController extends Controller
                 ->where('upcoming_events.studAffairs_approval','=','approved')
                 ->where('upcoming_events.organization_id',$organizationID)
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');
+                // ->paginate(5, ['*'], 'upcoming-events');
+                ->get();
 
             return view('officer.approved-events',compact('approved_events'));
         }
@@ -1126,7 +1131,8 @@ class EventsController extends Controller
                         ->where('partnership_requests.request_to', $organizationID)
                         ->where('partnership_requests.request_status','=','pending')
                         ->orderBy('partnership_requests.event_id','DESC')
-                        ->paginate(5);
+                        // ->paginate(5);
+                        ->get();
         
         return view('officer.partnership_request',compact('partnership_requests'));
     }
@@ -1151,7 +1157,8 @@ class EventsController extends Controller
                                 ->where('upcoming_events.partnership_status','=','on')
                                 ->where('upcoming_events.organization_id','!=', $organizationID)
                                 ->orderBy('upcoming_events.upcoming_event_id','DESC')
-                                ->paginate(5);
+                                // ->paginate(5);
+                                ->get();
         return view('officer.partnerships',compact('available_partnerships'));
 
     }
@@ -1179,7 +1186,7 @@ class EventsController extends Controller
            
             $organizations = organization::all();
             $upcoming_event = upcoming_events::find($id);
-            return view('officer.show',compact([
+            return view('officer.show-partnership-details',compact([
                 'upcoming_event',
                 'organizations'
             ]));
@@ -1188,7 +1195,39 @@ class EventsController extends Controller
            abort(403);
         }      
     }
+    public function showNotificationDetails($id)
+    {     
+        if (Gate::allows('is-officer')) {
+            abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
 
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+           
+            $organizations = organization::all();
+            $upcoming_event = upcoming_events::find($id);
+            return view('officer.show-notification-details',compact([
+                'upcoming_event',
+                'organizations'
+            ]));
+          
+        } else {
+           abort(403);
+        }      
+    }
     public function applyPartnership($id, Request $request){
         if (Gate::allows('is-officer')) {
             abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
@@ -1368,7 +1407,9 @@ class EventsController extends Controller
         $approved_requests = Partnerships_Requests::join('upcoming_events','upcoming_events.upcoming_event_id','=','partnership_requests.event_id')
                             ->join('organizations','organizations.organization_id','=','partnership_requests.request_by')
                             ->where('request_status','=','accepted')
-                            ->where('request_by',$organizationID)->paginate(5);
+                            ->where('request_by',$organizationID)
+                            // ->paginate(5);
+                            ->get();
         return view('officer.approved-partnerships',compact('approved_requests'));
     }
     public function disapprovedPartnerships(){
@@ -1391,7 +1432,9 @@ class EventsController extends Controller
          $disapproved_requests = Partnerships_Requests::join('upcoming_events','upcoming_events.upcoming_event_id','=','partnership_requests.event_id')
                              ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                              ->where('request_status','=','declined')
-                             ->where('request_by',$organizationID)->paginate(5);
+                             ->where('request_by',$organizationID)
+                            //  ->paginate(5);
+                            ->get();
         return view('officer.disapproved-partnerships',compact('disapproved_requests'));
 
     }
@@ -1417,7 +1460,8 @@ class EventsController extends Controller
                     ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                     // ->join('users','users.user_id','=','gpoa_notifications.user_id')
                     ->where('gpoa_notifications.to',$organizationID)
-                    ->paginate(5);
+                    // ->paginate(5);
+                    ->get();
         return view('officer.notifications',compact('notifications'));
     }
     public function showBreakdownForm($id){

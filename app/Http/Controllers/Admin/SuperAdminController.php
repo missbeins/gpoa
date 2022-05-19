@@ -65,7 +65,8 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.studAffairs_approval','=','approved')
                 ->where('upcoming_events.directors_approval','=','approved')
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');        
+                // ->paginate(5, ['*'], 'upcoming-events');    
+                ->get();    
             return view('admin.admin',compact(['upcoming_events','newsemcollection','newyearcollection']));
         }
         else{
@@ -83,7 +84,8 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.directors_approval','=','approved')
                 ->where('upcoming_events.organization_id',$OrgId)
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');        
+                // ->paginate(5, ['*'], 'upcoming-events');  
+                ->get();          
             return view('admin.organizations-upcoming-events',compact('upcoming_events'));
         }
         else{
@@ -99,7 +101,8 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','pending')
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'all-pending-approval');            
+                // ->paginate(5, ['*'], 'all-pending-approval');
+                ->get();                
              return view('admin.all-pending-approval',compact('upcoming_events'));
          }
          else{
@@ -122,7 +125,8 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.studAffairs_approval','=','pending')
                 ->where('upcoming_events.organization_id',$OrgId)
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');        
+                // ->paginate(5, ['*'], 'upcoming-events');        
+                ->get();    
             return view('admin.admin-approval',compact('upcoming_events'));
         }
         else{
@@ -472,7 +476,8 @@ class SuperAdminController extends Controller
                     ->where('upcoming_events.studAffairs_approval','=','approved')
                     ->where('upcoming_events.completion_status','=','upcoming')
                     ->orderBy('upcoming_events.date','asc')
-                    ->paginate(5, ['*'], 'events');
+                    // ->paginate(5, ['*'], 'events');
+                    ->get();    
                 return view('admin.search',compact(['upcoming_events','newsemcollection','newyearcollection']));
             
             }else{
@@ -573,7 +578,8 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');
+                // ->paginate(5, ['*'], 'upcoming-events');
+                ->get();    
 
             return view('admin.approved-events',compact('approved_events'));
         }
@@ -607,7 +613,8 @@ class SuperAdminController extends Controller
                 ->where('upcoming_events.studAffairs_approval','=','disapproved')
                 ->where('disapproved_events.disapproved_by', Auth::user()->user_id)
                 ->orderBy('upcoming_events.date','asc')
-                ->paginate(5, ['*'], 'upcoming-events');
+                // ->paginate(5, ['*'], 'upcoming-events');
+                ->get();    
 
             $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','approved')

@@ -277,7 +277,7 @@ class AdviserController extends Controller
             ]);
 
             
-            $request->session()->flash('success','Successfully update profile!');
+            $request->session()->flash('success','Successfully updated your profile!');
             
             return redirect(route('adviser.profile'));
         }else{

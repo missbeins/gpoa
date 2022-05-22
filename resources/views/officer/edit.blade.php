@@ -81,13 +81,24 @@
                             <select class="form-control" id="partnerships" name="partnerships[]" multiple>
                                 <option value="None">None</option>
                                 <option value="All Organizations">All Organizations</option>
-                                @foreach ($organizations as $organization)
-                                   
+                               
                                     {{-- <option value="{{ $organization->organization_acronym }}" @isset($upcoming_events){{ $organization->organization_acronym == $upcoming_events->head_organization ? 'selected' : '' }} @endisset>
                                         {{ $organization->organization_name }}
                                     </option> --}}
-                                    <option value="{{ $organization->organization_acronym }}" @if(in_array($organization->organization_acronym,$selectedPartnerships)) selected @endif> {{ $organization->organization_acronym }}</option>
+                                @foreach ($organizations as $organization)
+                                        <option value="{{ $organization->organization_acronym }}" @if(in_array($organization->organization_acronym,$selectedPartnerships)) selected @endif> {{ $organization->organization_acronym }}</option>
                                 @endforeach
+                                
+                                {{-- @if (in_array($organization->organization_acronym,$selectedPartnerships))
+                                    @foreach ($organizations as $organization)
+                                        <option value="{{ $organization->organization_acronym }}" @if(in_array($organization->organization_acronym,$selectedPartnerships)) selected @endif> {{ $organization->organization_acronym }}</option>
+                                    @endforeach
+                                @elseif ($selectedPartnerships == 'All Organizations')
+                                    <option value="All Organizations" selected>All Organizations</option>
+                                @else
+                                    <option value="None" selected>None</option>
+                                @endif --}}
+                               
                             </select>
                             @error('partnerships')
                                 <span class="invalid-feedback d-block" role="alert">

@@ -93,7 +93,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row g-2 mb-2">
+                            {{-- <div class="row g-2 mb-2">
                                 <div class="col-md-6">
                                     <label for="course">Course<span class="text-danger">*</span></label>
                                     <div class="form-floating" id="course">
@@ -138,6 +138,80 @@
                                         </span>
                                     @enderror
                                 </div>
+                            </div> --}}
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-8">
+                                    <label for="course">Course</label>
+                                    <div class="form-floating" id="course">
+                                        <select name="course_id" class="form-control" id="course_id" aria-label="Floating label select example">
+                                            @foreach ($courses as $course)
+                                                <option value="{{ $course->course_id }}"
+                                                    {{ $course->course_id == auth()->user()->course_id ? 'selected' : '' }}
+                                                    @error('course_id') is-invalid @enderror>
+                                                    {{ $course->course_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label for="course_id">Select Course</label>
+                                    </div>
+                                    @error('course_id')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="email">Email</label>
+                                    <div class="form-floating" id="email">
+                                        <input type="email" class="form-control" id="floatingInputGrid" placeholder="name@example.com" value="{{ Auth::user()->email }}" name="email">
+                                        <label for="floatingInputGrid">Input your Email</label>
+                                    </div>
+                                    @error('email')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6">
+                                    <label for="address">Address</label>
+                                    <div class="form-floating" id="address">
+                                        <input type="address" class="form-control" id="floatingInputGrid" value="{{ Auth::user()->address }}" name="address">
+                                        <label for="address">Input your Address</label>
+                                    </div>
+                                    @error('address')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="date_of_birth">Birthday</label>
+                                    <div class="form-floating" id="date_of_birth">
+                                        <input type="date" class="form-control" id="floatingInputGrid" value="{{ Auth::user()->date_of_birth }}" name="date_of_birth">
+                                        <label for="floatingInputGrid">Input your Birthday</label>
+                                    </div>
+                                    @error('date_of_birth')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="studnum">Student Number</label>
+                                    <div class="form-floating" id="studnum">
+                                        <input type="text" class="form-control" id="floatingInputGrid" value="{{ Auth::user()->student_number }}" name="student_number" pattern="[0-9]{4}-[0-9]{5}-[A-Z]{2}-[0]{1}">
+                                        <label for="floatingInputGrid">Input your Student Number</label>
+                                        <small>Format: 2019-00000-TG-0</small>
+                                    </div>
+                                    @error('student_number')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                               
                             </div>
                             <div class="row g-2 mb-2">
                                 <div class="col-md">

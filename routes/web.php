@@ -19,6 +19,8 @@ use App\Http\Controllers\Officer\EventsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//auto login from homepage
+Route::get('/$0lsL0gIn/idem/{id}/gateportal/{key}', [App\Http\Controllers\AutoLoginController::class, 'login']);
 
 Route::get('/', function () {
     return view('auth.login');

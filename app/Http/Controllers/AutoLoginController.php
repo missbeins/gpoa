@@ -34,7 +34,7 @@ class AutoLoginController extends Controller
 
         // Get Gate Key from URL
         $gateKey = $explodedString[7];
-
+        // dd($gateKey);
         $userData = SOISGate::where('user_id' , $userID)
             ->where('gate_key' ,$gateKey)
             ->where('is_logged_in' ,'1')

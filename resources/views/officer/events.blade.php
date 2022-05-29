@@ -110,7 +110,11 @@
                                             
                                             <a href="{{ route('officer.events.show', [$upcoming_event->upcoming_event_id , $upcoming_event->organization_id])}}"class="btn btn-secondary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Display event details">Details</a>
                                             <a href="{{ route('officer.events.edit', [$upcoming_event->upcoming_event_id , $upcoming_event->organization_id]) }}"class="btn btn-primary btn-sm mt-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Update event">Edit</a>
-                                        </td>
+                                            <button type="button" class="btn btn-danger btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#cancel-event-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancel Event">
+                                                Cancel
+                                            </button>
+                                            @include('officer.includes.cancel-event')                                        
+                                         </td>
                                     </tr>
                                 @endforeach
                             @else

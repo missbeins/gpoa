@@ -88,6 +88,7 @@ class EventsController extends Controller
             $newYearRange = $yearRange->unique('school_year');
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                             ->where('upcoming_events.organization_id',$organizationID)
+                            ->where('upcoming_events.completion_status','!=','cancelled')
                             ->orderBy('upcoming_events.date','asc')
                             ->get();
                             // ->paginate(5, ['*'], 'upcoming-events');
@@ -476,6 +477,44 @@ class EventsController extends Controller
         
     }
 
+    public function cancelEvent(Request $request, $id, $orgId){
+        abort_if(! upcoming_events::where('upcoming_event_id', $id)->exists(), 404);
+
+        if (Gate::allows('is-officer')) {
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+            }
+    
+            // If User has GPOA Admin role...
+            
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            if($orgId == $organizationID){
+                
+                upcoming_events::where('upcoming_event_id',$id)->update([
+
+                    'completion_status' => 'cancelled'
+    
+                ]);
+                // dd($upcoming_events);
+                $request->session()->flash('success','Event cancelled!');
+                return redirect()->back();
+                }
+                else{
+                    abort(403);
+                }
+        } else {
+            abort(403);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -519,9 +558,7 @@ class EventsController extends Controller
                 'completion_status' => 'accomplished'
 
             ]);
-            // $upcoming_events = upcoming_events::where('upcoming_event_id',$id)->first();
-            // $upcoming_events->accomplished_events()->attach([null]);
-            //dd($upcoming_events->accomplished_events);
+         
             $request->session()->flash('success','Event set to accomplished event!');
             return redirect(route('officer.events.index'));
         }
@@ -1155,6 +1192,7 @@ class EventsController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         $available_partnerships = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                                 ->where('upcoming_events.partnership_status','=','on')
+                                ->where('upcoming_events.completion_status','!=','cancelled')
                                 ->where('upcoming_events.organization_id','!=', $organizationID)
                                 ->orderBy('upcoming_events.upcoming_event_id','DESC')
                                 // ->paginate(5);

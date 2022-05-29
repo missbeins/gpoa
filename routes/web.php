@@ -89,6 +89,7 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     Route::get('/gpoa/events/{event}/edit/{orgId}', [EventsController::class, 'edit'])->name('events.edit');
     Route::post('/gpoa/import-events', [EventsController::class, 'import'])->name('event-import');
     Route::put('/gpoa/mark-as-done/{event}/{orgId}', [EventsController::class, 'markasDone'])->name('mark-as-done');
+    Route::put('/gpoa/cancel-event/{event}/{orgId}', [EventsController::class, 'cancelEvent'])->name('cancel-event');
     Route::post('generate-pdf', [EventsController::class, 'generatePDF'])->name('print-pdf');
     Route::post('generate-presentation-pdf', [EventsController::class, 'generatePresentationPDF'])->name('presentation-pdf');
     Route::get('profile',[EventsController::class, 'profile'])->name('profile');
@@ -138,6 +139,7 @@ Route::prefix('/adviser')->middleware('auth')->name('adviser.')->group(function(
     Route::get('/events/search', [AdviserController::class, 'searchEvent'])->name('searchEvents');
     Route::get('/events/approved-events', [AdviserController::class, 'approvedEvents'])->name('approvedEvents');
     Route::get('/events/disapproved-events', [AdviserController::class, 'disapprovedEvent'])->name('disapprovedEvent');
+    //Route::post('/events/approved-selected', [AdviserController::class, 'approvedAll'])->name('approved-all');
 
 });
 

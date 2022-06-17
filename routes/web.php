@@ -139,7 +139,7 @@ Route::prefix('/adviser')->middleware('auth')->name('adviser.')->group(function(
     Route::get('/events/search', [AdviserController::class, 'searchEvent'])->name('searchEvents');
     Route::get('/events/approved-events', [AdviserController::class, 'approvedEvents'])->name('approvedEvents');
     Route::get('/events/disapproved-events', [AdviserController::class, 'disapprovedEvent'])->name('disapprovedEvent');
-    //Route::post('/events/approved-selected', [AdviserController::class, 'approvedAll'])->name('approved-all');
+    Route::post('/events/approved-selected', [AdviserController::class, 'approveSelected'])->name('approved-selected');
 
 });
 

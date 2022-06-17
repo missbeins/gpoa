@@ -21,25 +21,8 @@
                 <div class="row">
                     <div class="col-md-8 mt-1">
                         <h5 class="float-left">Organization's Events</h5>
-                        
+                        <button class="btn btn-light btn-sm" type="submit" form="selectEvents"> Approved Selected</button>
                     </div>
-                    {{-- <form class="col-md-4 input-group" style="width:33%" action="" method="get">
-                    
-                        <label class="input-group-text" for="inputGroupSelect01">{{ __('Filter') }}</label>
-                        <select class="form-control @error('query') is-invalid @enderror" id="inputGroupSelect01" name="query">
-                            {{-- @foreach ($academic_memberships as $academic_membership)
-                                <option value="{{ $academic_membership->academic_membership_id }}">{{ $academic_membership->semester }}({{ $academic_membership->school_year }})</option>                          
-                            @endforeach
-                        </select>                        
-                                @error('query')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                        <button class="input-group-text btn-secondary"type="submit">Enter</button>
-            
-                    </form> --}}
-                    
                 </div>
             </div>
             @if (isset($errors) && $errors->any())
@@ -51,23 +34,28 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <div class="card-body table-responsive">        
+            <div class="card-body table-responsive">   
+                <form action="{{ route('adviser.approved-selected') }}" class="selectEvents" id="selectEvents" method="POST">
+                    @csrf
+                  
                 @if (isset($upcoming_events))
                     <table class="table table-light table-sm table-striped table-hover table-responsive" id="approval">
                         <thead>
                             <tr>
+                                <th class="col-sm-1"><input type="checkbox" name="" id="" onchange="eventToggleChild(this)"></th>
                                 <th class="col-sm-1">Date</th>
-                                <th class="col-sm-2">Name/Title of Activity</th>
+                                <th class="col-sm-3">Name/Title of Activity</th>
                                 <th class="col-sm-3">Head Organization</th>
-                                <th class="col-sm-1">Venue & time</th>
+                                <th class="col-sm-2">Venue & time</th>
                                 <th class="col-sm-2">Actions</th>
-                                
                             </tr>
                         </thead>
                         <tbody>
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
+                                        <td><input type="checkbox" name="eventIds{{ $upcoming_event->upcoming_event_id }}" id="eventIds" value="{{ $upcoming_event->upcoming_event_id }}"></td>
+                                    </form>
                                         <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->head_organization }}</td>
@@ -93,7 +81,6 @@
                             @endif
                         </tbody>
                     </table>
-                    {{-- {{ $upcoming_events->links() }} --}}
                 @endif
             </div>
         </div>
@@ -113,13 +100,27 @@
         // https://github.com/fiduswriter/Simple-DataTables
         window.addEventListener('DOMContentLoaded', event => {
             const dataTable = new simpleDatatables.DataTable("#approval", {
+                
                 perPage: 5,
                 searchable: true,
+                columns:[{select: 0, sortable: false}],
                 labels: {
                     placeholder: "Search on current page...",
                     noRows: "No user to display in this page or try in the next page.",
                 },
+              
+               
             });
         });
+    </script>
+    <script>
+        function eventToggleChild(parent)
+        {
+            const parentState = (parent.checked == true) ? true : false;
+            const children = document.querySelectorAll('input[id*="eventIds"]');
+            children.forEach((checkbox) => {
+                checkbox.checked = parentState;
+            });
+        }
     </script>
 @endsection

@@ -38,12 +38,19 @@ class EventSignaturesSeeder extends Seeder
                 'signature_path' => NULL
             ],
             [
-                //Super admin
+                //director
                 'user_id' => '15',
                 'role_id' => '10',
                 'organization_id' => NULL,
                 'signature_path' => NULL
-            ]
+            ],
+            [
+                //head of academic services
+                'user_id' => '16',
+                'role_id' => '11',
+                'organization_id' => null,
+                'signature_path' => NULL
+            ],
             
             
         ];

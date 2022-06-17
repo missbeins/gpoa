@@ -16,7 +16,9 @@ use App\Models\GPOA_Notifications;
 use App\Models\organization;
 use App\Models\User;
 use File;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AdviserController extends Controller
 { 
@@ -35,7 +37,7 @@ class AdviserController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-   public function index()
+    public function index()
     {
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
@@ -50,7 +52,7 @@ class AdviserController extends Controller
         // If User has ADVISER Admin role...
        
         $memberRoleKey = $this->hasRole($userRoles,'User');
-        // Get the Organization from which the user is Membeship Admin
+        // Get the Organization from which the user is adviser
         $userRoleKey = $this->hasRole($userRoles, 'Adviser');
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
 
@@ -93,7 +95,7 @@ class AdviserController extends Controller
         // If User has ADVISER Admin role...
        
         $memberRoleKey = $this->hasRole($userRoles,'User');
-        // Get the Organization from which the user is Membeship Admin
+        // Get the Organization from which the user is adviser
         $userRoleKey = $this->hasRole($userRoles, 'Adviser');
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         if(Gate::allows('is-adviser')){
@@ -127,7 +129,7 @@ class AdviserController extends Controller
         // If User has ADVISER Admin role...
        
         $memberRoleKey = $this->hasRole($userRoles,'User');
-        // Get the Organization from which the user is Membeship Admin
+        // Get the Organization from which the user is adviser
         $userRoleKey = $this->hasRole($userRoles, 'Adviser');
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         if(Gate::allows('is-adviser')){
@@ -188,6 +190,74 @@ class AdviserController extends Controller
                 'user_id' => Auth::user()->user_id,
                 'to' => $request['organization_id']
             ]);
+            return redirect(route('adviser.adviser.event-approval'));
+        }
+        else{
+            abort(403);
+        }
+    }
+
+    public function approveSelected(Request $request){
+  
+
+        $Orgids = $request->organization_id;
+        dd($request);
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has ADVISER Admin role...
+       
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is adviser
+        $userRoleKey = $this->hasRole($userRoles, 'Adviser');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+
+        // Get all Keys from Form
+        $allKeys= $request->except(['_token']);
+
+        $collectionKeys = Arr::where($allKeys, function ($value, $key) {
+            if(Str::startsWith($key, 'eventIds'))
+                return $key;
+        });
+
+        // Remake array, only keys remain
+        $collectionKeys = array_values($collectionKeys);
+        // dd($collectionKeys);
+        // // Redirect if there is no event/accomplishment selected
+        //     if (count($allKeys) == 0) 
+        //         return redirect()->action(
+        //             [AccomplishmentReportsController::class, 'index'])
+        //             ->with('error', 'No Report Selected!');
+        $events = upcoming_events::whereIn('upcoming_event_id',$collectionKeys)->select('organization_id');
+        dd($events);
+        if(Gate::allows('is-adviser')){
+            $upcoming_events = upcoming_events::whereIn('upcoming_event_id',$collectionKeys);
+            
+            $upcoming_events->update([
+
+                'advisers_approval' => 'approved',
+               
+            
+            ]);
+            
+            foreach ($events as $event ) {
+                
+                GPOA_Notifications::create([
+                    'event_id' => $event,
+                    'message' => "Event has been approved by Organization's Adviser.",
+                    'user_id' => Auth::user()->user_id,
+                    'to' => $event['organization_id']
+                ]);
+                
+            }
+          
             return redirect(route('adviser.adviser.event-approval'));
         }
         else{

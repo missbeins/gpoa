@@ -200,8 +200,7 @@ class AdviserController extends Controller
     public function approveSelected(Request $request){
   
 
-        $Orgids = $request->organization_id;
-        dd($request);
+       
         // Pluck all User Roles
         $userRoleCollection = Auth::user()->roles;
 
@@ -235,29 +234,34 @@ class AdviserController extends Controller
         //         return redirect()->action(
         //             [AccomplishmentReportsController::class, 'index'])
         //             ->with('error', 'No Report Selected!');
-        $events = upcoming_events::whereIn('upcoming_event_id',$collectionKeys)->select('organization_id');
-        dd($events);
+        
+        // foreach ($events as $eve) {
+        //     dd($eve->organization_id);
+        // }
+    
         if(Gate::allows('is-adviser')){
+            //approve events
             $upcoming_events = upcoming_events::whereIn('upcoming_event_id',$collectionKeys);
-            
+          
             $upcoming_events->update([
 
                 'advisers_approval' => 'approved',
                
             
             ]);
-            
+
+            //create notifications for each event approved
+            $events = upcoming_events::whereIn('upcoming_event_id',$collectionKeys)->get();
             foreach ($events as $event ) {
                 
                 GPOA_Notifications::create([
-                    'event_id' => $event,
+                    'event_id' => $event->upcoming_event_id,
                     'message' => "Event has been approved by Organization's Adviser.",
                     'user_id' => Auth::user()->user_id,
-                    'to' => $event['organization_id']
+                    'to' => $event->organization_id
                 ]);
                 
             }
-          
             return redirect(route('adviser.adviser.event-approval'));
         }
         else{

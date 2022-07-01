@@ -53,7 +53,7 @@ Route::prefix('/admin')->middleware('auth')->name('admin.')->group(function(){
     Route::post('generate-gpoa', [SuperAdminController::class, 'generatePDF'])->name('print-pdf');
     Route::get('/events/approved-events', [SuperAdminController::class, 'approvedEvents'])->name('approvedEvents');
     Route::get('/events/disapproved-events', [SuperAdminController::class, 'disapprovedEvent'])->name('disapprovedEvent');
-
+    Route::post('/events/approved-selected', [SuperAdminController::class, 'approveSelected'])->name('admin-approved-selected');
 
 });
 
@@ -74,7 +74,7 @@ Route::prefix('/director')->middleware('auth')->name('director.')->group(functio
     Route::post('generate-gpoa', [DirectorController::class, 'generatePDF'])->name('print-pdf');
     Route::get('/events/approved-events', [DirectorController::class, 'approvedEvents'])->name('approvedEvents');
     Route::get('/events/disapproved-events', [DirectorController::class, 'disapprovedEvent'])->name('disapprovedEvent');
-
+    Route::post('/events/approved-selected', [DirectorController::class, 'approveSelected'])->name('director-approved-selected');
 
 });
 
@@ -122,7 +122,7 @@ Route::prefix('/officer')->middleware('auth')->name('officer.')->group(function(
     // Route::get('/gpoa/budget/add-budget-breakdown/{event}/amounts', [EventsController::class, 'showBreakdownAmountForm'])->name('showBreakdownAmountForm');
     // Route::post('event/budget/breakdown/{event}/amounts', [EventsController::class, 'budgetBreakdownAmount'])->name('budgetBreakdownAmount');
 
-    
+
 });
 
 //Adviser Routes

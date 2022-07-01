@@ -1471,7 +1471,6 @@ class EventsController extends Controller
                              ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                              ->where('request_status','=','declined')
                              ->where('request_by',$organizationID)
-                            //  ->paginate(5);
                             ->get();
         return view('officer.disapproved-partnerships',compact('disapproved_requests'));
 
@@ -1496,9 +1495,8 @@ class EventsController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         $notifications = GPOA_Notifications::join('upcoming_events','upcoming_events.upcoming_event_id','=','gpoa_notifications.event_id')
                     ->join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                    // ->join('users','users.user_id','=','gpoa_notifications.user_id')
-                    ->where('gpoa_notifications.to',$organizationID)
-                    // ->paginate(5);
+                    ->where('gpoa_notifications.to',$organizationID)     
+                    ->orderBy('gpoa_notifications.notification_id', 'desc')            
                     ->get();
         return view('officer.notifications',compact('notifications'));
     }

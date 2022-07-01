@@ -16,6 +16,7 @@ use App\Models\GPOA_Notifications;
 use App\Models\organization;
 use App\Models\User;
 use File;
+use PDF;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -67,7 +68,25 @@ class AdviserController extends Controller
             ->orderBy('upcoming_events.date','asc')
             // ->paginate(5, ['*'], 'upcoming-events'); 
             ->get();           
-        return view('adviser.adviser',compact('upcoming_events'));
+        $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')
+            ->where('upcoming_events.studAffairs_approval','=','approved')
+            ->where('upcoming_events.organization_id',$organizationID)
+            ->orderBy('upcoming_event_id', 'desc')
+            ->get();
+
+        $semcollection = collect([]);
+
+        foreach ($semesters as  $semester) {
+        $semcollection->push($semester);
+        }
+        $newsemcollection = $semcollection->unique('semester');
+        $yearcollection = collect([]);
+
+        foreach ($semesters as  $semester) {
+        $yearcollection->push($semester);
+        }
+        $newyearcollection = $yearcollection->unique('school_year');
+        return view('adviser.adviser',compact('upcoming_events','newyearcollection','newsemcollection'));
         
         }
         else{
@@ -649,5 +668,86 @@ class AdviserController extends Controller
         }
 
     }
+    
+    public function generatePDF(Request $request)
+    {   
+        if (Gate::allows('is-adviser')) {
+            // Pluck all User Roles
+            $userRoleCollection = Auth::user()->roles;
+        
+            // Remap User Roles into array with Organization ID
+            $userRoles = array();
+            foreach ($userRoleCollection as $role) 
+            {
+                array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id, 'role_id'=>$role->role_id]);
+            }
 
+            // If User has GPOA Admin role...
+        
+            $memberRoleKey = $this->hasRole($userRoles,'User');
+            // Get the Organization from which the user is GPOA Admin
+            $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
+            $organizationID = $userRoles[$userRoleKey]['organization_id'];
+            $role_id =  $userRoles[$userRoleKey]['role_id'];
+            
+            //Get Organization Details including a single Logo
+            $organization = Organization::with('logo')
+                    ->where('organization_id', $organizationID)
+                    ->first();
+            // dd($organization);
+
+            $inputSem = $request->semester;
+            $inputYear = $request->school_year;
+            $inputMembershipfee = $request->membership_fee;
+            $inputCollection = $request->total_collection;
+
+            $request->validate([
+                'semester' => ['required'],
+                'school_year' => ['required'],
+                'membership_fee' => ['required','integer'],
+                'total_collection' => ['required','integer'],
+            ]);
+            
+            $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                            ->where('upcoming_events.advisers_approval','=','approved')
+                            ->where('upcoming_events.studAffairs_approval','=','approved')
+                            ->where('upcoming_events.organization_id',$organizationID)
+                            ->where('upcoming_events.semester',$inputSem)
+                            ->where('upcoming_events.school_year',$inputYear)
+                            ->get();
+            
+            $president_signature = event_signatures::with('user')
+                                ->where('organization_id', $organizationID)
+                                ->where('role_id',6)
+                                ->first();
+            $adviser_signature = event_signatures::with('user')
+                                ->where('organization_id', $organizationID)
+                                ->where('role_id',9)
+                                ->first();
+            $admin_signature = event_signatures::with('user')
+                                ->where('role_id',1)
+                                ->first();    
+            $director_signature = event_signatures::with('user')
+                                ->where('role_id',10)
+                                ->first();
+            // dd($director_signature->user->title);
+
+            $pdf = PDF::loadView('officer.pdf-file', compact([
+                'upcoming_events', 
+                'organization',
+                'president_signature',
+                'admin_signature',
+                'adviser_signature',
+                'inputYear',
+                'inputSem',
+                'inputMembershipfee',
+                'inputCollection',
+                'director_signature'
+            ]))->setPaper('legal', 'landscape');
+            
+            return $pdf->stream('General-Plan-of-Activities.pdf');
+        } else {
+            abort(403);
+        }
+    }
 }

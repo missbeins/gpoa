@@ -82,7 +82,7 @@
                                @php
                                    $data++;
                                @endphp
-                                @if ($data == 3)
+                                @if ($data == 2)
 
                                 </tbody>
                                 </table>

@@ -91,7 +91,7 @@ class EventsController extends Controller
                             ->where('upcoming_events.completion_status','!=','cancelled')
                             ->orderBy('upcoming_events.date','asc')
                             ->get();
-                            // ->paginate(5, ['*'], 'upcoming-events');
+                            
 
             return view('officer.events',compact(['upcoming_events','newYearRange','newsemcollection','newyearcollection']));
         }
@@ -938,11 +938,8 @@ class EventsController extends Controller
             {
                 array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
             }
-
-            // If User has AR President Admin role...
-
             
-            // Get the Organization from which the user is AR President Admin
+            // Get the Organization from which the user is gpoa President Admin
             $userRoleKey = $this->hasRole($userRoles, 'GPOA Admin');
             $organizationID = $userRoles[$userRoleKey]['organization_id'];
             
@@ -967,7 +964,7 @@ class EventsController extends Controller
                         ['upcoming_events.semester','LIKE','%'.$semester.'%'],
                         ['upcoming_events.school_year','LIKE','%'.$school_year.'%'],  
                     ])
-                    // ->where('upcoming_events.advisers_approval','=','approved')
+                    ->where('upcoming_events.organization_id',$organizationID)
                     // ->where('upcoming_events.studAffairs_approval','=','approved')
                     ->orderBy('upcoming_events.date','asc')
                     ->get();

@@ -119,11 +119,10 @@ class AdviserController extends Controller
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
         if(Gate::allows('is-adviser')){
         $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-            ->where('upcoming_events.completion_status','=','upcoming')
+            ->where('upcoming_events.completion_status','=','pending')
             ->where('upcoming_events.advisers_approval','=','pending')
             ->where('upcoming_events.organization_id',$organizationID)
             ->orderBy('upcoming_events.date','asc')
-            // ->paginate(5, ['*'], 'upcoming-events');   
             ->get();         
         return view('adviser.event-approval',compact('upcoming_events'));
         }

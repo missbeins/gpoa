@@ -23,6 +23,8 @@ use Illuminate\Validation\Rule;
 use File;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class EventsController extends Controller
 {
@@ -968,6 +970,7 @@ class EventsController extends Controller
                     // ->where('upcoming_events.studAffairs_approval','=','approved')
                     ->orderBy('upcoming_events.date','asc')
                     ->get();
+                
                     // ->paginate(5, ['*'], 'events');
                 return view('officer.filter',compact(['upcoming_events','newYearRange']));
             }else{
@@ -1691,5 +1694,53 @@ class EventsController extends Controller
             abort(403);
         }
     }
-   
+    public function passSelected(Request $request){
+        // Pluck all User Roles
+        $userRoleCollection = Auth::user()->roles;
+
+        // Remap User Roles into array with Organization ID
+        $userRoles = array();
+        foreach ($userRoleCollection as $role) 
+        {
+            array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
+        }
+
+        // If User has ADVISER Admin role...
+       
+        $memberRoleKey = $this->hasRole($userRoles,'User');
+        // Get the Organization from which the user is adviser
+        $userRoleKey = $this->hasRole($userRoles, 'Adviser');
+        $organizationID = $userRoles[$userRoleKey]['organization_id'];
+
+        // Get all Keys from Form
+        $allKeys= $request->except(['_token']);
+
+        $collectionKeys = Arr::where($allKeys, function ($value, $key) {
+            if(Str::startsWith($key, 'eventIds'))
+                return $key;
+        });
+
+        // Remake array, only keys remain
+        $collectionKeys = array_values($collectionKeys);
+       
+        // // Redirect if there is no event/accomplishment selected
+        //     if (count($allKeys) == 0) 
+        //         return redirect()->action(
+        //             [AccomplishmentReportsController::class, 'index'])
+        //             ->with('error', 'No Report Selected!');
+  
+        if(Gate::allows('is-officer')){
+            //passing of events to adviser for approval
+            $upcoming_events = upcoming_events::whereIn('upcoming_event_id',$collectionKeys);
+          
+            $upcoming_events->update([
+                'completion_status' => 'passed',                       
+            ]);
+
+            return redirect(route('officer.events.index'));
+        }
+        else{
+            abort(403);
+        }
+    }
 }

@@ -99,7 +99,7 @@ class DirectorController extends Controller
         if(Gate::allows('is-director')){
 
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                ->where('upcoming_events.completion_status','=','upcoming')
+                ->where('upcoming_events.completion_status','=','passed')
                 ->where('upcoming_events.studAffairs_approval','=','approved')
                 ->where('upcoming_events.directors_approval','=','pending')
                 ->orderBy('upcoming_events.date','asc')
@@ -121,7 +121,7 @@ class DirectorController extends Controller
         //check if USER has SUPER director role
         if(Gate::allows('is-director')){
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                ->where('upcoming_events.completion_status','=','upcoming')
+                ->where('upcoming_events.completion_status','=','passed')
                 ->where('upcoming_events.studAffairs_approval','=','approved')
                 ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.directors_approval','=','pending')
@@ -151,8 +151,8 @@ class DirectorController extends Controller
             $upcoming_events = upcoming_events::where('upcoming_event_id',$id);
             $upcoming_events->update([
 
-                'directors_approval' => 'approved'
-
+                'directors_approval' => 'approved',
+                'completion_status' => 'upcoming'
             ]);
             GPOA_Notifications::create([
                 'event_id' => $id,
@@ -246,7 +246,7 @@ class DirectorController extends Controller
             $upcoming_events->update([
 
                 'directors_approval' => 'approved',
-
+                'completion_status' => 'upcoming'
 
             ]);
 
@@ -681,11 +681,10 @@ class DirectorController extends Controller
         if(Gate::allows('is-director')){
             $disapproved_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                 ->join('disapproved_events','disapproved_events.upcoming_event_id','=','upcoming_events.upcoming_event_id')
-                // ->where('upcoming_events.advisers_approval','=','disapproved')
                 ->where('upcoming_events.directors_approval','=','disapproved')
                 ->where('disapproved_events.disapproved_by', Auth::user()->user_id)
                 ->orderBy('upcoming_events.date','asc')
-                // ->paginate(5, ['*'], 'upcoming-events');
+                
                 ->get();
 
             $semesters = upcoming_events::where('upcoming_events.advisers_approval','=','approved')

@@ -67,39 +67,52 @@
                         <div class="col-md-2">
                             <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" style="margin-left: -80px;"data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
                                 class="fas fa-calendar-plus me-2"></i>New Event</a>
-                                
+                                <button class="btn btn-primary btn-sm second-text fw-bold" type="submit" form="selectEvents"> Pass Selected</button>
                         </div>
                     @else
                         <div class="col-md-2">
-                            <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
-                                class="fas fa-calendar-plus me-2"></i>New Event</a>
-                               
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
+                                        class="fas fa-calendar-plus me-2"></i>New Event</a>  
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary btn-sm second-text fw-bold" type="submit" form="selectEvents"> Pass Selected</button>    
+                                </div>
+                            </div>                                 
                         </div>
                     @endif
                     
                 </div>  
             </div>
             <div class="card-body table-responsive">        
+                <form action="{{ route('officer.pass-selected') }}" class="selectEvents" id="selectEvents" method="POST">
+                    @csrf
+                  
                 @if (isset($upcoming_events))
                     <table class="table table-light table-sm table-striped table-hover table-responsive" id="orgevents">
                         <thead>
                             <tr>
+                                <th class="col-sm"><input type="checkbox" name="" id="" onchange="eventToggleChild(this)"></th>
                                 <th class="col-sm-2">Date</th>
                                 <th class="col-sm-3">Name/Title of Activity</th>
                                 <th class="col-sm-2">Head Organization</th>
-                                <th class="col-sm-3">Venue & time</th>
-                                <th class="col-sm-2">Actions</th>
-                                
+                                <th class="col-sm-2">Venue & time</th>
+                                <th class="col-sm-1">Status</th>
+                                <th class="col-sm-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
                                     <tr>
+                                        <td><input type="checkbox" name="eventIds{{ $upcoming_event->upcoming_event_id }}" id="eventIds" value="{{ $upcoming_event->upcoming_event_id }}"></td>
+                                    </form>
                                         <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->head_organization }}</td>
                                         <td>{{ $upcoming_event->venue }} / {{ date_format(date_create($upcoming_event->time), 'H : i a')}}</td>
+                                        <td>{{ $upcoming_event->completion_status }}</td>
                                         <td>
                                           @if ($upcoming_event->advisers_approval == 'approved' && $upcoming_event->studAffairs_approval == 'approved' && $upcoming_event->directors_approval == 'approved'  && $upcoming_event->completion_status == 'upcoming')
                                             <button type="button" class="btn btn-success btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#mark-as-done-form{{ $upcoming_event->upcoming_event_id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark event as accomplished">
@@ -143,11 +156,22 @@
             const dataTable = new simpleDatatables.DataTable("#orgevents", {
                 perPage: 5,
                 searchable: true,
+                columns:[{select: 0, sortable: false}],
                 labels: {
                     placeholder: "Search on current page...",
                     noRows: "No user to display in this page or try in the next page.",
                 },
             });
         });
+    </script>
+     <script>
+        function eventToggleChild(parent)
+        {
+            const parentState = (parent.checked == true) ? true : false;
+            const children = document.querySelectorAll('input[id*="eventIds"]');
+            children.forEach((checkbox) => {
+                checkbox.checked = parentState;
+            });
+        }
     </script>
 @endsection

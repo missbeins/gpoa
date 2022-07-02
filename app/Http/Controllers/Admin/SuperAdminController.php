@@ -99,7 +99,7 @@ class SuperAdminController extends Controller
         if(Gate::allows('is-superadmin')){
 
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                ->where('upcoming_events.completion_status','=','upcoming')
+                ->where('upcoming_events.completion_status','=','passed')
                 ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','pending')
                 ->orderBy('upcoming_events.date','asc')
@@ -122,7 +122,7 @@ class SuperAdminController extends Controller
         //check if USER has SUPER ADMIN role
         if(Gate::allows('is-superadmin')){
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
-                ->where('upcoming_events.completion_status','=','upcoming')
+                ->where('upcoming_events.completion_status','=','passed')
                 ->where('upcoming_events.advisers_approval','=','approved')
                 ->where('upcoming_events.studAffairs_approval','=','pending')
                 ->where('upcoming_events.organization_id',$OrgId)

@@ -45,9 +45,9 @@
                                 <th class="col-sm-1"><input type="checkbox" name="" id="" onchange="eventToggleChild(this)"></th>
                                 <th class="col-sm-1">Date</th>
                                 <th class="col-sm-3">Name/Title of Activity</th>
-                                <th class="col-sm-3">Head Organization</th>
+                                <th class="col-sm-2">Head Organization</th>
                                 <th class="col-sm-2">Venue & time</th>
-                                <th class="col-sm-2">Actions</th>
+                                <th class="col-sm-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>

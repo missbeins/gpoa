@@ -603,7 +603,7 @@ class DirectorController extends Controller
                                 ->where('role_id',10)
                                 ->first();
             $admin_signature = event_signatures::with('user')
-                                ->where('role_id',1)
+                                ->where('role_id',11)
                                 ->first();
             //dd($president_signature, $director_signature, $adviser_signature);
             $pdf = PDF::loadView('director.gpoa-pdf-file', compact([

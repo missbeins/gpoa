@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Officer;
 
 use App\Http\Controllers\Controller;
 use App\Imports\UpcomingEventsImport;
+use App\Mail\SendEventApprovalNotificationMail;
 use App\Models\Budget_Breakdown;
 use App\Models\organization;
 use App\Models\upcoming_events;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
 
 class EventsController extends Controller
 {
@@ -91,16 +93,18 @@ class EventsController extends Controller
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                             ->where('upcoming_events.organization_id',$organizationID)
                             ->where('upcoming_events.completion_status','!=','cancelled')
-                            ->orderBy('upcoming_events.date','asc')
+                            ->orderBy('upcoming_events.completion_status','desc')
                             ->get();
-                            
-
-            return view('officer.events',compact(['upcoming_events','newYearRange','newsemcollection','newyearcollection']));
+            $pendingEventsCount = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
+                            ->where('upcoming_events.organization_id',$organizationID)
+                            ->where('upcoming_events.completion_status','==','pending')                                                       
+                            ->count();             
+            // dd($passedEventsCount);
+            return view('officer.events',compact(['upcoming_events','newYearRange','newsemcollection','newyearcollection','pendingEventsCount']));
         }
         else{
             abort(403);
         }
-
     }
     
     /**
@@ -245,6 +249,7 @@ class EventsController extends Controller
                     'school_year' => $request['school_year'],
                     'fund_source' => $request['fund_sourcing'],
                     'activity_type' => $request['type_of_activity'],
+                    'completion_status' => 'pending',
                     'partnership_status' => 'on'
                 ]);
 
@@ -267,6 +272,7 @@ class EventsController extends Controller
                     'school_year' => $request['school_year'],
                     'fund_source' => $request['fund_sourcing'],
                     'activity_type' => $request['type_of_activity'],
+                    'completion_status' => 'pending',
                     'partnership_status' => 'off'
                 ]);
             }
@@ -625,7 +631,7 @@ class EventsController extends Controller
                                 ->where('role_id',9)
                                 ->first();
             $admin_signature = event_signatures::with('user')
-                                ->where('role_id',1)
+                                ->where('role_id',11)
                                 ->first();    
             $director_signature = event_signatures::with('user')
                                 ->where('role_id',10)
@@ -1705,9 +1711,6 @@ class EventsController extends Controller
             array_push($userRoles, ['role' => $role->role, 'organization_id' => $role->pivot->organization_id]);
         }
 
-        // If User has ADVISER Admin role...
-       
-        $memberRoleKey = $this->hasRole($userRoles,'User');
         // Get the Organization from which the user is adviser
         $userRoleKey = $this->hasRole($userRoles, 'Adviser');
         $organizationID = $userRoles[$userRoleKey]['organization_id'];
@@ -1730,13 +1733,22 @@ class EventsController extends Controller
         //             ->with('error', 'No Report Selected!');
   
         if(Gate::allows('is-officer')){
+           //get the org adviser 
+            $getOrgAdviser = User::join('role_user','role_user.user_id','=','users.user_id')
+                            ->join('roles','roles.role_id','=','role_user.role_id')
+                            ->where('roles.role','=','Adviser')
+                            ->where('role_user.organization_id',$organizationID)
+                            ->first();
+       
             //passing of events to adviser for approval
             $upcoming_events = upcoming_events::whereIn('upcoming_event_id',$collectionKeys);
           
             $upcoming_events->update([
                 'completion_status' => 'passed',                       
             ]);
-
+            $name = $getOrgAdviser->last_name;
+            $gender = $getOrgAdviser->last_name;
+            // Mail::to($getOrgAdviser->email)->send(new SendEventApprovalNotificationMail($name, $gender));
             return redirect(route('officer.events.index'));
         }
         else{

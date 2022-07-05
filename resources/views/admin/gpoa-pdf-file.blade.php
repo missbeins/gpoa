@@ -224,7 +224,8 @@
                 </div>
                 <div class="approved">  
                     <p>Recommending approval by:</p>
-                   
+                    
+                    
                     @if ($admin_signature != null)
                         @if ($admin_signature->signature_path != null)
                             @if ($admin_signature->user->title != null)

@@ -588,6 +588,7 @@ class SuperAdminController extends Controller
             $upcoming_events = upcoming_events::join('organizations','organizations.organization_id','=','upcoming_events.organization_id')
                             ->where('upcoming_events.advisers_approval','=','approved')
                             ->where('upcoming_events.studAffairs_approval','=','approved')
+                            ->where('upcoming_events.directors_approval','=','approved')
                             ->where('upcoming_events.organization_id',$organizationID)
                             ->where('upcoming_events.semester',$inputSem)
                             ->where('upcoming_events.school_year',$inputYear)
@@ -602,7 +603,7 @@ class SuperAdminController extends Controller
                                 ->where('role_id',9)
                                 ->first();
             $admin_signature = event_signatures::with('user')
-                                ->where('role_id',1)
+                                ->where('role_id',11)
                                 ->first();
             $director_signature = event_signatures::with('user')
                                 ->where('role_id',10)

@@ -33,6 +33,7 @@ class AdviserController extends Controller
    {
        return array_search($role, array_column($roles, 'role'));
    }
+  
    /**
     * Display a listing of the resource.
     *
@@ -724,7 +725,7 @@ class AdviserController extends Controller
                                 ->where('role_id',9)
                                 ->first();
             $admin_signature = event_signatures::with('user')
-                                ->where('role_id',1)
+                                ->where('role_id',11)
                                 ->first();    
             $director_signature = event_signatures::with('user')
                                 ->where('role_id',10)

@@ -67,25 +67,23 @@
                         <div class="col-md-2">
                             <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" style="margin-left: -80px;"data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
                                 class="fas fa-calendar-plus me-2"></i>New Event</a>
-                                <button class="btn btn-primary btn-sm second-text fw-bold" type="submit" form="selectEvents"> Pass Selected</button>
+                                {{-- @if ($pendingEventsCount != 0) --}}
+                                    <button class="btn btn-primary btn-sm second-text fw-bold" type="submit" form="selectEvents"> Pass Selected</button>
+                                    
+                                {{-- @endif --}}
+                                
                         </div>
                     @else
-                        <div class="col-md-2">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
-                                        class="fas fa-calendar-plus me-2"></i>New Event</a>  
-                                </div>
-                                <div class="col-md-2">
-                                    <button class="btn btn-primary btn-sm second-text fw-bold" type="submit" form="selectEvents"> Pass Selected</button>    
-                                </div>
-                            </div>                                 
+                        <div class="col-md-2">                           
+                            <a href="{{ route('officer.events.create') }}" class="second-text fw-bold btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Start new event"><i
+                                class="fas fa-calendar-plus me-2"></i>New Event</a>                                   
                         </div>
                     @endif
                     
                 </div>  
             </div>
-            <div class="card-body table-responsive">        
+            <div class="card-body table-responsive">   
+                     
                 <form action="{{ route('officer.pass-selected') }}" class="selectEvents" id="selectEvents" method="POST">
                     @csrf
                   
@@ -93,6 +91,7 @@
                     <table class="table table-light table-sm table-striped table-hover table-responsive" id="orgevents">
                         <thead>
                             <tr>
+                                
                                 <th class="col-sm"><input type="checkbox" name="" id="" onchange="eventToggleChild(this)"></th>
                                 <th class="col-sm-2">Date</th>
                                 <th class="col-sm-3">Name/Title of Activity</th>
@@ -105,9 +104,13 @@
                         <tbody>
                             @if ($upcoming_events->isNotEmpty())
                                 @foreach ($upcoming_events as $upcoming_event)
-                                    <tr>
-                                        <td><input type="checkbox" name="eventIds{{ $upcoming_event->upcoming_event_id }}" id="eventIds" value="{{ $upcoming_event->upcoming_event_id }}"></td>
-                                    </form>
+                                        @if ($upcoming_event->completion_status != 'passed')
+                                            <tr>
+                                                <td><input type="checkbox" name="eventIds{{ $upcoming_event->upcoming_event_id }}" id="eventIds" value="{{ $upcoming_event->upcoming_event_id }}"></td>
+                                            </form>
+                                        @else
+                                            <td></td>
+                                        @endif
                                         <td>{{ date_format(date_create($upcoming_event->date), 'F d, Y') }}</td>
                                         <td>{{ $upcoming_event->title }}</td>
                                         <td>{{ $upcoming_event->head_organization }}</td>
